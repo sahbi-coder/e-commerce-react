@@ -1,11 +1,15 @@
 import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
-
+import { useEffect } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
-import{useSelector} from "react-redux"
-const Container = styled.div``;
+import{useSelector,useDispatch} from "react-redux"
+import { clearCart } from "../redux/cartSlice";
+import { useNavigate } from "react-router-dom";
+const Container = styled.div`
+margin-top: 100px;
+`;
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -155,7 +159,17 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
-  const cart = useSelector(state=>state.cart)
+  const {cart,user} = useSelector(state=>state)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  useEffect(()=>{
+      
+        if(!user.currentUser){
+          dispatch(clearCart())
+          navigate('/login')
+          
+        }
+  },[user])
   return (
     <Container>
       <Navbar />

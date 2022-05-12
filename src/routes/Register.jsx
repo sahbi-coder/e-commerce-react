@@ -1,6 +1,17 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
-
+import { useReducer,useEffect } from "react";
+import { publicRequest } from "../requestMethods";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  loginFailure,
+  init,
+  loginSucess,
+  signUpFailure,
+  signUpStart,
+  signUpSucess,
+} from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -55,22 +66,153 @@ const Button = styled.button`
 `;
 
 const Register = () => {
+  const initialState = {
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confPassword: "",
+  };
+  const ACTIONS = {
+    UPDATE_NAME: "update name",
+    UPDATE_EMAIL: "update email",
+    UPDATE_LASTNAME: "update lastname",
+    UPDATE_PASSWORD: "update password",
+    UPDATE_CONF_PASSWORD: "update conf password",
+  };
+  const reducer = (state, { type, payload }) => {
+    switch (type) {
+      case ACTIONS.UPDATE_NAME:
+        return {
+          ...state,
+          name: payload,
+        };
+      case ACTIONS.UPDATE_LASTNAME:
+        return {
+          ...state,
+          lastName: payload,
+        };
+      case ACTIONS.UPDATE_EMAIL:
+        return {
+          ...state,
+          email: payload,
+        };
+
+      case ACTIONS.UPDATE_PASSWORD:
+        return {
+          ...state,
+          password: payload,
+        };
+      case ACTIONS.UPDATE_CONF_PASSWORD:
+        return {
+          ...state,
+          confPassword: payload,
+        };
+      default:
+        return state;
+    }
+  };
+  const [state, dispatsh] = useReducer(reducer, initialState);
+  const reduxDiapatsh = useDispatch();
+  const navigate = useNavigate();
+  const { isFetshing, error ,currentUser} = useSelector((state) => state.user);
+  useEffect(()=>{
+    reduxDiapatsh(init())
+  },[])
+  useEffect(() => {
+
+    if(currentUser){
+      navigate('/')
+    }
+  
+   
+  }, [currentUser])
+
+  const createAcount = async (e) => {
+    e.preventDefault();
+
+    Object.values(state).forEach((input) => {
+      return !input && alert("you must fill all inputs");
+    });
+    if (state.password !== state.confPassword) {
+      return alert("passwords do not confirm");
+    }
+    try {
+      reduxDiapatsh(signUpStart());
+      const res = await publicRequest.post("/auth/register", {
+        name: `${state.name}${state.lastName}`,
+        email: state.email,
+        password: state.password,
+      });
+
+      reduxDiapatsh(signUpSucess());
+    } catch (e) {
+      reduxDiapatsh(signUpFailure());
+      return alert("could not register please try again");
+    }
+    try {
+      const res = await publicRequest.post("/auth/login", {
+        password: state.password,
+        email: state.email,
+      });
+      const user = res.data;
+      reduxDiapatsh(loginSucess({ user }));
+      navigate("/user");
+    } catch {
+      reduxDiapatsh(loginFailure());
+      navigate("/login");
+    }
+  };
   return (
     <Container>
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
         <Form>
-          <Input placeholder="name" />
-          <Input placeholder="last name" />
-          <Input placeholder="username" />
-          <Input placeholder="email" />
-          <Input placeholder="password" />
-          <Input placeholder="confirm password" />
+          <Input
+            placeholder="name"
+            onChange={(e) => {
+              dispatsh({ type: ACTIONS.UPDATE_NAME, payload: e.target.value });
+            }}
+          />
+          <Input
+            placeholder="last name"
+            onChange={(e) => {
+              dispatsh({
+                type: ACTIONS.UPDATE_LASTNAME,
+                payload: e.target.value,
+              });
+            }}
+          />
+
+          <Input
+            placeholder="email"
+            onChange={(e) => {
+              dispatsh({ type: ACTIONS.UPDATE_EMAIL, payload: e.target.value });
+            }}
+          />
+          <Input
+            placeholder="password"
+            onChange={(e) => {
+              dispatsh({
+                type: ACTIONS.UPDATE_PASSWORD,
+                payload: e.target.value,
+              });
+            }}
+          />
+          <Input
+            placeholder="confirm password"
+            onChange={(e) => {
+              dispatsh({
+                type: ACTIONS.UPDATE_CONF_PASSWORD,
+                payload: e.target.value,
+              });
+            }}
+          />
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE</Button>
+          <Button onClick={createAcount}>CREATE</Button>
         </Form>
       </Wrapper>
     </Container>

@@ -2,13 +2,18 @@ import styled from "styled-components";
 
 import Product from "./Product";
 import { useEffect,useState } from "react";
-import axios from "axios"
+import { publicRequest } from "../requestMethods";
+import { mobile} from "../responsive";
 
 const Container = styled.div`
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    max-width: 100%;
+    ${mobile({padding:0})}
+
+  
 `;
 
 const Products = ({ctg,sort,filters}) => {
@@ -19,7 +24,7 @@ const Products = ({ctg,sort,filters}) => {
    async  function getProducts(){
      try{
    
-       const res = await axios.get(ctg?`http://localhost:5000/api/products/?category=${ctg}`:'http://localhost:5000/api/products')
+       const res = await publicRequest.get(ctg?`/products/?category=${ctg}`:'/products')
        setProducts(res.data)
    
      }

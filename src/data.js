@@ -26,23 +26,62 @@ export const sliderItems = [
   export const categories = [
     {
       id: 1,
-      img: "https://images.pexels.com/photos/5886041/pexels-photo-5886041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      title: "SHIRT STYLE!",
+      img: "https://source.unsplash.com/4V4t0JcOM5E/640x959",
+      title: "SHIRTS",
       category:"shirts"
     },
     {
       id: 2,
-      img: "https://images.pexels.com/photos/2983464/pexels-photo-2983464.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      title: "LOUNGEWEAR LOVE",
+      img: "https://source.unsplash.com/_jd8I6yBWM4/640x1137",
+      title: "DRESSES",
       category:"dresses"
     },
     {
       id: 3,
-      img: "https://images.pexels.com/photos/5480696/pexels-photo-5480696.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
-      title: "LIGHT JACKETS",
+      img: "https://source.unsplash.com/ua9ReZlzcIE/640x960",
+      title: "JACKETS",
       category:"jackets"
     },
   ];
+  export const allCategories = [
+    {
+      id: 1,
+      img: "https://source.unsplash.com/4V4t0JcOM5E/640x959",
+      title: "SHIRTS",
+      category:"shirts"
+    },
+    {
+      id: 2,
+      img: "https://source.unsplash.com/_jd8I6yBWM4/640x1137",
+      title: "DRESSES",
+      category:"dresses"
+    },
+    {
+      id: 3,
+      img: "https://source.unsplash.com/ua9ReZlzcIE/640x960",
+      title: "JACKETS",
+      category:"jackets"
+    },
+    {
+      id: 4,
+      img: "https://source.unsplash.com/_y6hMz1pJC0/640x959",
+      title: "TOPS & BLOUSES",
+      category:"Tops & Blouses"
+    },
+    {
+      id: 5,
+      img: "https://source.unsplash.com/C2CMrC1zcWw/640x960",
+      title: "ACCESSORIES",
+      category:"Accessories"
+    },
+    {
+      id: 6,
+      img: "https://source.unsplash.com/jC7nVH_Sw8k/640x960",
+      title: "PANSTS",
+      category:"Pants"
+    }
+  ];
+  
 
   export const popularProducts = [
     {

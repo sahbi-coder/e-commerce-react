@@ -5,16 +5,18 @@ import Navbar from "../components/Navbar";
 import { mobile } from "../responsive";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux";
-import {addProduct} from '../redux/cartSlice'
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct } from "../redux/cartSlice";
+import { publicRequest } from "../requestMethods";
+import { useNavigate } from "react-router-dom";
 
-import axios from "axios";
 const Container = styled.div``;
 
 const Wrapper = styled.div`
   padding: 50px;
   display: flex;
   ${mobile({ padding: "10px", flexDirection: "column" })}
+  margin-top: 80px;
 `;
 
 const ImgContainer = styled.div`
@@ -124,36 +126,33 @@ const Product = () => {
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [amount, setAmount] = useState(1);
-  const [color,setColor]=useState('')
-  const [size,setSize]=useState('')
-  const dispatsh = useDispatch()
-  const cart = useSelector((state)=>state.cart)
-  
-  const handleAmount = (type) => {
-    if(type==='add'){
+  const [color, setColor] = useState("");
+  const [size, setSize] = useState("");
+  const dispatsh = useDispatch();
+  const { cart, user } = useSelector((state) => state);
+  const navigate = useNavigate();
 
+  const handleAmount = (type) => {
+    if (type === "add") {
       return setAmount((amount) => amount + 1);
     }
-    
+
     if (amount > 1) setAmount((amount) => amount - 1);
   };
- 
 
   async function getProduct() {
-    const res = await axios.get(
-      `http://localhost:5000/api/products/find/${id}`
-    );
+    const res = await publicRequest.get(`/products/find/${id}`);
     setProduct(res.data);
-    setColor(res.data.color[0])
-    setSize(res.data.size[0])
+    setColor(res.data.color[0]);
+    setSize(res.data.size[0]);
   }
-  const handleCart = ()=>{
-    dispatsh(addProduct({...product,amount,size,color}))
-    console.log(cart)
-    
-    
-  }
- 
+  const handleCart = () => {
+    if (user.currentUser) {
+      return dispatsh(addProduct({ ...product, amount, size, color }));
+    }
+
+    navigate("/login");
+  };
 
   useEffect(() => {
     getProduct();
@@ -175,16 +174,27 @@ const Product = () => {
               <FilterTitle>Color</FilterTitle>
               {product.color
                 ? product.color.map((c) => {
-                    return <FilterColor color={c} onClick={()=>{setColor(c)}}/>;
+                    return (
+                      <FilterColor
+                        color={c}
+                        onClick={() => {
+                          setColor(c);
+                        }}
+                      />
+                    );
                   })
                 : null}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
-              <FilterSize onChange={(e)=>{setSize(e.target.value)}}>
+              <FilterSize
+                onChange={(e) => {
+                  setSize(e.target.value);
+                }}
+              >
                 {product.size
                   ? product.size.map((s) => {
-                      return <FilterSizeOption >{s}</FilterSizeOption>;
+                      return <FilterSizeOption>{s}</FilterSizeOption>;
                     })
                   : null}
               </FilterSize>
@@ -192,9 +202,9 @@ const Product = () => {
           </FilterContainer>
           <AddContainer>
             <AmountContainer>
-              <Remove  onClick={()=>handleAmount('remove')} />
+              <Remove onClick={() => handleAmount("remove")} />
               <Amount>{amount}</Amount>
-              <Add  onClick={()=>handleAmount('add')} />
+              <Add onClick={() => handleAmount("add")} />
             </AmountContainer>
             <Button onClick={handleCart}>ADD TO CART</Button>
           </AddContainer>

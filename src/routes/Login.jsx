@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import {mobile} from "../responsive";
-import axios from "axios";
-import { useSelector,useDispatch } from "react-redux";
-import {loginFailure,loginStart,loginSucess} from "../redux/userSlice"
-import { useState } from "react";
+import { mobile } from "../responsive";
+import { publicRequest } from "../requestMethods";
+import { useSelector, useDispatch } from "react-redux";
+import { loginFailure, loginStart, loginSucess ,init} from "../redux/userSlice";
+import { useState, useEffect } from "react";
+import { Link as L, useNavigate } from "react-router-dom";
 
 
 const Container = styled.div`
@@ -53,56 +54,78 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
   margin-bottom: 10px;
-  &:disabled{
-    cursor:not-allowed;
+  &:disabled {
+    cursor: not-allowed;
   }
 `;
 
-const Link = styled.a`
+const Link = styled.div`
   margin: 5px 0px;
   font-size: 12px;
   text-decoration: underline;
   cursor: pointer;
 `;
 const Error = styled.span`
-  color:red;
-`
+  color: red;
+`;
 
 const Login = () => {
-  const {isFetshing,error} = useSelector(state=>state.user)
- 
-  const [email,setEmail]=useState('')
-  const [password,setPassword]=useState('')
-  const dispatch = useDispatch()
+  const { isFetshing, error, currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(init())
+  },[])
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+    }
+  }, [currentUser]);
 
-  const login =async(e)=>{
-    e.preventDefault()
-    try{
 
-      dispatch(loginStart())
-      const res = await axios.post('http://localhost:5000/api/auth/login',{
+  const login = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(loginStart());
+      const res = await publicRequest.post("/auth/login", {
         password,
-        email
-      })
-      const user = res.data
-      dispatch(loginSucess({user}))
+        email,
+      });
+      const user = res.data;
+      dispatch(loginSucess({ user }));
+      navigate("/");
+    } catch (e) {
+      dispatch(loginFailure());
     }
-    catch(e){
-     dispatch(loginFailure())
-    }
-  }
-  
+  };
+
   return (
     <Container>
       <Wrapper>
         <Title>SIGN IN</Title>
         <Form>
-          <Input placeholder="username" onChange={(e)=>{setEmail(e.target.value)}}/>
-          <Input placeholder="password"onChange={(e)=>{setPassword(e.target.value)}} />
-          <Button onClick={login} disabled={isFetshing}>LOGIN</Button>
-          {error?<Error>something went wrong ....</Error>:null}
+          <Input
+            placeholder="username"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+          <Input
+            placeholder="password"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+          <Button onClick={login} disabled={isFetshing}>
+            LOGIN
+          </Button>
+          {error ? <Error>something went wrong ....</Error> : null}
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
+          <Link as={L} to="/register">
+            CREATE A NEW ACCOUNT
+          </Link>
         </Form>
       </Wrapper>
     </Container>

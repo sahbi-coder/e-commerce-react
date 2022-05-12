@@ -5,6 +5,9 @@ import {
   } from "@material-ui/icons";
   import styled from "styled-components";
 import {Link}  from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux";
+import { addToList} from '../redux/whishlistSlice'
+import { publicRequest } from "../requestMethods";
   const Info = styled.div`
     opacity: 0;
     width: 100%;
@@ -31,6 +34,7 @@ import {Link}  from "react-router-dom"
     justify-content: center;
     background-color: #f5fbfd;
     position: relative;
+    
   
     &:hover ${Info}{
       opacity: 1;
@@ -67,21 +71,27 @@ import {Link}  from "react-router-dom"
   `;
   
   const Product = ({ item }) => {
+    const whishlist = useSelector((state)=>state.whishlist)
+    const dispatsh = useDispatch()
+    const addToWhishlist = ()=>{
+      dispatsh(addToList({product:item}))
+      console.log(whishlist)
+      
+      
+    }
     return (
       <Container>
         <Circle />
         <Image src={item.img} />
         <Info>
-          <Icon>
-            <ShoppingCartOutlined />
-          </Icon>
+    
           <Icon>
             <Link to={`/product/${item._id}`}>
 
             <SearchOutlined />
             </Link>
           </Icon>
-          <Icon>
+          <Icon onClick={addToWhishlist}>
             <FavoriteBorderOutlined />
           </Icon>
         </Info>

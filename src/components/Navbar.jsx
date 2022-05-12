@@ -1,111 +1,306 @@
 import React from "react";
 import styled from "styled-components";
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import Badge from "@material-ui/core/Badge";
 import Cart from "@material-ui/icons/ShoppingCart";
 import Person from "@material-ui/icons/PersonOutline";
 import { useSelector } from "react-redux";
-import {Link} from 'react-router-dom'
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import useMobile from "../hooks/useMobile";
+import { mobile } from "../responsive";
+import { extraSmall } from "../responsive";
+
 
 const Container = styled.section`
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+ 
   
 `;
 
-const NavCatch  =styled.div`
- display: flex;
- padding:10px;
- background-color: #f7eee3;
-`
+const NavCatch = styled.div`
+  display: flex;
+  padding: 4px;
+  background-color: #f7eee3;
+  font-size: 14px;
+`;
 const Wrapper = styled.div`
   padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: white;
 `;
 const Left = styled.div`
   flex: 1;
   display: flex;
+  align-items: center;
 `;
 const Center = styled.div`
   flex: 2;
   display: flex;
-  justify-content: center;
- 
+  justify-content: end;
+  align-items: center;
+  ${mobile({ justifyContent: "center" })}
 `;
 const Right = styled.div`
-  flex: 1;
-  display:flex;
+  flex: 0.25;
+  display: flex;
   justify-content: flex-end;
   padding: 0 10px;
-  
+  justify-content: center;
+  ${mobile({ flex: 1 })}
 `;
-
 
 const Logo = styled.h1`
   font-size: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
 `;
-const MenuItem = styled.div`
+const MenuItem = styled.button`
   font-size: 14px;
   cursor: pointer;
-  margin: 0 2px;
+  margin: 4px;
 
+  text-decoration: none;
+  color: black;
+  &:hover {
+    color: rgb(176, 93, 84) !important;
+  }
+
+  background: none;
+  border: none;
 `;
-const MenuCategory = styled.button`
-display: flex;
-margin:0 10px;
-background: none;
-border: none;
-&:focus{
-  color:rgb(176, 93, 84);
- 
-}
+const SubMenu = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: white;
+`;
+const SubList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const SubItem = styled.div`
+  font-size: 14px;
+  cursor: pointer;
+  margin: 10px 0;
+  text-decoration: none;
+  color: black;
+  &:hover {
+    color: rgb(176, 93, 84) !important;
+  }
+  background: none;
+  border: none;
+`;
+const SubMenuCard = styled.div`
+  height: 250px;
+  width: 300px;
+  position: relative;
+  margin: 0 20px;
+  cursor: pointer;
+`;
+const SubMenuCardImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+`;
+const SubMenuCardDesc = styled.div`
+  position: absolute;
+  top: 80%;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  font-size: 14px;
+`;
+const SideMenu = styled.div`
+  width: 100%;
 
-`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: white;
+`;
+const SideMenuItem = styled.div`
+  padding-left: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  color:black;
+`;
+const SideMenuSubItem = styled.div`
+  padding-left: 40px;
+  cursor: pointer;
+  text-decoration: none;
+  color:black;
+`;
 
 function Navbar() {
-  const quantity = useSelector((state)=>state.cart.quantity)
+  const quantity = useSelector((state) => state.cart.quantity);
+  const [showSubMenu, setShowSubMenu] = useState(false);
+  const [toggle, setToggle] = useState(false);
+  const [subSideToggle, setSubSideToggle] = useState(false);
+  const isMobile = useMobile();
 
   return (
     <Container>
       <NavCatch>Free shipping for all orders over $50!</NavCatch>
       <Wrapper>
         <Left>
-        <Logo>MyFashion</Logo>
+          {!isMobile && (
+            <Logo
+              as={Link}
+              to="/"
+              onClick={() => {
+                setShowSubMenu(false);
+              }}
+            >
+              MyFashion
+            </Logo>
+          )}
+          {isMobile && (
+            <MenuItem
+              onClick={() => {
+                setToggle((toggle) => !toggle);
+              }}
+            >
+              <FontAwesomeIcon icon={faBars} />
+            </MenuItem>
+          )}
         </Left>
         <Center>
-          <MenuCategory>
-          Tops & Blouses<KeyboardArrowDownIcon/>
-          </MenuCategory>
-          <MenuCategory>
-          Sweaters<KeyboardArrowDownIcon/>
-          </MenuCategory>
-          <MenuCategory>
-          Pants<KeyboardArrowDownIcon/>
-          </MenuCategory>
-          <MenuCategory>
-          Dresses<KeyboardArrowDownIcon/>
-          </MenuCategory>
-          <MenuCategory>
-          Jackets<KeyboardArrowDownIcon/>
-          </MenuCategory>
-          <MenuCategory>
-          Accessories<KeyboardArrowDownIcon/>
-          </MenuCategory>
-
-          
+          {!isMobile && (
+            <>
+              <MenuItem
+                as={Link}
+                to="/"
+                onClick={() => {
+                  setShowSubMenu(false);
+                }}
+              >
+                HOME
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setShowSubMenu((showSubMenu) => !showSubMenu);
+                }}
+              >
+                CATEGORIES
+              </MenuItem>
+              <MenuItem
+                as={Link}
+                to="/about"
+                onClick={() => {
+                  setShowSubMenu(false);
+                }}
+              >
+                ABOUT
+              </MenuItem>
+              <MenuItem
+                as={Link}
+                to="/contact"
+                onClick={() => {
+                  setShowSubMenu(false);
+                }}
+              >
+                CONTACT
+              </MenuItem>
+            </>
+          )}
+          {isMobile && (
+            <Logo
+              as={Link}
+              to="/"
+              onClick={() => {
+                setShowSubMenu(false);
+              }}
+            >
+              MyFashion
+            </Logo>
+          )}
         </Center>
         <Right>
-          <MenuItem><Person/></MenuItem>
-         
-          <Link to='/cart'>
-          <MenuItem>
+          <MenuItem  as={Link} to="/user">
+            <Person />
+          </MenuItem>
+
+          <MenuItem
+            as={Link}
+            to="/cart"
+            onClick={() => {
+              setShowSubMenu(false);
+            }}
+          >
             <Badge badgeContent={quantity} color="primary">
-              <Cart color="action" />
+              <Cart />
             </Badge>
           </MenuItem>
-          </Link>
         </Right>
       </Wrapper>
+      {showSubMenu && !isMobile && (
+        <SubMenu>
+          <SubList>
+            <SubItem as={Link} to="/categories">
+              <strong>All</strong>
+            </SubItem>
+            <SubItem>Shirts</SubItem>
+            <SubItem>Dresses</SubItem>
+            <SubItem>Jackets</SubItem>
+            <SubItem>Tops & Blouses</SubItem>
+            <SubItem>Accessories</SubItem>
+            <SubItem>Pants</SubItem>
+          </SubList>
+          <SubMenuCard>
+            <SubMenuCardImage src="https://source.unsplash.com/r5xHI_H44aM/640x853" />
+            <SubMenuCardDesc>
+              <i>know more about us</i>
+            </SubMenuCardDesc>
+          </SubMenuCard>
+        </SubMenu>
+      )}
+      {toggle && isMobile && (
+        <SideMenu>
+          <SideMenuItem as={Link} to="/">
+            HOME
+          </SideMenuItem>
+          <SideMenuItem
+            onClick={() => {
+              setSubSideToggle((subSideToggle) => !subSideToggle);
+            }}
+          >
+            CATEGORIES
+          </SideMenuItem>
+          {subSideToggle && (
+            <>
+              <SideMenuSubItem as={Link} to="/categories">
+                All
+              </SideMenuSubItem>
+              <SideMenuSubItem>Shirts</SideMenuSubItem>
+              <SideMenuSubItem>Dresses</SideMenuSubItem>
+              <SideMenuSubItem>Jackets</SideMenuSubItem>
+              <SideMenuSubItem>Tops & Blouses</SideMenuSubItem>
+              <SideMenuSubItem>Accessories</SideMenuSubItem>
+              <SideMenuSubItem>Pants</SideMenuSubItem>
+            </>
+          )}
+          <SideMenuItem as={Link} to="/about">
+            ABOUT
+          </SideMenuItem>
+          <SideMenuItem as={Link} to="/contact">
+            CONTACT
+          </SideMenuItem>
+        </SideMenu>
+      )}
     </Container>
   );
 }
