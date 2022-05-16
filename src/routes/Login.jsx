@@ -1,12 +1,17 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { useSelector, useDispatch } from "react-redux";
-import { loginFailure, loginStart, loginSucess ,init} from "../redux/userSlice";
+import {
+  loginFailure,
+  loginStart,
+  loginSucess,
+  init,
+} from "../redux/userSlice";
 import { useState, useEffect } from "react";
 import { Link as L, useNavigate } from "react-router-dom";
-
-
+import { addProducts } from "../redux/cartSlice";
+import { addList } from "../redux/wishlistSlice";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -75,27 +80,30 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  useEffect(()=>{
-    dispatch(init())
-  },[])
+  useEffect(() => {
+    dispatch(init());
+  }, []);
   useEffect(() => {
     if (currentUser) {
       navigate("/");
     }
   }, [currentUser]);
 
-
   const login = async (e) => {
     e.preventDefault();
     try {
       dispatch(loginStart());
-      const res = await publicRequest.post("/auth/login", {
+      let res1 = await publicRequest.post("/auth/login", {
         password,
         email,
       });
-      const user = res.data;
+      const user = res1.data;
+      let res2 = await userRequest.get("/carts/find/" + user._id);
+      let res3 = await userRequest.get("/wishlists/find/" + user._id);
       dispatch(loginSucess({ user }));
       navigate("/");
+      dispatch(addList(res3.data.products));
+      dispatch(addProducts(res2.data.products));
     } catch (e) {
       dispatch(loginFailure());
     }

@@ -6,9 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { logOut, init } from "../redux/userSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { clearCart } from "../redux/cartSlice";
+import { deleteAll } from "../redux/wishlistSlice";
 
 const Container = styled.div`
-  margin-top: 80px;
+  margin: 80px 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -53,12 +55,8 @@ function Dashboard() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(cart, whishlist, user);
-  useEffect(() => {
-    if (!user.currentUser) {
-      navigate("/login");
-    }
-  }, [user]);
+
+
   useEffect(() => {
     dispatch(init());
   }, []);
@@ -69,28 +67,45 @@ function Dashboard() {
       <Container>
         <PageTitle>My Account</PageTitle>
         <ButtonsWrapper>
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(logOut());
-            }}
-          >
-            log out
-          </Button>
+          {user.currentUser && (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch(logOut());
+                dispatch(clearCart());
+                dispatch(deleteAll())
+              }}
+            >
+              log out
+            </Button>
+          )}
+          {!user.currentUser && (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/login");
+              }}
+            >
+              log in
+            </Button>
+          )}
         </ButtonsWrapper>
         <Grid>
           <GridItem>
             <Title>Profile</Title>
             {/* {user} */}
+            {!user.currentUser && "none"}
           </GridItem>
           <GridItem>
             <Title>Wishlist</Title>
             {/* {whishlist} */}
+            {!user.currentUser && "empty"}
           </GridItem>
 
           <GridItem>
             <Title>Cart</Title>
             {/* {cart} */}
+            {!user.currentUser && "empty"}
           </GridItem>
         </Grid>
       </Container>

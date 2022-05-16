@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct } from "../redux/cartSlice";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
 
 const Container = styled.div``;
@@ -146,9 +146,29 @@ const Product = () => {
     setColor(res.data.color[0]);
     setSize(res.data.size[0]);
   }
-  const handleCart = () => {
+  const handleCart = async () => {
     if (user.currentUser) {
-      return dispatsh(addProduct({ ...product, amount, size, color }));
+      const id = new Date().getTime();
+      const productToAdd = {
+        ...product,
+        amount,
+        size,
+        color,
+        id,
+      };
+      try {
+        const res = await userRequest.get(
+          "/carts/find/" + user.currentUser._id
+        );
+        const userId = res.data._id;
+        await userRequest.put("/carts/" + userId, {
+          userId: user.currentUser._id,
+          products: [...cart.products, productToAdd],
+        });
+        dispatsh(addProduct(productToAdd));
+      } catch {
+        console.log("error");
+      }
     }
 
     navigate("/login");

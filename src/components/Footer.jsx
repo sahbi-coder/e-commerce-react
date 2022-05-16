@@ -3,18 +3,18 @@ import styled from "styled-components";
 import Twitter from "@material-ui/icons/Twitter";
 import Youtube from "@material-ui/icons/YouTube";
 import Facebook from "@material-ui/icons/Facebook";
-import LocationOn from "@material-ui/icons/LocationOn"
-import Mail from "@material-ui/icons/Mail"
-import Phone from "@material-ui/icons/Phone"
+import LocationOn from "@material-ui/icons/LocationOn";
+import Mail from "@material-ui/icons/Mail";
+import Phone from "@material-ui/icons/Phone";
 import { mobile } from "../responsive";
 import { extraSmall } from "../responsive";
+import { Link } from "react-router-dom";
 
 const Foot = styled.section`
-font-size: 12px;
-background-color: #383633;
-color: #f7eee3;
-width:100%;
-
+  font-size: 12px;
+  background-color: #383633;
+  color: #f7eee3;
+  width: 100%;
 `;
 const ContainerOne = styled.div`
   display: flex;
@@ -23,11 +23,11 @@ const ContainerOne = styled.div`
 `;
 const Left = styled.div`
   flex: 1.5;
-  ${extraSmall({flex:2})}
+  ${extraSmall({ flex: 2 })}
 `;
 const Right = styled.div`
   flex: 1;
-  ${extraSmall({flex:.75})}
+  ${extraSmall({ flex: 0.75 })}
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -38,7 +38,6 @@ const FieldWrap = styled.div`
   display: flex;
   justify-content: flex-start;
   max-width: 390px;
-  
 `;
 const Field = styled.input`
   border: none;
@@ -48,10 +47,9 @@ const Field = styled.input`
   padding: 10px;
   background-color: #514f4d;
   color: #f7eee3;
-  ${mobile({width:'20vw'})}
+  ${mobile({ width: "20vw" })}
   max-width: 195px;
-  
-  `;
+`;
 const Button = styled.button`
   border: none;
   flex: 1px;
@@ -59,8 +57,8 @@ const Button = styled.button`
   height: 100%;
   padding: 10px;
   cursor: pointer;
-  ${mobile({width:'20vw'})}
-  ${extraSmall({width:'30vw'})}
+  ${mobile({ width: "20vw" })}
+  ${extraSmall({ width: "30vw" })}
   max-width: 195px;
 `;
 const Sotial = styled.span`
@@ -70,17 +68,17 @@ const Sotial = styled.span`
 const ContainerTwo = styled.div`
   display: flex;
   justify-content: space-around;
-  ${mobile({display:'grid',gridTemplateColumns:'repeat(2,1fr)'})}
+  ${mobile({ display: "grid", gridTemplateColumns: "repeat(2,1fr)" })}
 `;
 const Group = styled.div`
   background-color: color;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
 `;
 const GroupTitle = styled.div`
   text-align: start;
-  font-weight:bold;
-  padding:10px;
+  font-weight: bold;
+  padding: 10px;
 `;
 const GroupContent = styled.ul`
   display: flex;
@@ -88,24 +86,27 @@ const GroupContent = styled.ul`
   list-style-type: none;
 `;
 const GroupItem = styled.li`
- padding:10px;
- display: flex;
- align-items: center;
-`
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color:white;
+ 
+  
+`;
 const ContainerThree = styled.div`
-   display:flex;
-   padding: 35px;
-`
+  display: flex;
+  padding: 35px;
+`;
 const LeftTwo = styled.div`
- flex:1;
- padding:0 2px 0 0;
-`
+  flex: 1;
+  padding: 0 2px 0 0;
+`;
 const RightTwo = styled.div`
- flex:1;
- display:flex;
- justify-content:flex-end;
-
-`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+`;
 function Footer() {
   return (
     <Foot>
@@ -132,62 +133,38 @@ function Footer() {
         <Group>
           <GroupTitle>About</GroupTitle>
           <GroupContent>
-            <GroupItem>
-              Our Story
-            </GroupItem>
-            <GroupItem>
-              Reviews
-            </GroupItem>
-            
+            <GroupItem as={Link} to='/about'>Our Story</GroupItem>
           </GroupContent>
         </Group>
         <Group>
-        <GroupTitle>Categories</GroupTitle>
+          <GroupTitle>Categories</GroupTitle>
           <GroupContent>
-            <GroupItem>
-            Tops & Blouses
-            </GroupItem>
-            <GroupItem>
-            Sweaters
-            </GroupItem>
-            <GroupItem>
-            Pants
-            </GroupItem>
-            <GroupItem>
-            Dresses
-            </GroupItem>
-            <GroupItem>
-            Jackets
-            </GroupItem>
-            <GroupItem>
-            Accessories
-            </GroupItem>
+            <GroupItem as={Link} to='/products/tops&blues'>Tops & Blouses</GroupItem>
+            <GroupItem as={Link} to='/products/sweachers'>Sweaters</GroupItem>
+            <GroupItem as={Link} to='/products/pants'>Pants</GroupItem>
+            <GroupItem as={Link} to='/products/dresses'>Dresses</GroupItem>
+            <GroupItem as={Link} to='/products/jackets'>Jackets</GroupItem>
+            <GroupItem as={Link} to='/products/accessories'>Accessories</GroupItem>
           </GroupContent>
         </Group>
         <Group>
-        <GroupTitle>User</GroupTitle>
+          <GroupTitle>User</GroupTitle>
           <GroupContent>
-            <GroupItem>
-              Login
-            </GroupItem>
-            <GroupItem>
-              Chart
-            </GroupItem>
-          
-          
+            <GroupItem as={Link} to='/user'>Login</GroupItem>
+            <GroupItem as={Link} to='/cart'>Chart</GroupItem>
           </GroupContent>
         </Group>
         <Group>
-        <GroupTitle>Contact</GroupTitle>
+          <GroupTitle>Contact</GroupTitle>
           <GroupContent>
             <GroupItem>
-              <LocationOn/> 622 Dixie Path , South Tobinchester 98336
+              <LocationOn /> 622 Dixie Path , South Tobinchester 98336
             </GroupItem>
             <GroupItem>
-              <Phone/> +1 234 56 78
+              <Phone /> +1 234 56 78
             </GroupItem>
             <GroupItem>
-            <Mail/> contact@lama.dev
+              <Mail /> contact@lama.dev
             </GroupItem>
           </GroupContent>
         </Group>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { useReducer,useEffect } from "react";
-import { publicRequest } from "../requestMethods";
+import { useReducer, useEffect } from "react";
+import { publicRequest, userRequest } from "../requestMethods";
 import { useSelector, useDispatch } from "react-redux";
 import {
   loginFailure,
@@ -115,18 +115,15 @@ const Register = () => {
   const [state, dispatsh] = useReducer(reducer, initialState);
   const reduxDiapatsh = useDispatch();
   const navigate = useNavigate();
-  const { isFetshing, error ,currentUser} = useSelector((state) => state.user);
-  useEffect(()=>{
-    reduxDiapatsh(init())
-  },[])
+  const { isFetshing, error, currentUser } = useSelector((state) => state.user);
   useEffect(() => {
-
-    if(currentUser){
-      navigate('/')
+    reduxDiapatsh(init());
+  }, []);
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
     }
-  
-   
-  }, [currentUser])
+  }, [currentUser]);
 
   const createAcount = async (e) => {
     e.preventDefault();
@@ -139,7 +136,7 @@ const Register = () => {
     }
     try {
       reduxDiapatsh(signUpStart());
-      const res = await publicRequest.post("/auth/register", {
+      await publicRequest.post("/auth/register", {
         name: `${state.name}${state.lastName}`,
         email: state.email,
         password: state.password,
@@ -151,11 +148,19 @@ const Register = () => {
       return alert("could not register please try again");
     }
     try {
-      const res = await publicRequest.post("/auth/login", {
+      let res = await publicRequest.post("/auth/login", {
         password: state.password,
         email: state.email,
       });
       const user = res.data;
+      await userRequest.post("/carts", {
+        userId: user._id,
+        products: [],
+      });
+      await userRequest.post("/wishlists", {
+        userId: user._id,
+        products: [],
+      });
       reduxDiapatsh(loginSucess({ user }));
       navigate("/user");
     } catch {

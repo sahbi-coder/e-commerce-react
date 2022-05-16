@@ -66,19 +66,19 @@ export const sliderItems = [
       id: 4,
       img: "https://source.unsplash.com/_y6hMz1pJC0/640x959",
       title: "TOPS & BLOUSES",
-      category:"Tops & Blouses"
+      category:"tops&blouses"
     },
     {
       id: 5,
       img: "https://source.unsplash.com/C2CMrC1zcWw/640x960",
       title: "ACCESSORIES",
-      category:"Accessories"
+      category:"accessories"
     },
     {
       id: 6,
       img: "https://source.unsplash.com/jC7nVH_Sw8k/640x960",
       title: "PANSTS",
-      category:"Pants"
+      category:"pants"
     }
   ];
   

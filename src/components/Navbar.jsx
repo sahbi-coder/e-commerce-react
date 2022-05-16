@@ -12,15 +12,12 @@ import useMobile from "../hooks/useMobile";
 import { mobile } from "../responsive";
 import { extraSmall } from "../responsive";
 
-
 const Container = styled.section`
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
   width: 100%;
- 
-  
 `;
 
 const NavCatch = styled.div`
@@ -136,13 +133,13 @@ const SideMenuItem = styled.div`
   padding-left: 20px;
   cursor: pointer;
   text-decoration: none;
-  color:black;
+  color: black;
 `;
 const SideMenuSubItem = styled.div`
   padding-left: 40px;
   cursor: pointer;
   text-decoration: none;
-  color:black;
+  color: black;
 `;
 
 function Navbar() {
@@ -230,7 +227,7 @@ function Navbar() {
           )}
         </Center>
         <Right>
-          <MenuItem  as={Link} to="/user">
+          <MenuItem as={Link} to="/user">
             <Person />
           </MenuItem>
 
@@ -253,12 +250,24 @@ function Navbar() {
             <SubItem as={Link} to="/categories">
               <strong>All</strong>
             </SubItem>
-            <SubItem>Shirts</SubItem>
-            <SubItem>Dresses</SubItem>
-            <SubItem>Jackets</SubItem>
-            <SubItem>Tops & Blouses</SubItem>
-            <SubItem>Accessories</SubItem>
-            <SubItem>Pants</SubItem>
+            <SubItem as={Link} to="/products/shirts">
+              Shirts
+            </SubItem>
+            <SubItem as={Link} to="/products/dresses">
+              Dresses
+            </SubItem>
+            <SubItem as={Link} to="/products/jackets">
+              Jackets
+            </SubItem>
+            <SubItem as={Link} to="/products/tops&blues">
+              Tops & Blouses
+            </SubItem>
+            <SubItem as={Link} to="/products/accessories">
+              Accessories
+            </SubItem>
+            <SubItem as={Link} to="/products/pants">
+              Pants
+            </SubItem>
           </SubList>
           <SubMenuCard>
             <SubMenuCardImage src="https://source.unsplash.com/r5xHI_H44aM/640x853" />
@@ -285,12 +294,24 @@ function Navbar() {
               <SideMenuSubItem as={Link} to="/categories">
                 All
               </SideMenuSubItem>
-              <SideMenuSubItem>Shirts</SideMenuSubItem>
-              <SideMenuSubItem>Dresses</SideMenuSubItem>
-              <SideMenuSubItem>Jackets</SideMenuSubItem>
-              <SideMenuSubItem>Tops & Blouses</SideMenuSubItem>
-              <SideMenuSubItem>Accessories</SideMenuSubItem>
-              <SideMenuSubItem>Pants</SideMenuSubItem>
+              <SideMenuSubItem as={Link} to="/products/shirts">
+                Shirts
+              </SideMenuSubItem>
+              <SideMenuSubItem as={Link} to="/products/dresses">
+                Dresses
+              </SideMenuSubItem>
+              <SideMenuSubItem as={Link} to="/products/jackets">
+                Jackets
+              </SideMenuSubItem>
+              <SideMenuSubItem as={Link} to="/products/tops&blues">
+                Tops & Blouses
+              </SideMenuSubItem>
+              <SideMenuSubItem as={Link} to="/products/accessories">
+                Accessories
+              </SideMenuSubItem>
+              <SideMenuSubItem as={Link} to="/products/pants">
+                Pants
+              </SideMenuSubItem>
             </>
           )}
           <SideMenuItem as={Link} to="/about">

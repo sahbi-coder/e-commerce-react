@@ -1,7 +1,7 @@
 import React from "react";
 import { allCategories } from "../data";
 import styled from "styled-components";
-
+import { useNavigate } from "react-router-dom";
 const Gallery = styled.div`
   display: grid;
   grid-gap: 10px;
@@ -29,23 +29,17 @@ const Img = styled.img`
   object-fit: cover;
 `;
 function AllCategories() {
+  const navigate = useNavigate()
   return (
     <Gallery>
       {allCategories.map((category) => {
         return (
-          <GridItem>
-            {/* <img
-              src={category.img}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                height: "100%",
-                width: "100%",
-                objectFit: "cover",
-              }}
-            /> */}
-            <Img src={category.img}/>
+          <GridItem
+            onClick={() => {
+              navigate(`/products/${category.category}`);
+            }}
+          >
+            <Img src={category.img} />
             <Title>{category.title}</Title>
           </GridItem>
         );
