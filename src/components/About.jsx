@@ -3,7 +3,7 @@ import styled from "styled-components";
 import{mobile} from '../responsive'
 const TitleContainer = styled.div`
   text-align: center;
-  margin: 80px 12px;
+  margin: 105px 12px;
 `;
 const TitleDesc = styled.p`
   margin-top: 32px;

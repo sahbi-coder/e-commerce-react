@@ -4,7 +4,7 @@ import { mobile } from "../responsive";
 const Container = styled.div`
   display: flex;
   min-height: 100vh;
-  margin-top:80px ;
+  margin-top:105px ;
   ${mobile({  display: "flex", flexDirection: "column" })}
 
 `;

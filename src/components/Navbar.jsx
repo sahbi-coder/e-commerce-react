@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Badge from "@material-ui/core/Badge";
 import Cart from "@material-ui/icons/ShoppingCart";
 import Person from "@material-ui/icons/PersonOutline";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import useMobile from "../hooks/useMobile";
 import { mobile } from "../responsive";
 import { extraSmall } from "../responsive";
+import { divisions, changeDiv } from "../redux/divisionSlice";
 
 const Container = styled.section`
   position: fixed;
@@ -22,9 +23,19 @@ const Container = styled.section`
 
 const NavCatch = styled.div`
   display: flex;
-  padding: 4px;
+  padding: 1px 10px;
   background-color: #f7eee3;
   font-size: 14px;
+`;
+const DivisonSelector = styled.div`
+  display: flex;
+  justify-content: start;
+  cursor: pointer;
+  background-color: #6d6861;
+  color: #f7eee3;
+`;
+const DivSelect = styled.div`
+  margin: 0 10px;
 `;
 const Wrapper = styled.div`
   padding: 10px;
@@ -144,14 +155,32 @@ const SideMenuSubItem = styled.div`
 
 function Navbar() {
   const quantity = useSelector((state) => state.cart.quantity);
+  const division = useSelector((state) => state.division.division);
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [subSideToggle, setSubSideToggle] = useState(false);
   const isMobile = useMobile();
+  const dispatch = useDispatch();
 
   return (
     <Container>
       <NavCatch>Free shipping for all orders over $50!</NavCatch>
+      <DivisonSelector>
+        <DivSelect
+          onClick={() => {
+            dispatch(changeDiv(divisions.Male));
+          }}
+        >
+          Men
+        </DivSelect>
+        <DivSelect
+          onClick={() => {
+            dispatch(changeDiv(divisions.Female));
+          }}
+        >
+          Women
+        </DivSelect>
+      </DivisonSelector>
       <Wrapper>
         <Left>
           {!isMobile && (
@@ -259,7 +288,7 @@ function Navbar() {
             <SubItem as={Link} to="/products/jackets">
               Jackets
             </SubItem>
-            <SubItem as={Link} to="/products/tops&blues">
+            <SubItem as={Link} to="/products/blouses">
               Tops & Blouses
             </SubItem>
             <SubItem as={Link} to="/products/accessories">
@@ -269,7 +298,7 @@ function Navbar() {
               Pants
             </SubItem>
           </SubList>
-          <SubMenuCard>
+          <SubMenuCard as={Link} to="/about">
             <SubMenuCardImage src="https://source.unsplash.com/r5xHI_H44aM/640x853" />
             <SubMenuCardDesc>
               <i>know more about us</i>
@@ -303,7 +332,7 @@ function Navbar() {
               <SideMenuSubItem as={Link} to="/products/jackets">
                 Jackets
               </SideMenuSubItem>
-              <SideMenuSubItem as={Link} to="/products/tops&blues">
+              <SideMenuSubItem as={Link} to="/products/blouses">
                 Tops & Blouses
               </SideMenuSubItem>
               <SideMenuSubItem as={Link} to="/products/accessories">

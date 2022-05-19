@@ -8,7 +8,7 @@ const Title = styled.h4`
   text-align: center;
 `;
 const Container = styled.div`
-  margin-top: 80px;
+  margin-top: 105px;
 `;
 
 function Categories() {

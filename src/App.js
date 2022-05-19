@@ -9,8 +9,8 @@ import Contact from "./routes/Contact";
 import Categories from "./routes/Categories";
 
 
-import { useEffect} from "react";
-import {  Routes, Route,useLocation,useNavigate } from "react-router-dom";
+
+import {  Routes, Route} from "react-router-dom";
 import {useSelector} from 'react-redux'
 import Dashboard  from "./routes/Dashboard";
 function App() {

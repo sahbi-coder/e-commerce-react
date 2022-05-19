@@ -12,7 +12,7 @@ const Container = styled.div`
   position: relative;
   overflow: hidden;
   ${mobile({ display: "none" })}
-  margin-top:80px;
+  margin-top:105px;
 `;
 
 const Arrow = styled.div`

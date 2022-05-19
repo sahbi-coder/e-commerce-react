@@ -36,8 +36,9 @@ align-items:center;
 flex-direction:column;
 
 `;
-function Category({ category }) {
 
+function Category({ category }) {
+  
   return (
     <Container>
       <Link to={`products/${category.category}`}>

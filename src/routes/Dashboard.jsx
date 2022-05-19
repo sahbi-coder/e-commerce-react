@@ -10,7 +10,7 @@ import { clearCart } from "../redux/cartSlice";
 import { deleteAll } from "../redux/wishlistSlice";
 
 const Container = styled.div`
-  margin: 80px 0;
+  margin: 105px 0;
   width: 100%;
   display: flex;
   flex-direction: column;

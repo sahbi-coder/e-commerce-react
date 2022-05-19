@@ -4,6 +4,7 @@ import Product from "./Product";
 import { useEffect,useState } from "react";
 import { publicRequest } from "../requestMethods";
 import { mobile} from "../responsive";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
     padding: 20px;
@@ -19,12 +20,13 @@ const Container = styled.div`
 const Products = ({ctg,sort,filters}) => {
   const [products,setProducts]=useState([])
   const [filteredProducts,setFilteredProducts]=useState([])
-
+  const division = useSelector((state)=>state.division.division)
+  
   useEffect(()=>{
    async  function getProducts(){
      try{
    
-       const res = await publicRequest.get(ctg?`/products/?category=${ctg}`:'/products')
+       const res = await publicRequest.get(ctg?`/products/?category=${ctg}&division=${division}`:'/products')
        setProducts(res.data)
    
      }
@@ -35,7 +37,7 @@ const Products = ({ctg,sort,filters}) => {
  
    }
     getProducts()
-  },[ctg])
+  },[ctg,division])
  useEffect(()=>{
    
    ctg &&setFilteredProducts(products.filter(prod=>{
