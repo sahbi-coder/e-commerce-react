@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   padding: 20px;
   margin: 125px 0;
   ${mobile({ padding: "10px" })}
+  width:100%;
 `;
 
 const Title = styled.h1`
@@ -29,6 +30,8 @@ const Top = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 20px;
+  flex-wrap: wrap;
+  width:100%;
 `;
 
 const TopButton = styled.button`
@@ -54,6 +57,8 @@ const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
   ${mobile({ flexDirection: "column" })}
+  width:100%;
+  flex-wrap: wrap;
 `;
 
 const Info = styled.div`
@@ -80,6 +85,7 @@ const Details = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  ${mobile({ flexDirection: "column" })}
 `;
 
 const ProductName = styled.span``;
@@ -171,7 +177,7 @@ const Cart = () => {
       try {
         let res = await userRequest.get("/carts/find/" + user.currentUser._id);
         const temp = res.data.products.reduce((pre, acc) => {
-          if (acc._id === id) {
+          if (acc.id === id) {
             return pre;
           }
           pre.push(acc);
@@ -312,7 +318,7 @@ const Cart = () => {
                         <Button
                           onClick={(e) => {
                             e.preventDefault();
-                            removeFromDbCart(prod._id);
+                            removeFromDbCart(prod.id);
                           }}
                         >
                           delete

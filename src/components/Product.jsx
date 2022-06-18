@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToList } from "../redux/wishlistSlice";
 import { publicRequest, userRequest } from "../requestMethods";
+import { mobile } from "../responsive";
 const Info = styled.div`
   opacity: 0;
   width: 100%;
@@ -26,30 +27,23 @@ const Info = styled.div`
 
 const Container = styled.div`
   flex: 1;
-  margin: 5px;
-  min-width: 280px;
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin:5px;
   background-color: #f5fbfd;
-  position: relative;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items:stretch ;
+ position: relative;
   &:hover ${Info} {
     opacity: 1;
   }
 `;
 
-const Circle = styled.div`
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background-color: white;
-  position: absolute;
-`;
+
 
 const Image = styled.img`
-  height: 75%;
+  
+  object-fit: center;
   z-index: 2;
 `;
 
@@ -68,6 +62,20 @@ const Icon = styled.div`
     transform: scale(1.1);
   }
 `;
+const Footer = styled.div` 
+  background-color: white;
+  flex:9;
+`;
+const Title  = styled.div`
+  padding: 5px;
+`
+
+const Price  = styled.div`
+   padding: 5px;
+   
+`
+
+
 
 const Product = ({ item }) => {
   const { user } = useSelector((state) => state);
@@ -97,7 +105,7 @@ const Product = ({ item }) => {
   };
   return (
     <Container>
-      <Circle />
+     
       <Image src={item.img} />
       <Info>
         <Icon>
@@ -109,6 +117,16 @@ const Product = ({ item }) => {
           <FavoriteBorderOutlined />
         </Icon>
       </Info>
+      <Footer>
+        <Title>{item.title}</Title>
+      
+        
+        <Price>${item.price}</Price>
+        
+         
+        
+        
+      </Footer>
     </Container>
   );
 };

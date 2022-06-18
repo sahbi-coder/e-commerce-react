@@ -6,12 +6,14 @@ const cartSlice = createSlice({
     products: [],
     quantity: 0,
     total: 0,
+  
   },
   reducers: {
     addProduct: (state, action) => {
-      state.products = [...state.products, action.payload];
+      state.products = [...state.products, {...action.payload,id:new Date().getTime()}];
       state.quantity = state.quantity + 1;
       state.total = state.total + action.payload.price * action.payload.amount;
+      
     },
     addProducts: (state, action) => {
       state.products = action.payload;
@@ -31,7 +33,7 @@ const cartSlice = createSlice({
       if (state.quantity) {
           let deletedOrd = null;
           const temp = state.products.reduce((pre, acc) => {
-              if (action.payload === acc._id) {
+              if (action.payload === acc.id) {
                   deletedOrd = acc
                   return pre;
                 }

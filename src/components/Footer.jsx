@@ -15,6 +15,7 @@ const Foot = styled.section`
   background-color: #383633;
   color: #f7eee3;
   width: 100%;
+  ${mobile({width:'100vw'})}
 `;
 const ContainerOne = styled.div`
   display: flex;
