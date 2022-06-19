@@ -137,7 +137,7 @@ const Register = () => {
     try {
       reduxDiapatsh(signUpStart());
       await publicRequest.post("/auth/register", {
-        name: `${state.name}${state.lastName}`,
+        name: `${state.name} ${state.lastName}`,
         email: state.email,
         password: state.password,
       });
