@@ -19,6 +19,7 @@ const Container = styled.section`
   left: 0;
   z-index: 1000;
   width: 100%;
+  ${mobile({width:'100vw'})}
 `;
 
 const NavCatch = styled.div`

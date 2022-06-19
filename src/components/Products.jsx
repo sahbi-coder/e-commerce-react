@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Product from "./Product";
 import { useEffect, useState } from "react";
 import { publicRequest } from "../requestMethods";
-
+import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
 
 const Container = styled.div`
@@ -11,6 +11,7 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minMax(250px, 1fr));
   width: 100%;
+  ${mobile({width:'100vw'})}
 `;
 
 const Products = ({ ctg, sort, filters }) => {

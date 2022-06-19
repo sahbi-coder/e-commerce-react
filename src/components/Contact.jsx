@@ -6,7 +6,8 @@ const Container = styled.div`
   min-height: 100vh;
   margin-top:105px ;
   ${mobile({  display: "flex", flexDirection: "column" })}
-
+  width:100%;
+ ${mobile({width:'100vw'})}
 `;
 const Left = styled.div`
   flex: 1;

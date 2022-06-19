@@ -58,9 +58,10 @@ const Button = styled.button`
   height: 100%;
   padding: 10px;
   cursor: pointer;
-  ${mobile({ width: "20vw" })}
+  ${mobile({ width: "20vw"})}
   ${extraSmall({ width: "30vw" })}
   max-width: 195px;
+  
 `;
 const Sotial = styled.span`
   cursor: pointer;

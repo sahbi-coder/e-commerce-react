@@ -6,8 +6,8 @@ import { mobile } from "../responsive";
 
 const Container = styled.section`
   display: flex;
-  max-width: 100%;
-  ${mobile({flexDirection:'column'})}
+  width: 100%;
+  ${mobile({flexDirection:'column',width:'100vw'})}
 
 
 `;

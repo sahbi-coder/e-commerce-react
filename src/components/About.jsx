@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import{mobile} from '../responsive'
+const Container = styled.div`
+  width:100%;
+  ${mobile({width:'100vw'})};
+`
 const TitleContainer = styled.div`
   text-align: center;
   margin: 105px 12px;
