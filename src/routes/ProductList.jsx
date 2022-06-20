@@ -57,26 +57,33 @@ const ProductList = () => {
       <FilterContainer>
         <Filter>
           <FilterText>Filter Products:</FilterText>
-          <Select onChange={handleChange} name='color'>
+          <Select onChange={handleChange} name='color' >
             <Option   disabled>
               Color
             </Option>
+            <Option>all</Option>
             <Option>white</Option>
             <Option>black</Option>
+            <Option>brown</Option>
             <Option>red</Option>
             <Option>blue</Option>
             <Option>yellow</Option>
             <Option>green</Option>
+            <Option>pink</Option>
+            <Option>orange</Option>
+            <Option>grey</Option>
+            <Option>silver</Option>
           </Select>
-          <Select onChange={handleChange} name='size'>
+          <Select onChange={handleChange} name='size' >
             <Option   disabled>
               Size
             </Option>
-            <Option>XS</Option>
-            <Option>S</Option>
-            <Option>M</Option>
-            <Option>L</Option>
-            <Option>XL</Option>
+            <Option>all</Option>
+            <Option>xs</Option>
+            <Option>s</Option>
+            <Option>m</Option>
+            <Option>l</Option>
+            <Option>xl</Option>
           </Select>
         </Filter>
         <Filter>

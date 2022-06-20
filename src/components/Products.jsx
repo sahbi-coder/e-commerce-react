@@ -11,7 +11,7 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minMax(250px, 1fr));
   width: 100%;
-  ${mobile({width:'100vw'})}
+  ${mobile({width:'100vw',padding:0})}
 `;
 
 const Products = ({ ctg, sort, filters }) => {
@@ -26,6 +26,7 @@ const Products = ({ ctg, sort, filters }) => {
           ctg ? `/products/?category=${ctg}&division=${division}` : "/products"
         );
         setProducts(res.data);
+   
       } catch (e) {
         console.log(e);
       }
@@ -33,7 +34,25 @@ const Products = ({ ctg, sort, filters }) => {
     getProducts();
   }, [ctg, division]);
   useEffect(() => {
-    ctg &&
+    console.log(filters)
+    if(filters&&filters.size==='all'&&filters.color==='all'){
+      ctg &&  setFilteredProducts(products)
+       return
+    }
+    if(filters&&filters.size==='all'){
+      ctg && setFilteredProducts(products.filter(prod=>{
+        return prod['color'].includes(filters.color)
+      }))
+      return 
+    }
+    if(filters&&filters.color==='all'){
+       ctg && setFilteredProducts(products.filter(prod=>{
+        return prod['size'].includes(filters.size)
+      }))
+      return
+    }
+    
+    ctg &&filters&&
       setFilteredProducts(
         products.filter((prod) => {
           return Object.entries(filters).every(([key, value]) => {
@@ -44,8 +63,9 @@ const Products = ({ ctg, sort, filters }) => {
   }, [ctg, filters, products]);
   useEffect(() => {
     if (sort === "Newest") {
+      
       setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => a.createdAt - b.createdAt)
+        [...prev].sort((a, b) => -new Date(a.createdAt).getTime()+ new Date(b.createdAt).getTime())
       );
     }
     if (sort === "ASD") {

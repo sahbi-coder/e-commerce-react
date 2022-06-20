@@ -2,13 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const divisions={
     Male:'men',
-    Female:'women'
+    Female:'women',
+    Both:'man and female'
 }
 
 const divisionSlice = createSlice({
   name: "division",
   initialState: {
-    division:divisions.Male
+    division:divisions.Both
   },
   reducers: {
     changeDiv:(state,action)=>{

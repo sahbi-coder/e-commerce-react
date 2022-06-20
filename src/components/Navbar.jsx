@@ -4,13 +4,12 @@ import Badge from "@material-ui/core/Badge";
 import Cart from "@material-ui/icons/ShoppingCart";
 import Person from "@material-ui/icons/PersonOutline";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import useMobile from "../hooks/useMobile";
 import { mobile } from "../responsive";
-import { extraSmall } from "../responsive";
 import { divisions, changeDiv } from "../redux/divisionSlice";
 
 const Container = styled.section`
@@ -162,10 +161,13 @@ function Navbar() {
   const [subSideToggle, setSubSideToggle] = useState(false);
   const isMobile = useMobile();
   const dispatch = useDispatch();
-
+  const location = useLocation()
+ 
   return (
     <Container>
       <NavCatch>Free shipping for all orders over $50!</NavCatch>
+      {location.pathname.split('/')[1]==='products'&&(
+
       <DivisonSelector>
         <DivSelect
           onClick={() => {
@@ -181,7 +183,15 @@ function Navbar() {
         >
           Women
         </DivSelect>
+        <DivSelect
+          onClick={() => {
+            dispatch(changeDiv(divisions.Both));
+          }}
+        >
+          Both
+        </DivSelect>
       </DivisonSelector>
+      )}
       <Wrapper>
         <Left>
           {!isMobile && (
