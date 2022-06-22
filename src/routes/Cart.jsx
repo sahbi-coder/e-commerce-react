@@ -138,11 +138,13 @@ const Cart = () => {
     }
   };
   const removeFromDbCart = async (id) => {
+    console.log(id)
     if (user.currentUser) {
       try {
         let res = await userRequest.get("/carts/find/" + user.currentUser._id);
         const temp = res.data.products.reduce((pre, acc) => {
-          if (acc.id === id) {
+          console.log(acc._id)
+          if (acc._id === id) {
             return pre;
           }
           pre.push(acc);
@@ -173,7 +175,7 @@ return(
                       <b>Product:</b> {prod.title}
                     </ProductName>
                     <ProductId>
-                      <b>ID:</b> {prod._id}
+                      <b>ID:</b> {prod.productId}
                     </ProductId>
                     <ProductColor color={prod.color} />
                     <ProductSize>

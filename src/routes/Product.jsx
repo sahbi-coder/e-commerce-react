@@ -147,24 +147,29 @@ const Product = () => {
   }
   const handleCart = async () => {
     if (user.currentUser) {
-      const id = new Date().getTime();
+     
       const productToAdd = {
-        ...product,
+        productId:product._id,
         amount,
         size,
         color,
-        id,
+        price:product.price,
+        img:product.img,
+
+
+      
       };
       try {
         const res = await userRequest.get(
           "/carts/find/" + user.currentUser._id
         );
         const userId = res.data._id;
-        await userRequest.put("/carts/" + userId, {
+        const ress = await userRequest.put("/carts/" + userId, {
           userId: user.currentUser._id,
-          products: [...cart.products, productToAdd],
+          products: [...res.data.products, productToAdd],
         });
-        dispatsh(addProduct(productToAdd));
+       
+        dispatsh(addProduct({...productToAdd,id:ress.data.products[ress.data.products.length-1]._id}));
       } catch {
         console.log("error");
       }

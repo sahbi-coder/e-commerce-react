@@ -1,9 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const CARTACTIONS = {
-  INCREMENT: "increment",
-  DECREMENT: "decrement",
-};
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -13,9 +9,10 @@ const cartSlice = createSlice({
   },
   reducers: {
     addProduct: (state, action) => {
+     
       state.products = [
         ...state.products,
-        { ...action.payload, id: new Date().getTime() },
+        { ...action.payload },
       ];
       state.quantity = state.quantity + 1;
       state.total = state.total + action.payload.price * action.payload.amount;
@@ -29,35 +26,39 @@ const cartSlice = createSlice({
       }, 0);
       state.total = total;
     },
-    modifyProduct: (state, action) => {
-     
-      console.log(action)
-      for(let i =0;i<state.products.length;i++){
-        
-        if (action.payload.payload === state.products[i].id) {
-       
-          if (action.payload.type === CARTACTIONS.INCREMENT) {
-            console.log(158)
-            state.total += state.products[i].price;
-            let temp = state.products
-            let innerTemp  =temp[i]
-            innerTemp.amount += 1
-            temp[i]=innerTemp
-            state.products = temp;
-            return
-          }
-          if (state.products[i].amount > 1) {
-            state.total -= state.products[i].price;
-            let temp = state.products
-            let innerTemp  =temp[i]
-            innerTemp.amount -= 1
-            temp[i]=innerTemp
-            state.products = temp;
-          }
+    addAmount: (state, action) => {
+      state.products = state.products.reduce((pre, cur) => {
+        if (action.payload === cur.id) {
+          state.total += cur.price;
+          let temp = pre;
+          let innerTemp = cur;
+          innerTemp.amount += 1;
+          temp.push(innerTemp);
+
+          return temp;
         }
-      }
-      
-      
+        let temp = pre;
+        temp.push(cur);
+        return temp;
+      }, []);
+   
+    },
+    removeAmount: (state, action) => {
+    
+      state.products = state.products.reduce((pre, cur) => {
+        if (action.payload === cur.id&&cur.amount>1) {
+          state.total -= cur.price;
+          let temp = pre;
+          let innerTemp = cur;
+          innerTemp.amount -= 1;
+          temp.push(innerTemp);
+
+          return temp;
+        }
+        let temp = pre;
+        temp.push(cur);
+        return temp;
+      }, []);
     },
     clearCart: (state) => {
       state.products = [];
@@ -87,8 +88,8 @@ export const {
   clearCart,
   removeOrder,
   addProducts,
-  modifyProduct,
-  
+  addAmount,
+  removeAmount,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

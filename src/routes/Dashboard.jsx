@@ -6,11 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { logOut, init } from "../redux/userSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../redux/cartSlice";
+import { clearCart, addAmount, removeAmount } from "../redux/cartSlice";
 import { deleteAll } from "../redux/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown,faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { CARTACTIONS,modifyProduct } from "../redux/cartSlice";
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { userRequest } from "../requestMethods";
 
 const Container = styled.div`
   margin: 105px 0;
@@ -102,20 +102,19 @@ const CartInfo = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px;
-`
+`;
 const CartPrice = styled.span``;
 const CartQuantity = styled.div`
-display: flex;
-min-width:80px;
-
+  display: flex;
+  min-width: 80px;
 `;
 const QuantityButton = styled.button`
   background-color: white;
   border: none;
-  margin:0 5px;
+  margin: 0 5px;
 
   cursor: pointer;
-`
+`;
 const Total = styled.div`
   font-size: 24px;
   text-align: center;
@@ -128,14 +127,43 @@ function Dashboard() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleCartChange = ({type,payload})=>{
-    console.log(type,payload)
-    dispatch(modifyProduct({type,payload}))
-  }
 
   useEffect(() => {
     dispatch(init());
   }, []);
+
+  const addToAmountDb = async (e,id, amount) => {
+    e.preventDefault()
+
+    try {
+      const dbCart = (
+        await userRequest.get("/carts/find/" + user.currentUser._id)
+      ).data;
+      let dbProducts = [...dbCart.products];
+      for(let i =0;i<dbProducts.length;i++){
+        console.log([id,dbProducts[i].id])
+        if(dbProducts[i].id===id){
+          dbProducts[i].amount+=1
+        
+        }
+        
+      }
+      // console.log(dbProducts)
+      // const t =dbProducts.map((item,index)=>{
+      //   if(item.id===id){
+      //     item.amount+=1
+      //     return item
+      //   }
+      //   else{
+
+      //     return item
+      //   }
+      // })
+      
+      // console.log(t);
+      // await userRequest.put('/carts/'+dbCart._id)
+    } catch(e) {console.log(e)}
+  };
 
   return (
     <>
@@ -195,7 +223,7 @@ function Dashboard() {
           <GridItem>
             <Title>Wishlist</Title>
 
-            {(!user.currentUser || !cart.products.length) && "empty"}
+            {(!user.currentUser || cart.products.length===0) && "empty"}
             <WishlistRows>
               {user.currentUser &&
                 wishlist.products.map((item, index) => {
@@ -215,7 +243,7 @@ function Dashboard() {
           <GridItem>
             <Title>Cart</Title>
 
-            {(!user.currentUser || !cart.products.length) && "empty"}
+            {(!user.currentUser || cart.products.length===0) && "empty"}
             <CartRows>
               {user.currentUser &&
                 cart.products.map((item, index) => {
@@ -225,20 +253,31 @@ function Dashboard() {
                       <CartDesc>
                         <CartTitle>{item.title}</CartTitle>
                         <CartInfo>
-
-                        <CartPrice>${item.price}</CartPrice>
-                        <CartQuantity>
-                          <QuantityButton onClick={(e)=>{handleCartChange({type:CARTACTIONS.INCREMENT,payload:item.id})}}><FontAwesomeIcon icon={faArrowUp}/></QuantityButton>
-                          {item.amount}
-                          <QuantityButton onClick={(e)=>{handleCartChange({type:CARTACTIONS.DECREMENT,payload:item.id})}}><FontAwesomeIcon icon={faArrowDown}/></QuantityButton>
-                        </CartQuantity>
+                          <CartPrice>${item.price}</CartPrice>
+                          <CartQuantity>
+                            <QuantityButton
+                              onClick={(e) => {
+                                addToAmountDb(e,item.id, item.amount);
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faArrowUp} />
+                            </QuantityButton>
+                            {item.amount}
+                            <QuantityButton
+                              onClick={(e) => {
+                                dispatch(removeAmount(item.id));
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faArrowDown} />
+                            </QuantityButton>
+                          </CartQuantity>
                         </CartInfo>
                       </CartDesc>
                     </CartRow>
                   );
                 })}
             </CartRows>
-            {user.currentUser &&cart.products.length>0&& (
+            {user.currentUser && cart.products.length > 0 && (
               <Total>
                 <b>total:</b> ${cart.total}
               </Total>

@@ -34,7 +34,7 @@ const Products = ({ ctg, sort, filters }) => {
     getProducts();
   }, [ctg, division]);
   useEffect(() => {
-    console.log(filters)
+   
     if(filters&&filters.size==='all'&&filters.color==='all'){
       ctg &&  setFilteredProducts(products)
        return
@@ -83,10 +83,10 @@ const Products = ({ ctg, sort, filters }) => {
   return (
     <Container>
       {ctg
-        ? filteredProducts.map((item) => <Product item={item} key={item.id} />)
+        ? filteredProducts.map((item) => <Product item={item} key={item._id} />)
         : products
             .slice(0, 8)
-            .map((item) => <Product item={item} key={item.id} />)}
+            .map((item) => <Product item={item} key={item._id} />)}
     </Container>
   );
 };
