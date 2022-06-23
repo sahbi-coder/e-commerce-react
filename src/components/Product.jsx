@@ -98,7 +98,7 @@ const Product = ({ item }) => {
           await userRequest.put("/wishlists/" + res.data._id, {
             products: [...products, item],
           });
-          dispatsh(addToList({ product: item }));
+          dispatsh(addToList(item));
         }
       } catch {}
     }

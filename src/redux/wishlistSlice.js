@@ -8,13 +8,13 @@ const whishlistSlice = createSlice({
   reducers: {
     addToList: (state, action) => {
       const isInList = state.products.reduce((pre, cur) => {
-        if (cur._id === action.payload.product._id) {
+        if (cur._id === action.payload._id) {
           return true;
         }
         return pre
       },false);
       if (!isInList) {
-        state.products = [...state.products, action.payload.product];
+        state.products = [...state.products, action.payload];
       }
     },
     addList:(state,action)=>{
