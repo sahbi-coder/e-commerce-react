@@ -6,14 +6,12 @@ const cartSlice = createSlice({
     products: [],
     quantity: 0,
     total: 0,
+    isFetching: false,
+    error: false,
   },
   reducers: {
     addProduct: (state, action) => {
-     
-      state.products = [
-        ...state.products,
-        { ...action.payload },
-      ];
+      state.products = [...state.products, { ...action.payload }];
       state.quantity = state.quantity + 1;
       state.total = state.total + action.payload.price * action.payload.amount;
     },
@@ -41,12 +39,10 @@ const cartSlice = createSlice({
         temp.push(cur);
         return temp;
       }, []);
-   
     },
     removeAmount: (state, action) => {
-    
       state.products = state.products.reduce((pre, cur) => {
-        if (action.payload === cur.id&&cur.amount>1) {
+        if (action.payload === cur.id && cur.amount > 1) {
           state.total -= cur.price;
           let temp = pre;
           let innerTemp = cur;
@@ -81,6 +77,18 @@ const cartSlice = createSlice({
         state.quantity = state.quantity - 1;
       }
     },
+    start: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    success: (state, action) => {
+      state.isFetching = false;
+      state.error = false;
+    },
+    failure: (state, action) => {
+      state.isFetching = false;
+      state.error = true;
+    },
   },
 });
 export const {
@@ -90,6 +98,9 @@ export const {
   addProducts,
   addAmount,
   removeAmount,
+  start,
+  success,
+  failure
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

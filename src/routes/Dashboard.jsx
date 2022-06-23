@@ -6,7 +6,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { logOut, init } from "../redux/userSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { clearCart, addAmount, removeAmount } from "../redux/cartSlice";
+import {
+  clearCart,
+  addAmount,
+  removeAmount,
+  start,
+  success,
+  failure,
+} from "../redux/cartSlice";
 import { deleteAll } from "../redux/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -132,37 +139,71 @@ function Dashboard() {
     dispatch(init());
   }, []);
 
-  const addToAmountDb = async (e,id, amount) => {
-    e.preventDefault()
+  const addToAmountDb = async (e, id) => {
+    e.preventDefault();
 
     try {
-      const dbCart = (
+      dispatch(start());
+      const data = (
         await userRequest.get("/carts/find/" + user.currentUser._id)
       ).data;
-      let dbProducts = [...dbCart.products];
-      for(let i =0;i<dbProducts.length;i++){
-        console.log([id,dbProducts[i].id])
-        if(dbProducts[i].id===id){
-          dbProducts[i].amount+=1
-        
-        }
-        
-      }
-      // console.log(dbProducts)
-      // const t =dbProducts.map((item,index)=>{
-      //   if(item.id===id){
-      //     item.amount+=1
-      //     return item
-      //   }
-      //   else{
 
-      //     return item
-      //   }
-      // })
-      
-      // console.log(t);
-      // await userRequest.put('/carts/'+dbCart._id)
-    } catch(e) {console.log(e)}
+      const mp = data.products.reduce((pre, cur) => {
+        if (cur._id === id) {
+          const temp = [...pre];
+          const innetTemp = { ...cur };
+          innetTemp.amount += 1;
+          temp.push(innetTemp);
+          return temp;
+        }
+        const temp = [...pre];
+        const innetTemp = { ...cur };
+
+        temp.push(innetTemp);
+        return temp;
+      }, []);
+
+      const res = await userRequest.put("/carts/" + data._id, {
+        products: mp,
+      });
+      dispatch(addAmount(id));
+      dispatch(success());
+    } catch (e) {
+      dispatch(failure());
+    }
+  };
+  const removeAmounfromDb = async (e, id) => {
+    e.preventDefault();
+
+    try {
+      dispatch(start());
+      const data = (
+        await userRequest.get("/carts/find/" + user.currentUser._id)
+      ).data;
+
+      const mp = data.products.reduce((pre, cur) => {
+        if (cur._id === id&&cur.amount>1) {
+          const temp = [...pre];
+          const innetTemp = { ...cur };
+          innetTemp.amount -= 1;
+          temp.push(innetTemp);
+          return temp;
+        }
+        const temp = [...pre];
+        const innetTemp = { ...cur };
+
+        temp.push(innetTemp);
+        return temp;
+      }, []);
+
+      const res = await userRequest.put("/carts/" + data._id, {
+        products: mp,
+      });
+      dispatch( removeAmount(id));
+      dispatch(success());
+    } catch (e) {
+      dispatch(failure());
+    }
   };
 
   return (
@@ -189,8 +230,10 @@ function Dashboard() {
                 e.preventDefault();
                 navigate("/login");
               }}
+           
             >
               log in
+              
             </Button>
           )}
         </ButtonsWrapper>
@@ -223,7 +266,7 @@ function Dashboard() {
           <GridItem>
             <Title>Wishlist</Title>
 
-            {(!user.currentUser || cart.products.length===0) && "empty"}
+            {(!user.currentUser || cart.products.length === 0) && "empty"}
             <WishlistRows>
               {user.currentUser &&
                 wishlist.products.map((item, index) => {
@@ -243,7 +286,7 @@ function Dashboard() {
           <GridItem>
             <Title>Cart</Title>
 
-            {(!user.currentUser || cart.products.length===0) && "empty"}
+            {(!user.currentUser || cart.products.length === 0) && "empty"}
             <CartRows>
               {user.currentUser &&
                 cart.products.map((item, index) => {
@@ -257,16 +300,18 @@ function Dashboard() {
                           <CartQuantity>
                             <QuantityButton
                               onClick={(e) => {
-                                addToAmountDb(e,item.id, item.amount);
+                                addToAmountDb(e, item.id);
                               }}
+                              disabled={cart.isFetching}
                             >
                               <FontAwesomeIcon icon={faArrowUp} />
                             </QuantityButton>
                             {item.amount}
                             <QuantityButton
-                              onClick={(e) => {
-                                dispatch(removeAmount(item.id));
-                              }}
+                                onClick={(e) => {
+                                  removeAmounfromDb(e, item.id);
+                                }}
+                                disabled={cart.isFetching}
                             >
                               <FontAwesomeIcon icon={faArrowDown} />
                             </QuantityButton>

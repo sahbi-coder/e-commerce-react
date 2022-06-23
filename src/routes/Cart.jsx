@@ -138,7 +138,7 @@ const Cart = () => {
     }
   };
   const removeFromDbCart = async (id) => {
-    console.log(id)
+   
     if (user.currentUser) {
       try {
         let res = await userRequest.get("/carts/find/" + user.currentUser._id);
