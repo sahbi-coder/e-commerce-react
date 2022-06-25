@@ -13,6 +13,7 @@ import Categories from "./routes/Categories";
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Dashboard from "./routes/Dashboard";
+import './App.css'
 function App() {
   const currentUser = useSelector((store) => store.user.currentUser);
 

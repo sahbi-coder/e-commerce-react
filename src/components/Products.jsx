@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getProducts } from "../apiCalls";
 import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
+import ReactPaginate from "react-paginate";
 
 const Container = styled.div`
   padding: 20px;
@@ -12,16 +13,43 @@ const Container = styled.div`
   width: 100%;
   ${mobile({ width: "100vw", padding: 0 })}
 `;
+const OuterContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+function Items({ currentItems }) {
+  return (
+    <>
+      {currentItems &&
+        currentItems.map((item) => <Product item={item} key={item._id} />)}
+    </>
+  );
+}
 
-const Products = ({ ctg, sort, filters }) => {
+const Products = ({ ctg, sort, filters, itemsPerPage }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const division = useSelector((state) => state.division.division);
 
+  const [currentItems, setCurrentItems] = useState(null);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+
+
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
+
+    setItemOffset(newOffset);
+  };
+
+ 
   useEffect(() => {
     getProducts(ctg, division, setProducts);
   }, [ctg, division]);
   useEffect(() => {
+  
     if (filters && filters.size === "all" && filters.color === "all") {
       ctg && setFilteredProducts(products);
       return;
@@ -76,12 +104,31 @@ const Products = ({ ctg, sort, filters }) => {
     }
   }, [sort]);
 
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+
+    setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage,filteredProducts]);
+
   return (
-    <Container>
-      {ctg
-        ? filteredProducts.map((item) => <Product item={item} key={item._id} />)
-        : products.map((item) => <Product item={item} key={item._id} />)}
-    </Container>
+    <OuterContainer>
+      <Container>
+        <Items currentItems={currentItems}/>
+      </Container>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next"
+        onPageChange={handlePageClick}        
+        pageCount={pageCount}
+        previousLabel="previous"
+        containerClassName={"paginationBttns"}
+        disabledClassName={"paginationDisabled"}
+        activeClassName={"paginationActive"}
+        renderOnZeroPageCount={null}
+        
+      />
+    </OuterContainer>
   );
 };
 

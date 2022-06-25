@@ -40,6 +40,8 @@ const ProductList = () => {
   const [sort,setSort]=useState('')
   const location = useLocation()
   const ctg = location.pathname.split('/')[2]
+
+
  
   const handleChange=(e)=>{
      setFilters({...filters,[e.target.name]:e.target.value})
@@ -95,7 +97,7 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      <Products ctg={ctg} sort={sort} filters={filters} />
+      <Products ctg={ctg} sort={sort} filters={filters} itemsPerPage={20}/>
  
       <Footer />
     </Container>
