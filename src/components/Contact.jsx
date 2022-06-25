@@ -4,10 +4,10 @@ import { mobile } from "../responsive";
 const Container = styled.div`
   display: flex;
   min-height: 100vh;
-  margin-top:105px ;
-  ${mobile({  display: "flex", flexDirection: "column" })}
+  margin-top: 105px;
+  ${mobile({ display: "flex", flexDirection: "column" })}
   width:100%;
- ${mobile({width:'100vw'})}
+  ${mobile({ width: "100vw" })}
 `;
 const Left = styled.div`
   flex: 1;
@@ -17,14 +17,13 @@ const Left = styled.div`
   background-position: center;
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
-  ${mobile({  display: 'none'})}
+  ${mobile({ display: "none" })}
 `;
 const Right = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
- 
 `;
 const Title = styled.h4`
   font-size: 32px;
@@ -34,7 +33,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  ${mobile({  width:'90%'})}
+  ${mobile({ width: "90%" })}
   height:65vh;
   padding-left: 10px;
   max-height: 660px;
@@ -43,24 +42,19 @@ const FormItem = styled.div`
   width: 90%;
   display: flex;
   flex-direction: column;
- 
 `;
-const Label = styled.label`
-
-`;
-const Input = styled.input`
-
-`;
+const Label = styled.label``;
+const Input = styled.input``;
 const Button = styled.button`
-width:30%;
-height: 50px;
-padding: 10px;
-color:white;
-cursor: pointer;
-background-color:black;
-margin-top:10px;
-font-size: 18px;
-border:none;
+  width: 30%;
+  height: 50px;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  background-color: black;
+  margin-top: 10px;
+  font-size: 18px;
+  border: none;
 `;
 const Textarea = styled.textarea`
   max-width: 100%;

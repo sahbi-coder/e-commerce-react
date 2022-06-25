@@ -2,15 +2,14 @@ import React from "react";
 import { allCategories } from "../data";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import {mobile} from '../responsive'
+import { mobile } from "../responsive";
 const Gallery = styled.div`
   display: grid;
   grid-gap: 10px;
   margin: 10px 0;
   grid-template-columns: repeat(auto-fit, minMax(350px, 1fr));
-  width:100%;
-  ${mobile({width:'100vw'})}
-
+  width: 100%;
+  ${mobile({ width: "100vw" })}
 `;
 const GridItem = styled.div`
   height: 400px;
@@ -33,7 +32,7 @@ const Img = styled.img`
   object-fit: cover;
 `;
 function AllCategories() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <Gallery>
       {allCategories.map((category) => {

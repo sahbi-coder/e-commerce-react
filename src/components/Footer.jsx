@@ -15,7 +15,7 @@ const Foot = styled.section`
   background-color: #383633;
   color: #f7eee3;
   width: 100%;
-  ${mobile({width:'100vw'})}
+  ${mobile({ width: "100vw" })}
 `;
 const ContainerOne = styled.div`
   display: flex;
@@ -58,10 +58,9 @@ const Button = styled.button`
   height: 100%;
   padding: 10px;
   cursor: pointer;
-  ${mobile({ width: "20vw"})}
+  ${mobile({ width: "20vw" })}
   ${extraSmall({ width: "30vw" })}
   max-width: 195px;
-  
 `;
 const Sotial = styled.span`
   cursor: pointer;
@@ -92,9 +91,7 @@ const GroupItem = styled.li`
   display: flex;
   align-items: center;
   cursor: pointer;
-  color:white;
- 
-  
+  color: white;
 `;
 const ContainerThree = styled.div`
   display: flex;
@@ -135,25 +132,43 @@ function Footer() {
         <Group>
           <GroupTitle>About</GroupTitle>
           <GroupContent>
-            <GroupItem as={Link} to='/about'>Our Story</GroupItem>
+            <GroupItem as={Link} to="/about">
+              Our Story
+            </GroupItem>
           </GroupContent>
         </Group>
         <Group>
           <GroupTitle>Categories</GroupTitle>
           <GroupContent>
-            <GroupItem as={Link} to='/products/tops&blues'>Tops & Blouses</GroupItem>
-            <GroupItem as={Link} to='/products/sweachers'>Sweaters</GroupItem>
-            <GroupItem as={Link} to='/products/pants'>Pants</GroupItem>
-            <GroupItem as={Link} to='/products/dresses'>Dresses</GroupItem>
-            <GroupItem as={Link} to='/products/jackets'>Jackets</GroupItem>
-            <GroupItem as={Link} to='/products/accessories'>Accessories</GroupItem>
+            <GroupItem as={Link} to="/products/tops&blues">
+              Tops & Blouses
+            </GroupItem>
+            <GroupItem as={Link} to="/products/sweachers">
+              Sweaters
+            </GroupItem>
+            <GroupItem as={Link} to="/products/pants">
+              Pants
+            </GroupItem>
+            <GroupItem as={Link} to="/products/dresses">
+              Dresses
+            </GroupItem>
+            <GroupItem as={Link} to="/products/jackets">
+              Jackets
+            </GroupItem>
+            <GroupItem as={Link} to="/products/accessories">
+              Accessories
+            </GroupItem>
           </GroupContent>
         </Group>
         <Group>
           <GroupTitle>User</GroupTitle>
           <GroupContent>
-            <GroupItem as={Link} to='/user'>Login</GroupItem>
-            <GroupItem as={Link} to='/cart'>Chart</GroupItem>
+            <GroupItem as={Link} to="/user">
+              Login
+            </GroupItem>
+            <GroupItem as={Link} to="/cart">
+              Chart
+            </GroupItem>
           </GroupContent>
         </Group>
         <Group>

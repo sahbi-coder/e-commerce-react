@@ -6,9 +6,8 @@ import { mobile } from "../responsive";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "../redux/cartSlice";
-import { publicRequest, userRequest } from "../requestMethods";
 import { useNavigate } from "react-router-dom";
+import { handleCart, getProduct } from "../apiCalls";
 
 const Container = styled.div``;
 
@@ -24,7 +23,6 @@ const ImgContainer = styled.div`
 `;
 
 const Image = styled.img`
- 
   object-fit: cover;
   ${mobile({ height: "40vh" })}
 `;
@@ -127,8 +125,8 @@ const Product = () => {
   const [amount, setAmount] = useState(1);
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
-  const dispatsh = useDispatch();
-  const { cart, user } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const {  user } = useSelector((state) => state);
   const navigate = useNavigate();
 
   const handleAmount = (type) => {
@@ -139,47 +137,8 @@ const Product = () => {
     if (amount > 1) setAmount((amount) => amount - 1);
   };
 
-  async function getProduct() {
-    const res = await publicRequest.get(`/products/find/${id}`);
-    setProduct(res.data);
-    setColor(res.data.color[0]);
-    setSize(res.data.size[0]);
-  }
-  const handleCart = async () => {
-    if (user.currentUser) {
-     
-      const productToAdd = {
-        productId:product._id,
-        amount,
-        size,
-        color,
-        price:product.price,
-        img:product.img,
-
-
-      
-      };
-      try {
-        const res = await userRequest.get(
-          "/carts/find/" + user.currentUser._id
-        );
-        const userId = res.data._id;
-        const ress = await userRequest.put("/carts/" + userId, {
-          userId: user.currentUser._id,
-          products: [...res.data.products, productToAdd],
-        });
-       
-        dispatsh(addProduct({...productToAdd,id:ress.data.products[ress.data.products.length-1]._id}));
-      } catch {
-        console.log("error");
-      }
-    }
-
-    navigate("/login");
-  };
-
   useEffect(() => {
-    getProduct();
+    getProduct(id, setProduct, setColor, setSize);
   }, []);
   return (
     <Container>
@@ -230,7 +189,21 @@ const Product = () => {
               <Amount>{amount}</Amount>
               <Add onClick={() => handleAmount("add")} />
             </AmountContainer>
-            <Button onClick={handleCart}>ADD TO CART</Button>
+            <Button
+              onClick={(e) => {
+                handleCart(
+                  product,
+                  user,
+                  amount,
+                  size,
+                  color,
+                  dispatch,
+                  navigate
+                );
+              }}
+            >
+              ADD TO CART
+            </Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>

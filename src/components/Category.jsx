@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { mobile } from "../responsive";
 const Container = styled.div`
   flex: 1;
-  position:relative;
-  ${mobile({width:'100vw'})}
+  position: relative;
+  ${mobile({ width: "100vw" })}
   width:'100vw';
 `;
 const Image = styled.img`
@@ -14,42 +14,40 @@ const Image = styled.img`
   object-fit: cover;
 `;
 const Title = styled.h2`
-color:white;
-margin:20px;`;
+  color: white;
+  margin: 20px;
+`;
 
 const Button = styled.button`
-background-color: white;
-border:none;
-outline:none;
-cursor:pointer;
-padding: 5px;
-
+  background-color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 5px;
 `;
 const Info = styled.div`
-position:absolute;
-height:100%;
-width:100%;
+  position: absolute;
+  height: 100%;
+  width: 100%;
 
-top:0;
-left:0;
-display: flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `;
 
 function Category({ category }) {
-  
   return (
     <Container>
       <Link to={`products/${category.category}`}>
-      <Image src={category.img} />
-      <Info>
-        <Title>{category.title}</Title>
-       
-        <Button>shop now</Button>
-      </Info>
+        <Image src={category.img} />
+        <Info>
+          <Title>{category.title}</Title>
+
+          <Button>shop now</Button>
+        </Info>
       </Link>
     </Container>
   );

@@ -66,7 +66,7 @@ function Whishlist() {
   const { user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const removeFromDbList = async (id) => {
+  const removeFromDbList = async (id,user,dispatch) => {
     if (user.currentUser) {
       try {
         let res = await userRequest.get(
@@ -119,7 +119,7 @@ function Whishlist() {
                       <Button
                         onClick={(e) => {
                           e.preventDefault();
-                          removeFromDbList(prod._id);
+                          removeFromDbList(prod._id,user,dispatch);
                         }}
                       >
                         delete

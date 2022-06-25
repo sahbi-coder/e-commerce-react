@@ -4,7 +4,7 @@ import Badge from "@material-ui/core/Badge";
 import Cart from "@material-ui/icons/ShoppingCart";
 import Person from "@material-ui/icons/PersonOutline";
 import { useSelector, useDispatch } from "react-redux";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +18,7 @@ const Container = styled.section`
   left: 0;
   z-index: 1000;
   width: 100%;
-  ${mobile({width:'100vw'})}
+  ${mobile({ width: "100vw" })}
 `;
 
 const NavCatch = styled.div`
@@ -161,36 +161,35 @@ function Navbar() {
   const [subSideToggle, setSubSideToggle] = useState(false);
   const isMobile = useMobile();
   const dispatch = useDispatch();
-  const location = useLocation()
- 
+  const location = useLocation();
+
   return (
     <Container>
       <NavCatch>Free shipping for all orders over $50!</NavCatch>
-      {location.pathname.split('/')[1]==='products'&&(
-
-      <DivisonSelector>
-        <DivSelect
-          onClick={() => {
-            dispatch(changeDiv(divisions.Male));
-          }}
-        >
-          Men
-        </DivSelect>
-        <DivSelect
-          onClick={() => {
-            dispatch(changeDiv(divisions.Female));
-          }}
-        >
-          Women
-        </DivSelect>
-        <DivSelect
-          onClick={() => {
-            dispatch(changeDiv(divisions.Both));
-          }}
-        >
-          Both
-        </DivSelect>
-      </DivisonSelector>
+      {location.pathname.split("/")[1] === "products" && (
+        <DivisonSelector>
+          <DivSelect
+            onClick={() => {
+              dispatch(changeDiv(divisions.Male));
+            }}
+          >
+            Men
+          </DivSelect>
+          <DivSelect
+            onClick={() => {
+              dispatch(changeDiv(divisions.Female));
+            }}
+          >
+            Women
+          </DivSelect>
+          <DivSelect
+            onClick={() => {
+              dispatch(changeDiv(divisions.Both));
+            }}
+          >
+            Both
+          </DivSelect>
+        </DivisonSelector>
       )}
       <Wrapper>
         <Left>

@@ -27,22 +27,19 @@ const Info = styled.div`
 
 const Container = styled.div`
   flex: 1;
-  margin:5px;
+  margin: 5px;
   background-color: #f5fbfd;
   display: flex;
   flex-direction: column;
   justify-content: start;
-  align-items:stretch ;
- position: relative;
+  align-items: stretch;
+  position: relative;
   &:hover ${Info} {
     opacity: 1;
   }
 `;
 
-
-
 const Image = styled.img`
-  
   object-fit: center;
   z-index: 2;
 `;
@@ -62,20 +59,17 @@ const Icon = styled.div`
     transform: scale(1.1);
   }
 `;
-const Footer = styled.div` 
+const Footer = styled.div`
   background-color: white;
-  flex:9;
+  flex: 9;
 `;
-const Title  = styled.div`
+const Title = styled.div`
   padding: 5px;
-`
+`;
 
-const Price  = styled.div`
-   padding: 5px;
-   
-`
-
-
+const Price = styled.div`
+  padding: 5px;
+`;
 
 const Product = ({ item }) => {
   const { user } = useSelector((state) => state);
@@ -87,7 +81,7 @@ const Product = ({ item }) => {
         const res = await userRequest.get(
           "/wishlists/find/" + user.currentUser._id
         );
-        const products = res.data.products
+        const products = res.data.products;
         const isInList = res.data.products.reduce((pre, acc) => {
           if (acc._id === item._id) {
             return true;
@@ -105,7 +99,6 @@ const Product = ({ item }) => {
   };
   return (
     <Container>
-     
       <Image src={item.img} />
       <Info>
         <Icon>
@@ -119,13 +112,8 @@ const Product = ({ item }) => {
       </Info>
       <Footer>
         <Title>{item.title}</Title>
-      
-        
+
         <Price>${item.price}</Price>
-        
-         
-        
-        
       </Footer>
     </Container>
   );

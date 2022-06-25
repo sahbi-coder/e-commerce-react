@@ -7,9 +7,7 @@ import { mobile } from "../responsive";
 const Container = styled.section`
   display: flex;
   width: 100%;
-  ${mobile({flexDirection:'column',width:'100vw'})}
-
-
+  ${mobile({ flexDirection: "column", width: "100vw" })}
 `;
 function Categories() {
   return (

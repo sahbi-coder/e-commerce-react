@@ -1,17 +1,11 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useReducer, useEffect } from "react";
-import { publicRequest, userRequest } from "../requestMethods";
+import { createAcount } from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  loginFailure,
-  init,
-  loginSucess,
-  signUpFailure,
-  signUpStart,
-  signUpSucess,
-} from "../redux/userSlice";
+import { init } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -125,49 +119,6 @@ const Register = () => {
     }
   }, [currentUser]);
 
-  const createAcount = async (e) => {
-    e.preventDefault();
-
-    Object.values(state).forEach((input) => {
-      return !input && alert("you must fill all inputs");
-    });
-    if (state.password !== state.confPassword) {
-      return alert("passwords do not confirm");
-    }
-    try {
-      reduxDiapatsh(signUpStart());
-      await publicRequest.post("/auth/register", {
-        name: `${state.name} ${state.lastName}`,
-        email: state.email,
-        password: state.password,
-      });
-
-      reduxDiapatsh(signUpSucess());
-    } catch (e) {
-      reduxDiapatsh(signUpFailure());
-      return alert("could not register please try again");
-    }
-    try {
-      let res = await publicRequest.post("/auth/login", {
-        password: state.password,
-        email: state.email,
-      });
-      const user = res.data;
-      await userRequest.post("/carts", {
-        userId: user._id,
-        products: [],
-      });
-      await userRequest.post("/wishlists", {
-        userId: user._id,
-        products: [],
-      });
-      reduxDiapatsh(loginSucess({ user }));
-      navigate("/user");
-    } catch {
-      reduxDiapatsh(loginFailure());
-      navigate("/login");
-    }
-  };
   return (
     <Container>
       <Wrapper>
@@ -191,12 +142,14 @@ const Register = () => {
 
           <Input
             placeholder="email"
+            type="email"
             onChange={(e) => {
               dispatsh({ type: ACTIONS.UPDATE_EMAIL, payload: e.target.value });
             }}
           />
           <Input
             placeholder="password"
+            type="password"
             onChange={(e) => {
               dispatsh({
                 type: ACTIONS.UPDATE_PASSWORD,
@@ -206,6 +159,7 @@ const Register = () => {
           />
           <Input
             placeholder="confirm password"
+            type="password"
             onChange={(e) => {
               dispatsh({
                 type: ACTIONS.UPDATE_CONF_PASSWORD,
@@ -217,7 +171,14 @@ const Register = () => {
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button onClick={createAcount}>CREATE</Button>
+          <Button
+            onClick={(e) => {
+              createAcount(e, state, navigate, reduxDiapatsh);
+            }}
+            disabled={isFetshing}
+          >
+            CREATE
+          </Button>
         </Form>
       </Wrapper>
     </Container>

@@ -1,4 +1,3 @@
-
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
 import { useState } from "react";
 import styled from "styled-components";
@@ -11,7 +10,7 @@ const Container = styled.div`
   display: flex;
   position: relative;
   overflow: hidden;
-  ${mobile({ width:'100vw'})}
+  ${mobile({ width: "100vw" })}
   margin-top:105px;
 `;
 

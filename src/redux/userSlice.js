@@ -20,7 +20,7 @@ const userSlice = createSlice({
         },
         loginSucess:(state,action)=>{
             state.isFetshing=false;
-            state.currentUser = action.payload.user
+            state.currentUser = action.payload
         },
      
         loginFailure:(state)=>{

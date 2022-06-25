@@ -1,19 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import{mobile} from '../responsive'
+import { mobile } from "../responsive";
 const Container = styled.div`
-  width:100%;
-  ${mobile({width:'100vw'})};
-`
+  width: 100%;
+  ${mobile({ width: "100vw" })};
+`;
 const TitleContainer = styled.div`
   text-align: center;
   margin: 105px 12px;
 `;
 const TitleDesc = styled.p`
   margin-top: 32px;
-  `;
+`;
 const Title = styled.h4`
-font-size: 32px;
+  font-size: 32px;
 `;
 const MainContainer = styled.div`
   padding: 40px;
@@ -29,7 +29,7 @@ const Gallery = styled.div`
   grid-gap: 10px;
   grid-template-columns: repeat(auto-fit, minMax(250px, 1fr));
   padding: 10px 50px;
-  ${mobile({padding:0})}
+  ${mobile({ padding: 0 })}
 `;
 const GridItem = styled.div`
   height: 400px;
@@ -65,7 +65,6 @@ function About() {
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
           />
         </GridItem>
-        
       </Gallery>
 
       <MainContainer>

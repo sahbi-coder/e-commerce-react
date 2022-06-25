@@ -26,7 +26,7 @@ const cartSlice = createSlice({
     },
     addAmount: (state, action) => {
       state.products = state.products.reduce((pre, cur) => {
-        if (action.payload === cur.id) {
+        if (action.payload === cur._id) {
           state.total += cur.price;
           let temp = pre;
           let innerTemp = cur;
@@ -42,7 +42,7 @@ const cartSlice = createSlice({
     },
     removeAmount: (state, action) => {
       state.products = state.products.reduce((pre, cur) => {
-        if (action.payload === cur.id && cur.amount > 1) {
+        if (action.payload === cur._id && cur.amount > 1) {
           state.total -= cur.price;
           let temp = pre;
           let innerTemp = cur;
@@ -65,7 +65,7 @@ const cartSlice = createSlice({
       if (state.quantity) {
         let deletedOrd = null;
         const temp = state.products.reduce((pre, acc) => {
-          if (action.payload === acc.id) {
+          if (action.payload === acc._id) {
             deletedOrd = acc;
             return pre;
           }

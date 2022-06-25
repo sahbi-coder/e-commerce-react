@@ -1,17 +1,11 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { publicRequest, userRequest } from "../requestMethods";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  loginFailure,
-  loginStart,
-  loginSucess,
-  init,
-} from "../redux/userSlice";
+import { init } from "../redux/userSlice";
 import { useState, useEffect } from "react";
 import { Link as L, useNavigate } from "react-router-dom";
-import { addProducts } from "../redux/cartSlice";
-import { addList } from "../redux/wishlistSlice";
+
+import { login } from "../apiCalls";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -89,44 +83,30 @@ const Login = () => {
     }
   }, [currentUser]);
 
-  const login = async (e) => {
-    e.preventDefault();
-    try {
-      dispatch(loginStart());
-      let res1 = await publicRequest.post("/auth/login", {
-        password,
-        email,
-      });
-      const user = res1.data;
-      let res2 = await userRequest.get("/carts/find/" + user._id);
-      let res3 = await userRequest.get("/wishlists/find/" + user._id);
-      dispatch(loginSucess({ user }));
-      navigate("/");
-      dispatch(addList(res3.data.products));
-      dispatch(addProducts(res2.data.products));
-    } catch (e) {
-      dispatch(loginFailure());
-    }
-  };
-
   return (
     <Container>
       <Wrapper>
         <Title>SIGN IN</Title>
         <Form>
           <Input
-            placeholder="username"
+            placeholder="email"
             onChange={(e) => {
               setEmail(e.target.value);
             }}
           />
           <Input
             placeholder="password"
+            type='password'
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
-          <Button onClick={login} disabled={isFetshing}>
+          <Button
+            onClick={(e) => {
+              login(dispatch, email, password, navigate);
+            }}
+            disabled={isFetshing}
+          >
             LOGIN
           </Button>
           {error ? <Error>something went wrong ....</Error> : null}

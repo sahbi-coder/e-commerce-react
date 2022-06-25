@@ -6,18 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { logOut, init } from "../redux/userSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  clearCart,
-  addAmount,
-  removeAmount,
-  start,
-  success,
-  failure,
-} from "../redux/cartSlice";
+import { clearCart } from "../redux/cartSlice";
 import { deleteAll } from "../redux/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { userRequest } from "../requestMethods";
+import { removeAmounfromDb,addToAmountDb} from "../apiCalls";
 
 const Container = styled.div`
   margin: 105px 0;
@@ -139,73 +132,6 @@ function Dashboard() {
     dispatch(init());
   }, []);
 
-  const addToAmountDb = async (e, id) => {
-    e.preventDefault();
-
-    try {
-      dispatch(start());
-      const data = (
-        await userRequest.get("/carts/find/" + user.currentUser._id)
-      ).data;
-
-      const mp = data.products.reduce((pre, cur) => {
-        if (cur._id === id) {
-          const temp = [...pre];
-          const innetTemp = { ...cur };
-          innetTemp.amount += 1;
-          temp.push(innetTemp);
-          return temp;
-        }
-        const temp = [...pre];
-        const innetTemp = { ...cur };
-
-        temp.push(innetTemp);
-        return temp;
-      }, []);
-
-      const res = await userRequest.put("/carts/" + data._id, {
-        products: mp,
-      });
-      dispatch(addAmount(id));
-      dispatch(success());
-    } catch (e) {
-      dispatch(failure());
-    }
-  };
-  const removeAmounfromDb = async (e, id) => {
-    e.preventDefault();
-
-    try {
-      dispatch(start());
-      const data = (
-        await userRequest.get("/carts/find/" + user.currentUser._id)
-      ).data;
-
-      const mp = data.products.reduce((pre, cur) => {
-        if (cur._id === id&&cur.amount>1) {
-          const temp = [...pre];
-          const innetTemp = { ...cur };
-          innetTemp.amount -= 1;
-          temp.push(innetTemp);
-          return temp;
-        }
-        const temp = [...pre];
-        const innetTemp = { ...cur };
-
-        temp.push(innetTemp);
-        return temp;
-      }, []);
-
-      const res = await userRequest.put("/carts/" + data._id, {
-        products: mp,
-      });
-      dispatch( removeAmount(id));
-      dispatch(success());
-    } catch (e) {
-      dispatch(failure());
-    }
-  };
-
   return (
     <>
       <Navbar />
@@ -230,10 +156,8 @@ function Dashboard() {
                 e.preventDefault();
                 navigate("/login");
               }}
-           
             >
               log in
-              
             </Button>
           )}
         </ButtonsWrapper>
@@ -266,7 +190,7 @@ function Dashboard() {
           <GridItem>
             <Title>Wishlist</Title>
 
-            {(!user.currentUser || cart.products.length === 0) && "empty"}
+            {(!user.currentUser || wishlist.products.length === 0) && "empty"}
             <WishlistRows>
               {user.currentUser &&
                 wishlist.products.map((item, index) => {
@@ -300,7 +224,7 @@ function Dashboard() {
                           <CartQuantity>
                             <QuantityButton
                               onClick={(e) => {
-                                addToAmountDb(e, item.id);
+                                addToAmountDb(item._id, user,dispatch);
                               }}
                               disabled={cart.isFetching}
                             >
@@ -308,10 +232,10 @@ function Dashboard() {
                             </QuantityButton>
                             {item.amount}
                             <QuantityButton
-                                onClick={(e) => {
-                                  removeAmounfromDb(e, item.id);
-                                }}
-                                disabled={cart.isFetching}
+                              onClick={(e) => {
+                                removeAmounfromDb(item._id, user,dispatch);
+                              }}
+                              disabled={cart.isFetching}
                             >
                               <FontAwesomeIcon icon={faArrowDown} />
                             </QuantityButton>
