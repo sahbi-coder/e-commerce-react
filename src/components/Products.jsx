@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Product from "./Product";
 import { useEffect, useState } from "react";
-import { getProducts } from "../apiCalls";
+import { getProductsApiCall } from "../apiCalls";
 import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
@@ -17,7 +17,7 @@ const OuterContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 function Items({ currentItems }) {
   return (
     <>
@@ -36,20 +36,21 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
 
-
-
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
 
     setItemOffset(newOffset);
   };
 
- 
+  const getProducts = async () => {
+    const p = await getProductsApiCall(ctg, division);
+    setProducts(p);
+  };
+
   useEffect(() => {
-    getProducts(ctg, division, setProducts);
+    getProducts();
   }, [ctg, division]);
   useEffect(() => {
-  
     if (filters && filters.size === "all" && filters.color === "all") {
       ctg && setFilteredProducts(products);
       return;
@@ -109,24 +110,23 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
 
     setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
     setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage,filteredProducts]);
+  }, [itemOffset, itemsPerPage, filteredProducts]);
 
   return (
     <OuterContainer>
       <Container>
-        <Items currentItems={currentItems}/>
+        <Items currentItems={currentItems} />
       </Container>
       <ReactPaginate
         breakLabel="..."
         nextLabel="next"
-        onPageChange={handlePageClick}        
+        onPageChange={handlePageClick}
         pageCount={pageCount}
         previousLabel="previous"
         containerClassName={"paginationBttns"}
         disabledClassName={"paginationDisabled"}
         activeClassName={"paginationActive"}
         renderOnZeroPageCount={null}
-        
       />
     </OuterContainer>
   );

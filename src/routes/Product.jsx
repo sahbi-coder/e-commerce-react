@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleCart, getProduct } from "../apiCalls";
+import { addProduct,start,success,failure } from "../redux/cartSlice";
 
 const Container = styled.div``;
 
@@ -126,7 +127,7 @@ const Product = () => {
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
-  const {  user } = useSelector((state) => state);
+  const { user,cart } = useSelector((state) => state);
   const navigate = useNavigate();
 
   const handleAmount = (type) => {
@@ -140,6 +141,21 @@ const Product = () => {
   useEffect(() => {
     getProduct(id, setProduct, setColor, setSize);
   }, []);
+
+  const reduxHandleCart = async (product, user, amount, size, color) => {
+    if(!user){
+      return navigate('/login')
+    }
+    dispatch(start())
+    const cardProduct = await handleCart(product, user, amount, size, color);
+    if(cardProduct){
+
+      dispatch(success())
+      return dispatch(addProduct(cardProduct))
+    }
+    dispatch(failure())
+
+  };
   return (
     <Container>
       <Navbar />
@@ -159,6 +175,7 @@ const Product = () => {
                 ? product.color.map((c) => {
                     return (
                       <FilterColor
+                        key={c}
                         color={c}
                         onClick={() => {
                           setColor(c);
@@ -177,7 +194,7 @@ const Product = () => {
               >
                 {product.size
                   ? product.size.map((s) => {
-                      return <FilterSizeOption>{s}</FilterSizeOption>;
+                      return <FilterSizeOption key={s}>{s}</FilterSizeOption>;
                     })
                   : null}
               </FilterSize>
@@ -190,17 +207,10 @@ const Product = () => {
               <Add onClick={() => handleAmount("add")} />
             </AmountContainer>
             <Button
-              onClick={(e) => {
-                handleCart(
-                  product,
-                  user,
-                  amount,
-                  size,
-                  color,
-                  dispatch,
-                  navigate
-                );
+              onClick={() => {
+                reduxHandleCart(product, user, amount, size, color);
               }}
+              disabled={cart.isFetching}
             >
               ADD TO CART
             </Button>

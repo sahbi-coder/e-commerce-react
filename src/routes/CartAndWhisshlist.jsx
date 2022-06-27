@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { clearDbCart } from "../apiCalls";
+import { clearCart,start,success,failure } from "../redux/cartSlice";
 const Container = styled.div`
   margin-top: 100px;
   width: 100%;
@@ -63,6 +64,16 @@ const Cart = () => {
   const { cart, user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const clear = async(user)=>{
+         dispatch(start())
+         const statusCode = await clearDbCart(user)
+         if(statusCode===200){
+          dispatch(success())
+          dispatch(clearCart())
+          return
+         }
+         dispatch(failure())
+  }
 
   return (
     <Container>
@@ -72,8 +83,8 @@ const Cart = () => {
         <Title>YOUR BAG</Title>
         <Top>
           <TopButton
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
+              
               navigate("/");
             }}
           >
@@ -100,9 +111,9 @@ const Cart = () => {
               <ButtonWrap>
                 <TopButton
                   type="filled"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    clearDbCart(user, dispatch);
+                  onClick={() => {
+                    
+                    clear(user);
                   }}
                 >
                   CLEAR ALL

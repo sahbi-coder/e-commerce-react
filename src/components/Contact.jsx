@@ -69,7 +69,7 @@ function Contact() {
         <Form id="survey-form">
           <Title>Get in touch</Title>
           <FormItem>
-            <Label id="name-label" for="name">
+            <Label id="name-label" htmlFor="name">
               Name:
             </Label>
             <Input
@@ -81,7 +81,7 @@ function Contact() {
           </FormItem>
 
           <FormItem>
-            <Label id="name-label" for="name">
+            <Label id="name-label" htmlFor="name">
               Last name:
             </Label>
             <Input
@@ -92,7 +92,7 @@ function Contact() {
             />
           </FormItem>
           <FormItem>
-            <Label id="email-label" for="email">
+            <Label id="email-label" htmlFor="email">
               Email:
             </Label>
             <Input
@@ -104,7 +104,7 @@ function Contact() {
             />
           </FormItem>
           <FormItem>
-            <Label id="message-label" for="message">
+            <Label id="message-label" htmlFor="message">
               Message:
             </Label>
             <Textarea placeholder="Enter your message" id="message"></Textarea>

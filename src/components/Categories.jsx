@@ -13,7 +13,7 @@ function Categories() {
   return (
     <Container>
       {categories.map((category) => {
-        return <Category category={category} />;
+        return <Category category={category} key={category.id}/>;
       })}
     </Container>
   );

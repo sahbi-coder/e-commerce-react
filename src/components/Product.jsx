@@ -6,9 +6,9 @@ import {
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { addToWhishlistDb } from "../apiCalls";
 import { addToList } from "../redux/wishlistSlice";
-import { publicRequest, userRequest } from "../requestMethods";
-import { mobile } from "../responsive";
+
 const Info = styled.div`
   opacity: 0;
   width: 100%;
@@ -34,6 +34,7 @@ const Container = styled.div`
   justify-content: start;
   align-items: stretch;
   position: relative;
+
   &:hover ${Info} {
     opacity: 1;
   }
@@ -73,30 +74,14 @@ const Price = styled.div`
 
 const Product = ({ item }) => {
   const { user } = useSelector((state) => state);
-  const dispatsh = useDispatch();
-  const addToWhishlist = async (e) => {
-    e.preventDefault();
-    if (user.currentUser) {
-      try {
-        const res = await userRequest.get(
-          "/wishlists/find/" + user.currentUser._id
-        );
-        const products = res.data.products;
-        const isInList = res.data.products.reduce((pre, acc) => {
-          if (acc._id === item._id) {
-            return true;
-          }
-          return pre;
-        }, false);
-        if (!isInList) {
-          await userRequest.put("/wishlists/" + res.data._id, {
-            products: [...products, item],
-          });
-          dispatsh(addToList(item));
-        }
-      } catch {}
+  const dispatch = useDispatch();
+  const addToWhishlist = async (user, item) => {
+    const responseStatus = await addToWhishlistDb(user, item);
+    if (responseStatus === 200) {
+      dispatch(addToList(item));
     }
   };
+
   return (
     <Container>
       <Image src={item.img} />
@@ -106,7 +91,11 @@ const Product = ({ item }) => {
             <SearchOutlined />
           </Link>
         </Icon>
-        <Icon onClick={addToWhishlist}>
+        <Icon
+          onClick={() => {
+            addToWhishlist(user, item);
+          }}
+        >
           <FavoriteBorderOutlined />
         </Icon>
       </Info>

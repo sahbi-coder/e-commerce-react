@@ -2,8 +2,19 @@ import { Add, Remove } from "@material-ui/icons";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromDbCart,addToAmountDb,removeAmounfromDb } from "../apiCalls";
-
+import {
+  removeFromDbCart,
+  addToAmountDb,
+  removeAmounfromDb,
+} from "../apiCalls";
+import {
+  removeOrder,
+  start,
+  success,
+  failure,
+  addAmount,
+  removeAmount,
+} from "../redux/cartSlice";
 
 const Container = styled.div`
   display: flex;
@@ -117,16 +128,54 @@ const Button = styled.button`
   background-color: black;
   color: white;
   font-weight: 600;
-  cursor:pointer;
+  cursor: pointer;
 `;
 const SmallButtom = styled.button`
   background-color: white;
   border: none;
-  cursor:pointer;
+  cursor: pointer;
 `;
 const Cart = () => {
   const { cart, user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const add = async(id, user) => {
+
+    dispatch(start());
+
+    const statusCode = await  addToAmountDb(id, user);
+    if (statusCode === 200) {
+      dispatch(success());
+      dispatch(addAmount(id));
+      return;
+    }
+    dispatch(failure());
+  };
+  
+  const remove = async (id, user) => {
+
+    dispatch(start());
+
+    const statusCode = await removeAmounfromDb(id, user);
+    if (statusCode === 200) {
+      dispatch(success());
+      dispatch(removeAmount(id));
+      return;
+    }
+    dispatch(failure());
+  };
+  
+
+  const deleteOne = async (id, user) => {
+    dispatch(start());
+
+    const statusCode = await removeFromDbCart(id, user);
+    if (statusCode === 200) {
+      dispatch(success());
+      dispatch(removeOrder(id));
+      return;
+    }
+    dispatch(failure());
+  };
 
   return (
     <>
@@ -136,7 +185,7 @@ const Cart = () => {
             {cart.products.map((prod) => {
               return (
                 <>
-                  <Product>
+                  <Product key={prod._id}>
                     <ProductDetail>
                       <Image src={prod.img} />
                       <Details>
@@ -155,8 +204,8 @@ const Cart = () => {
                     <PriceDetail>
                       <ProductAmountContainer>
                         <SmallButtom
-                          onClick={(e) => {
-                            addToAmountDb(prod._id, user, dispatch);
+                          onClick={() => {
+                            add(prod._id, user);
                           }}
                           disabled={cart.isFetching}
                         >
@@ -165,7 +214,7 @@ const Cart = () => {
                         <ProductAmount>{prod.amount}</ProductAmount>
                         <SmallButtom
                           onClick={(e) => {
-                            removeAmounfromDb (prod._id, user, dispatch);
+                            remove(prod._id, user);
                           }}
                           disabled={cart.isFetching}
                         >
@@ -176,9 +225,8 @@ const Cart = () => {
                     </PriceDetail>
                     <Details>
                       <Button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeFromDbCart(prod._id, user, dispatch);
+                        onClick={() => {
+                          deleteOne(prod._id, user);
                         }}
                         disabled={cart.isFetching}
                       >

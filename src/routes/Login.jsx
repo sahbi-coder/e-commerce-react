@@ -4,8 +4,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { init } from "../redux/userSlice";
 import { useState, useEffect } from "react";
 import { Link as L, useNavigate } from "react-router-dom";
-
+import { addList } from "../redux/wishlistSlice";
+import {
+  loginSucess,
+  loginStart,
+  loginFailure
+ 
+} from "../redux/userSlice";
+import { addProducts } from "../redux/cartSlice";
 import { login } from "../apiCalls";
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -83,6 +91,21 @@ const Login = () => {
     }
   }, [currentUser]);
 
+  const reduxLogin = async (email,password)=>{
+
+    dispatch(loginStart());
+    const res = await login( email, password);
+    if(res){
+      
+      dispatch(loginSucess(res[0]));
+      dispatch(addProducts(res[1].products));
+      dispatch(addList(res[2].products));
+      navigate("/");
+      return
+    }
+    dispatch(loginFailure())
+  }
+
   return (
     <Container>
       <Wrapper>
@@ -102,9 +125,7 @@ const Login = () => {
             }}
           />
           <Button
-            onClick={(e) => {
-              login(dispatch, email, password, navigate);
-            }}
+            onClick={() => reduxLogin(email,password)}
             disabled={isFetshing}
           >
             LOGIN

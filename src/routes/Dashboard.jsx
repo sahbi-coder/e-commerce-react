@@ -6,11 +6,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { logOut, init } from "../redux/userSlice";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../redux/cartSlice";
+import {
+  start,
+  success,
+  failure,
+  addAmount,
+  removeAmount,
+  clearCart
+} from "../redux/cartSlice";
 import { deleteAll } from "../redux/wishlistSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { removeAmounfromDb,addToAmountDb} from "../apiCalls";
+import { removeAmounfromDb, addToAmountDb } from "../apiCalls";
 
 const Container = styled.div`
   margin: 105px 0;
@@ -132,6 +139,36 @@ function Dashboard() {
     dispatch(init());
   }, []);
 
+  const logoutUser = () => {
+    dispatch(logOut());
+    dispatch(clearCart());
+    dispatch(deleteAll());
+  };
+
+  const add = async (id, user) => {
+    dispatch(start());
+
+    const statusCode = await addToAmountDb(id, user);
+    if (statusCode === 200) {
+      dispatch(success());
+      dispatch(addAmount(id));
+      return;
+    }
+    dispatch(failure());
+  };
+
+  const remove = async (id, user) => {
+    dispatch(start());
+
+    const statusCode = await removeAmounfromDb(id, user);
+    if (statusCode === 200) {
+      dispatch(success());
+      dispatch(removeAmount(id));
+      return;
+    }
+    dispatch(failure());
+  };
+
   return (
     <>
       <Navbar />
@@ -140,11 +177,8 @@ function Dashboard() {
         <ButtonsWrapper>
           {user.currentUser && (
             <Button
-              onClick={(e) => {
-                e.preventDefault();
-                dispatch(logOut());
-                dispatch(clearCart());
-                dispatch(deleteAll());
+              onClick={() => {
+                logoutUser();
               }}
             >
               log out
@@ -152,8 +186,7 @@ function Dashboard() {
           )}
           {!user.currentUser && (
             <Button
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 navigate("/login");
               }}
             >
@@ -195,7 +228,7 @@ function Dashboard() {
               {user.currentUser &&
                 wishlist.products.map((item, index) => {
                   return (
-                    <WishlistRow>
+                    <WishlistRow key={item._id}>
                       <WishlistImage src={item.img} />
                       <WishlistDesc>
                         <WishlistTitle>{item.title}</WishlistTitle>
@@ -215,7 +248,7 @@ function Dashboard() {
               {user.currentUser &&
                 cart.products.map((item, index) => {
                   return (
-                    <CartRow>
+                    <CartRow key={item._id}>
                       <CartImage src={item.img} />
                       <CartDesc>
                         <CartTitle>{item.title}</CartTitle>
@@ -223,8 +256,8 @@ function Dashboard() {
                           <CartPrice>${item.price}</CartPrice>
                           <CartQuantity>
                             <QuantityButton
-                              onClick={(e) => {
-                                addToAmountDb(item._id, user,dispatch);
+                              onClick={() => {
+                                add(item._id, user);
                               }}
                               disabled={cart.isFetching}
                             >
@@ -232,8 +265,8 @@ function Dashboard() {
                             </QuantityButton>
                             {item.amount}
                             <QuantityButton
-                              onClick={(e) => {
-                                removeAmounfromDb(item._id, user,dispatch);
+                              onClick={() => {
+                                remove(item._id, user);
                               }}
                               disabled={cart.isFetching}
                             >

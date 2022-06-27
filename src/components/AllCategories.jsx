@@ -41,6 +41,7 @@ function AllCategories() {
             onClick={() => {
               navigate(`/products/${category.category}`);
             }}
+            key={category.id}
           >
             <Img src={category.img} />
             <Title>{category.title}</Title>

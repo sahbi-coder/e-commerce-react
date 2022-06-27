@@ -5,6 +5,7 @@ import { createAcount } from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
 import { init } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
+import { loginSucess, loginStart, loginFailure } from "../redux/userSlice";
 
 const Container = styled.div`
   width: 100vw;
@@ -106,18 +107,32 @@ const Register = () => {
         return state;
     }
   };
-  const [state, dispatsh] = useReducer(reducer, initialState);
-  const reduxDiapatsh = useDispatch();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const reduxDispatch = useDispatch();
   const navigate = useNavigate();
   const { isFetshing, error, currentUser } = useSelector((state) => state.user);
   useEffect(() => {
-    reduxDiapatsh(init());
+    dispatch(init());
   }, []);
   useEffect(() => {
     if (currentUser) {
       navigate("/");
     }
   }, [currentUser]);
+
+  const reduxCreateAcount = async (state) => {
+    reduxDispatch(loginStart());
+    const res = await createAcount(state);
+    
+    if (!res) {
+      return reduxDispatch(loginFailure());
+    }
+    if (res.request.status === 200) {
+      return reduxDispatch(loginSucess(res.data));
+    }
+    reduxDispatch(loginFailure());
+    
+  };
 
   return (
     <Container>
@@ -127,13 +142,13 @@ const Register = () => {
           <Input
             placeholder="name"
             onChange={(e) => {
-              dispatsh({ type: ACTIONS.UPDATE_NAME, payload: e.target.value });
+              dispatch({ type: ACTIONS.UPDATE_NAME, payload: e.target.value });
             }}
           />
           <Input
             placeholder="last name"
             onChange={(e) => {
-              dispatsh({
+              dispatch({
                 type: ACTIONS.UPDATE_LASTNAME,
                 payload: e.target.value,
               });
@@ -144,14 +159,14 @@ const Register = () => {
             placeholder="email"
             type="email"
             onChange={(e) => {
-              dispatsh({ type: ACTIONS.UPDATE_EMAIL, payload: e.target.value });
+              dispatch({ type: ACTIONS.UPDATE_EMAIL, payload: e.target.value });
             }}
           />
           <Input
             placeholder="password"
             type="password"
             onChange={(e) => {
-              dispatsh({
+              dispatch({
                 type: ACTIONS.UPDATE_PASSWORD,
                 payload: e.target.value,
               });
@@ -161,7 +176,7 @@ const Register = () => {
             placeholder="confirm password"
             type="password"
             onChange={(e) => {
-              dispatsh({
+              dispatch({
                 type: ACTIONS.UPDATE_CONF_PASSWORD,
                 payload: e.target.value,
               });
@@ -172,8 +187,8 @@ const Register = () => {
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
           <Button
-            onClick={(e) => {
-              createAcount(e, state, navigate, reduxDiapatsh);
+            onClick={() => {
+              reduxCreateAcount(state);
             }}
             disabled={isFetshing}
           >

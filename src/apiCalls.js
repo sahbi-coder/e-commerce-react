@@ -1,75 +1,49 @@
 import { publicRequest, userRequest } from "./requestMethods";
-import {
-  clearCart,
-  removeOrder,
-  start,
-  success,
-  failure,
-  addAmount,
-  removeAmount,
-  addProducts,
-  addProduct,
-} from "./redux/cartSlice";
-import { addList } from "./redux/wishlistSlice";
-import {
-  loginSucess,
-  loginStart,
-  loginFailure,
-  signUpStart,
-  signUpSucess,
-  signUpFailure,
-} from "./redux/userSlice";
-import {deleteById} from './redux/wishlistSlice'
-async function getProducts(ctg, division, setProducts) {
+
+
+const getProductsApiCall = async (ctg, division) => {
   try {
     const res = await publicRequest.get(
       ctg ? `/products/?category=${ctg}&division=${division}` : "/products"
     );
-    setProducts(res.data);
-  } catch (e) {
-    console.log(e);
-  }
-}
-const removeFromDbCart = async (id, user, dispatch) => {
+    return res.data;
+  } catch (e) {}
+};
+const removeFromDbCart = async (id, user) => {
   if (user.currentUser) {
     try {
-      dispatch(start());
       let res = await userRequest.get("/carts/find/" + user.currentUser._id);
       const temp = res.data.products.reduce((pre, acc) => {
         if (acc._id === id) {
-          console.log(id);
           return pre;
         }
         pre.push(acc);
         return pre;
       }, []);
-      await userRequest.put("/carts/" + res.data._id, {
+      const r = await userRequest.put("/carts/" + res.data._id, {
         ...res.data,
         products: temp,
       });
-      dispatch(removeOrder(id));
-      dispatch(success());
-    } catch {
-      dispatch(failure());
-    }
-  }
-};
-const clearDbCart = async (user, dispatch) => {
-  if (user.currentUser) {
-    try {
-      let res = await userRequest.get("/carts/find/" + user.currentUser._id);
 
-      await userRequest.put("/carts/" + res.data._id, {
-        ...res.data,
-        products: [],
-      });
-      dispatch(clearCart());
+      return r.request.status;
     } catch {}
   }
 };
-const addToAmountDb = async (id, user, dispatch) => {
+const clearDbCart = async (user) => {
+  if (user.currentUser) {
+    try {
+      const res = await userRequest.get("/carts/find/" + user.currentUser._id);
+
+      const r = await userRequest.put("/carts/" + res.data._id, {
+        ...res.data,
+        products: [],
+      });
+      return r.request.status;
+    } catch {}
+  }
+};
+const addToAmountDb = async (id, user) => {
   try {
-    dispatch(start());
     const data = (await userRequest.get("/carts/find/" + user.currentUser._id))
       .data;
 
@@ -91,15 +65,11 @@ const addToAmountDb = async (id, user, dispatch) => {
     const res = await userRequest.put("/carts/" + data._id, {
       products: mp,
     });
-    dispatch(addAmount(id));
-    dispatch(success());
-  } catch (e) {
-    dispatch(failure());
-  }
+    return res.request.status;
+  } catch (e) {}
 };
 const removeAmounfromDb = async (id, user, dispatch) => {
   try {
-    dispatch(start());
     const data = (await userRequest.get("/carts/find/" + user.currentUser._id))
       .data;
 
@@ -121,39 +91,27 @@ const removeAmounfromDb = async (id, user, dispatch) => {
     const res = await userRequest.put("/carts/" + data._id, {
       products: mp,
     });
-    dispatch(removeAmount(id));
-    dispatch(success());
-  } catch (e) {
-    dispatch(failure());
-  }
+    return res.request.status;
+  } catch (e) {}
 };
-const login = async (dispatch, email, password, navigate) => {
+const login = async (email, password) => {
   try {
-    dispatch(loginStart());
-    let res1 = await publicRequest.post("/auth/login", {
+    const res1 = await publicRequest.post("/auth/login", {
       email,
       password,
     });
     const user = res1.data;
-    let res2 = await userRequest.get("/carts/find/" + user._id);
-    let res3 = await userRequest.get("/wishlists/find/" + user._id);
-    dispatch(loginSucess(user));
-    navigate("/");
-    dispatch(addList(res3.data.products));
-    dispatch(addProducts(res2.data.products));
+    const res2 = await userRequest.get("/carts/find/" + user._id);
+    const res3 = await userRequest.get("/wishlists/find/" + user._id);
+    const card = res2.data;
+    const whishlist = res3.data;
+    return [user, card, whishlist];
   } catch (e) {
-    dispatch(loginFailure());
+  
+    return null;
   }
 };
-const handleCart = async (
-  product,
-  user,
-  amount,
-  size,
-  color,
-  dispatch,
-  navigate
-) => {
+const handleCart = async (product, user, amount, size, color) => {
   if (user.currentUser) {
     const productToAdd = {
       productId: product._id,
@@ -165,7 +123,6 @@ const handleCart = async (
     };
 
     try {
-      
       const res = await userRequest.get("/carts/find/" + user.currentUser._id);
 
       const userId = res.data._id;
@@ -173,18 +130,15 @@ const handleCart = async (
         products: [...res.data.products, productToAdd],
       });
 
-      dispatch(
-        addProduct({
-          ...productToAdd,
-          _id: ress.data.products[ress.data.products.length - 1]._id,
-        })
-      );
+      return {
+        ...productToAdd,
+        _id: ress.data.products[ress.data.products.length - 1]._id,
+      };
     } catch (e) {
-      console.log("error");
+      return;
     }
   }
-
-  navigate("/login");
+  return;
 };
 async function getProduct(id, setProduct, setColor, setSize) {
   const res = await publicRequest.get(`/products/find/${id}`);
@@ -192,9 +146,9 @@ async function getProduct(id, setProduct, setColor, setSize) {
   setColor(res.data.color[0]);
   setSize(res.data.size[0]);
 }
-const createAcount = async (e, state, navigate, reduxDiapatsh) => {
-  e.preventDefault();
 
+
+const createAcount = async (state) => {
   Object.values(state).forEach((input) => {
     return !input && alert("you must fill all inputs");
   });
@@ -202,28 +156,20 @@ const createAcount = async (e, state, navigate, reduxDiapatsh) => {
     return alert("passwords do not confirm");
   }
   try {
-    reduxDiapatsh(signUpStart());
     const res = await publicRequest.post("/auth/register", {
       name: `${state.name} ${state.lastName}`,
       email: state.email,
       password: state.password,
     });
-
-    reduxDiapatsh(signUpSucess());
   } catch (e) {
-    reduxDiapatsh(signUpFailure());
     return alert("could not register please try again");
   }
   try {
-    reduxDiapatsh(loginStart());
     let ress = await publicRequest.post("/auth/login", {
       password: state.password,
       email: state.email,
     });
     const user = ress.data;
-   
-    reduxDiapatsh(loginSucess(user));
-
     await publicRequest.post("/carts", {
       userId: user._id,
       products: [],
@@ -232,13 +178,10 @@ const createAcount = async (e, state, navigate, reduxDiapatsh) => {
       userId: user._id,
       products: [],
     });
-    navigate("/user");
-  } catch {
-    reduxDiapatsh(loginFailure());
-    navigate("/login");
-  }
+    return ress;
+  } catch {}
 };
-const removeFromDbList = async (id,user,dispatch) => {
+const removeFromDbList = async (id,user) => {
   if (user.currentUser) {
     try {
       let res = await userRequest.get(
@@ -252,16 +195,38 @@ const removeFromDbList = async (id,user,dispatch) => {
         pre.push(acc);
         return pre;
       }, []);
-      await userRequest.put("/wishlists/" + res.data._id, {
+      return await userRequest.put("/wishlists/" + res.data._id, {
         ...res.data,
         products: temp,
       });
-      dispatch(deleteById(id));
+     
+    } catch {}
+  }
+};
+const addToWhishlistDb = async (user, item) => {
+  if (user.currentUser) {
+    try {
+      const res = await userRequest.get(
+        "/wishlists/find/" + user.currentUser._id
+      );
+      const products = res.data.products;
+      const isInList = res.data.products.reduce((pre, acc) => {
+        if (acc._id === item._id) {
+          return true;
+        }
+        return pre;
+      }, false);
+      if (!isInList) {
+        const r = await userRequest.put("/wishlists/" + res.data._id, {
+          products: [...products, item],
+        });
+        return r.request.status;
+      }
     } catch {}
   }
 };
 export {
-  getProducts,
+  getProductsApiCall,
   removeFromDbCart,
   clearDbCart,
   addToAmountDb,
@@ -270,5 +235,6 @@ export {
   handleCart,
   getProduct,
   createAcount,
-  removeFromDbList
+  removeFromDbList,
+  addToWhishlistDb,
 };

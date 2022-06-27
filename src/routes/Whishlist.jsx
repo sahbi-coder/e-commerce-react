@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userRequest } from "../requestMethods";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { removeFromDbList } from "../apiCalls";
 import { deleteById } from "../redux/wishlistSlice";
+
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
@@ -22,14 +23,14 @@ const Product = styled.div`
 
 const Left = styled.div`
   flex: 1;
-  ${mobile({ display:'flex',justifyContent:'center'})};
+  ${mobile({ display: "flex", justifyContent: "center" })};
 `;
 const Right = styled.div`
   flex: 4;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  ${mobile({ alignItems:'center'})};
+  ${mobile({ alignItems: "center" })};
 `;
 const Hr = styled.hr`
   background-color: #eee;
@@ -46,46 +47,29 @@ const Button = styled.button`
   cursor: pointer;
 `;
 const ProductName = styled.div`
-padding: 5px;
+  padding: 5px;
 
-${mobile({ justifyContent:'center',display:'flex',width:'250px'})};
+  ${mobile({ justifyContent: "center", display: "flex", width: "250px" })};
 `;
 const ProductId = styled.div`
-padding: 5px;
-${mobile({ justifyContent:'center',display:'flex'})};
+  padding: 5px;
+  ${mobile({ justifyContent: "center", display: "flex" })};
 `;
 const Image = styled.img`
-
-height: 250px;
+  height: 250px;
 `;
 const Buttons = styled.div`
- ${mobile({ justifyContent:'center',display:'flex'})};
+  ${mobile({ justifyContent: "center", display: "flex" })};
 `;
 
 function Whishlist() {
   const { user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const removeFromDbList = async (id,user,dispatch) => {
-    if (user.currentUser) {
-      try {
-        let res = await userRequest.get(
-          "/wishlists/find/" + user.currentUser._id
-        );
-
-        const temp = res.data.products.reduce((pre, acc) => {
-          if (acc._id === id) {
-            return pre;
-          }
-          pre.push(acc);
-          return pre;
-        }, []);
-        await userRequest.put("/wishlists/" + res.data._id, {
-          ...res.data,
-          products: temp,
-        });
-        dispatch(deleteById(id));
-      } catch {}
+  const removeFromList = async (id, user) => {
+    const res = await removeFromDbList(id, user);
+    if (res.request.status === 200) {
+      dispatch(deleteById(id));
     }
   };
   return (
@@ -95,7 +79,7 @@ function Whishlist() {
           {whishlist.products.map((prod) => {
             return (
               <>
-                <Product>
+                <Product key={prod._id}>
                   <Left>
                     <Image src={prod.img} />
                   </Left>
@@ -108,8 +92,7 @@ function Whishlist() {
                     </ProductId>
                     <Buttons>
                       <Button
-                        onClick={(e) => {
-                          e.preventDefault();
+                        onClick={() => {
                           navigate(`/product/${prod._id}`);
                         }}
                       >
@@ -117,9 +100,8 @@ function Whishlist() {
                       </Button>
 
                       <Button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeFromDbList(prod._id,user,dispatch);
+                        onClick={() => {
+                          removeFromList(prod._id, user);
                         }}
                       >
                         delete

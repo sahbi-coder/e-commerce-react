@@ -9,6 +9,14 @@
 body,
 html {
   width: 100%;
+  overflow-x: hidden;
+}
+@media only screen and (max-width: 760) {
+  #root,
+  body,
+  html {
+    width: 100vw;
+  }
 }
 
 .paginationBttns {
@@ -39,11 +47,14 @@ html {
   background-color: black;
 }
 
-.paginationDisabled a,.paginationDisabled a:hover {
+.paginationDisabled a,
+.paginationDisabled a:hover {
   color: grey;
   background-color: white;
   cursor: not-allowed;
   border: 1px solid grey;
 }
-
-
+.rec-item-wrapper {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
