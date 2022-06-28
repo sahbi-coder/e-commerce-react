@@ -75,6 +75,7 @@ const Group = styled.div`
   background-color: color;
   display: flex;
   flex-direction: column;
+  ${mobile({margin:'20px 0'})}
 `;
 const GroupTitle = styled.div`
   text-align: start;
@@ -96,6 +97,7 @@ const GroupItem = styled.li`
 const ContainerThree = styled.div`
   display: flex;
   padding: 35px;
+  ${mobile({padding:10,paddingRight:35})}
 `;
 const LeftTwo = styled.div`
   flex: 1;
@@ -105,6 +107,7 @@ const RightTwo = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  ${mobile({justifyContent:'flex-start',paddingLeft:40})}
 `;
 function Footer() {
   return (

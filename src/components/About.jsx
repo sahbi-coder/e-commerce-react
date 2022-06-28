@@ -17,6 +17,7 @@ const Title = styled.h4`
 `;
 const MainContainer = styled.div`
   padding: 40px;
+  text-align: center;
 `;
 const FooterContainer = styled.div`
   text-align: end;

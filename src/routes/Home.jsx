@@ -5,19 +5,13 @@ import Slider from "../components/Slider";
 import Categories from "../components/Categories";
 import ProductsSlider from "../components/ProcuctsSlider";
 import { useEffect, useState } from "react";
-import { getProductsApiCall } from "../apiCalls";
 
-function Home() {
-  const [products, setProducts] = useState([]);
+
+
+function Home({products}) {
+ 
   const [newest, setNewest] = useState([]);
-  const getProducts = async () => {
-    const p = await getProductsApiCall(null,null);
-    setProducts(p);
-  };
-  useEffect(() => {
-    getProducts();
-  
-  }, []);
+ 
   useEffect(() => {
     setNewest(
       products.sort(
@@ -32,7 +26,7 @@ function Home() {
       <Slider />
       <Categories />
       <ProductsSlider title="latest products" products={newest} />
-      {/* <ProductsSlider title='latest prosucts' products={products} /> */}
+      
       <Footer />
     </>
   );

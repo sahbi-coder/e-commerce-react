@@ -15,6 +15,7 @@ import {
   addAmount,
   removeAmount,
 } from "../redux/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -138,6 +139,7 @@ const SmallButtom = styled.button`
 const Cart = () => {
   const { cart, user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const add = async(id, user) => {
 
     dispatch(start());
@@ -257,7 +259,7 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <Button onClick={()=>{navigate('/payment')}}>CHECKOUT NOW</Button>
           </Summary>
         </Container>
       )}
