@@ -4,6 +4,9 @@ const whishlistSlice = createSlice({
   name: "wishlist",
   initialState: {
     products: [],
+    isFeching:false,
+    error:false,
+  
   },
   reducers: {
     addToList: (state, action) => {
@@ -35,7 +38,25 @@ const whishlistSlice = createSlice({
 
       state.products = temp;
     },
+    wishlistNotCreated:(state,action)=>{
+      state.created = false
+    },
+    wishlistCreatedSuccess:(state,action)=>{
+      state.created = true
+    },
+    success:(state,action)=>{
+      state.isFeching = false
+      state.error = true
+    },
+    start:(state,action)=>{
+      state.isFeching = true
+      state.error =false
+    },
+    failure:(state,action)=>{
+      state.isFeching = false
+      state.error = true
+    },
   },
 });
-export const { addToList, deleteAll, deleteById,addList } = whishlistSlice.actions;
+export const { addToList, deleteAll, deleteById,addList,start,failure,success} = whishlistSlice.actions;
 export default whishlistSlice.reducer;

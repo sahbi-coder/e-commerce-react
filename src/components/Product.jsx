@@ -1,13 +1,16 @@
 import {
   FavoriteBorderOutlined,
   SearchOutlined,
-  ShoppingCartOutlined,
+  
 } from "@material-ui/icons";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWhishlistDb } from "../apiCalls";
 import { addToList } from "../redux/wishlistSlice";
+import {useNavigate} from 'react-router-dom'
+
+
 
 const Info = styled.div`
   opacity: 0;
@@ -75,7 +78,13 @@ const Price = styled.div`
 const Product = ({ item }) => {
   const { user } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const addToWhishlist = async (user, item) => {
+    if(!user.currentUser){
+      return navigate('/login')
+    }
+   
     const responseStatus = await addToWhishlistDb(user, item);
     if (responseStatus === 200) {
       dispatch(addToList(item));

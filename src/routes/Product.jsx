@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { handleCart, getProduct } from "../apiCalls";
 import { addProduct,start,success,failure } from "../redux/cartSlice";
 
+
 const Container = styled.div``;
 
 const Wrapper = styled.div`
@@ -139,13 +140,25 @@ const Product = () => {
   };
 
   useEffect(() => {
-    getProduct(id, setProduct, setColor, setSize);
+   
+    const reactGetProduct = async(id) => {
+
+      const res = await getProduct(id);
+      if(res.request.status===200) {
+
+      setProduct(res.data);
+      setColor(res.data.color[0]);
+      setSize(res.data.size[0]);
+      }
+      }
+    reactGetProduct(id)  
   }, []);
 
   const reduxHandleCart = async (product, user, amount, size, color) => {
-    if(!user){
+    if(!user.currentUser){
       return navigate('/login')
     }
+
     dispatch(start())
     const cardProduct = await handleCart(product, user, amount, size, color);
     if(cardProduct){

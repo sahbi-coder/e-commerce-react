@@ -139,12 +139,11 @@ const SmallButtom = styled.button`
 const Cart = () => {
   const { cart, user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
-  const add = async(id, user) => {
-
+  const navigate = useNavigate();
+  const add = async (id, user) => {
     dispatch(start());
 
-    const statusCode = await  addToAmountDb(id, user);
+    const statusCode = await addToAmountDb(id, user);
     if (statusCode === 200) {
       dispatch(success());
       dispatch(addAmount(id));
@@ -152,9 +151,8 @@ const Cart = () => {
     }
     dispatch(failure());
   };
-  
-  const remove = async (id, user) => {
 
+  const remove = async (id, user) => {
     dispatch(start());
 
     const statusCode = await removeAmounfromDb(id, user);
@@ -165,7 +163,6 @@ const Cart = () => {
     }
     dispatch(failure());
   };
-  
 
   const deleteOne = async (id, user) => {
     dispatch(start());
@@ -215,7 +212,7 @@ const Cart = () => {
                         </SmallButtom>
                         <ProductAmount>{prod.amount}</ProductAmount>
                         <SmallButtom
-                          onClick={(e) => {
+                          onClick={() => {
                             remove(prod._id, user);
                           }}
                           disabled={cart.isFetching}
@@ -259,7 +256,13 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button onClick={()=>{navigate('/payment')}}>CHECKOUT NOW</Button>
+            <Button
+              onClick={() => {
+                cart.total && user.currentUser && navigate("/payment/form");
+              }}
+            >
+              CHECKOUT NOW
+            </Button>
           </Summary>
         </Container>
       )}

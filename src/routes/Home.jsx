@@ -12,6 +12,7 @@ function Home({products}) {
  
   const [newest, setNewest] = useState([]);
  
+ 
   useEffect(() => {
     setNewest(
       products.sort(

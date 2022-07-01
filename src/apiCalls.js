@@ -1,6 +1,5 @@
 import { publicRequest, userRequest } from "./requestMethods";
 
-
 const getProductsApiCall = async (ctg, division) => {
   try {
     const res = await publicRequest.get(
@@ -68,7 +67,7 @@ const addToAmountDb = async (id, user) => {
     return res.request.status;
   } catch (e) {}
 };
-const removeAmounfromDb = async (id, user, dispatch) => {
+const removeAmounfromDb = async (id, user) => {
   try {
     const data = (await userRequest.get("/carts/find/" + user.currentUser._id))
       .data;
@@ -95,21 +94,14 @@ const removeAmounfromDb = async (id, user, dispatch) => {
   } catch (e) {}
 };
 const login = async (email, password) => {
-  try {
-    const res1 = await publicRequest.post("/auth/login", {
+  
+  
+    return await publicRequest.post("/auth/login", {
       email,
       password,
     });
-    const user = res1.data;
-    const res2 = await userRequest.get("/carts/find/" + user._id);
-    const res3 = await userRequest.get("/wishlists/find/" + user._id);
-    const card = res2.data;
-    const whishlist = res3.data;
-    return [user, card, whishlist];
-  } catch (e) {
-  
-    return null;
-  }
+    
+ 
 };
 const handleCart = async (product, user, amount, size, color) => {
   if (user.currentUser) {
@@ -140,13 +132,10 @@ const handleCart = async (product, user, amount, size, color) => {
   }
   return;
 };
-async function getProduct(id, setProduct, setColor, setSize) {
-  const res = await publicRequest.get(`/products/find/${id}`);
-  setProduct(res.data);
-  setColor(res.data.color[0]);
-  setSize(res.data.size[0]);
+async function getProduct(id) {
+  return await publicRequest.get(`/products/find/${id}`);
+  
 }
-
 
 const createAcount = async (state) => {
   Object.values(state).forEach((input) => {
@@ -156,32 +145,22 @@ const createAcount = async (state) => {
     return alert("passwords do not confirm");
   }
   try {
-    const res = await publicRequest.post("/auth/register", {
+     await publicRequest.post("/auth/register", {
       name: `${state.name} ${state.lastName}`,
       email: state.email,
       password: state.password,
     });
   } catch (e) {
-    return alert("could not register please try again");
+    return alert("could not register please try again or later");
   }
-  try {
-    let ress = await publicRequest.post("/auth/login", {
-      password: state.password,
-      email: state.email,
-    });
-    const user = ress.data;
-    await publicRequest.post("/carts", {
-      userId: user._id,
-      products: [],
-    });
-    await userRequest.post("/wishlists", {
-      userId: user._id,
-      products: [],
-    });
-    return ress;
-  } catch {}
+ 
+
+  return await publicRequest.post("/auth/login", {
+    password: state.password,
+    email: state.email,
+  });
 };
-const removeFromDbList = async (id,user) => {
+const removeFromDbList = async (id, user) => {
   if (user.currentUser) {
     try {
       let res = await userRequest.get(
@@ -199,12 +178,11 @@ const removeFromDbList = async (id,user) => {
         ...res.data,
         products: temp,
       });
-     
     } catch {}
   }
 };
 const addToWhishlistDb = async (user, item) => {
-  if (user.currentUser) {
+  if (user&&user.currentUser) {
     try {
       const res = await userRequest.get(
         "/wishlists/find/" + user.currentUser._id
@@ -225,6 +203,35 @@ const addToWhishlistDb = async (user, item) => {
     } catch {}
   }
 };
+const getCardDb = async (userId) => {
+  return await userRequest.get("/carts/find/" + userId);
+};
+const getWishlist = async (userId) => {
+  return await userRequest.get("/wishlists/find/" + userId);
+};
+const postOrder = async (order) => {
+  return await userRequest.post("/orders", order);
+};
+const createCart = async (userId) => {
+  
+    const res = await publicRequest.post("/carts", {
+      userId,
+      products: [],
+    });
+
+    return res;
+  
+};
+const createWishlist = async (userId) => {
+  
+    const res = await publicRequest.post("/wishlists", {
+      userId,
+      products: [],
+    });
+
+    return res;
+  
+};
 export {
   getProductsApiCall,
   removeFromDbCart,
@@ -237,4 +244,10 @@ export {
   createAcount,
   removeFromDbList,
   addToWhishlistDb,
+  getCardDb,
+  postOrder,
+  createCart,
+  createWishlist,
+  getWishlist,
+
 };

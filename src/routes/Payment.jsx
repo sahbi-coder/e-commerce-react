@@ -1,9 +1,9 @@
-import StripeContainer from "../components/StripeContainer";
 
+import {Outlet} from 'react-router-dom'
 
 function Payment() {
   return (
-    <StripeContainer/>
+   <Outlet/>
   )
 }
 

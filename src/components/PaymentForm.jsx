@@ -1,7 +1,10 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import axios from "axios";
-import React, { useState } from "react";
+import { useState,useEffect } from "react";
 import styled from "styled-components";
+import { getCardDb, postOrder } from "../apiCalls";
+import { useSelector } from "react-redux";
+import { userRequest } from "../requestMethods";
+import{useNavigate} from 'react-router-dom'
 
 const Container = styled.div`
   height: 100vh;
@@ -11,22 +14,22 @@ const Container = styled.div`
   align-items: center;
 `;
 const Form = styled.form`
-   height:50vh;
-   width:50vw;
-   display: flex;
-   justify-content: space-between;
-   flex-direction: column;
-   align-items: stretch;
-   max-width: 550px;
-
+  height: 50vh;
+  width: 50vw;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
+  max-width: 550px;
 `;
 const Address = styled.textarea`
-width:100%;
-margin: 10px 0;
-`
+  width: 100%;
+  resize: vertical;
+  margin: 10px 0;
+`;
 const CountryCode = styled.input`
-width:100%;
-margin: 10px 0;
+  width: 100%;
+  margin: 10px 0;
 `;
 
 const PhoneNumber = styled.input`
@@ -34,30 +37,31 @@ const PhoneNumber = styled.input`
   &::-webkit-inner-spin-button {
     display: none;
   }
-  width:100%;
+  width: 100%;
   margin: 10px 0;
 `;
 const Label = styled.label`
-    width:100%;
-    text-align: start;
-    font-size: 9px;
-    
-`
+  width: 100%;
+  text-align: start;
+  font-size: 9px;
+`;
 const Button = styled.button`
-width:100%;
-border:none;
-color: white;
-background-color: black;
-padding: 5px;
-border-radius: 5px;
-margin:10px 0;
+  width: 100%;
+  border: none;
+  color: white;
+  background-color: black;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px 0;
+  cursor: pointer;
 `;
 const FormGroup = styled.fieldset`
-width:100%;
-padding:10px;
+  width: 100%;
+  padding: 10px;
 `;
 const FormRow = styled.div`
-width:100%;`;
+  width: 100%;
+`;
 const CARD_OPTIONS = {
   iconStyle: "solid",
   style: {
@@ -80,15 +84,24 @@ const CARD_OPTIONS = {
 
 export default function PaymentForm() {
   const [success, setSuccess] = useState(false);
-  const [addresss,setAdress]=useState('')
-  const [code,setCode]=useState(1)
-  const [number,setNumber]=useState(0)
-  
+  const [error, setError] = useState(null);
+  const navigate = useNavigate()
+  const {user ,order}= useSelector((state) => state);
   const stripe = useStripe();
   const elements = useElements();
 
+
+  useEffect(()=>{
+    if(!order.orderToAdd){
+      navigate('/payment/form')
+    }
+
+  },[])
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardElement),
@@ -97,23 +110,23 @@ export default function PaymentForm() {
     if (!error) {
       try {
         const { id } = paymentMethod;
-        const response = await axios.post(
-          "http://localhost:5000/api/payments",
-          {
-            amount: 1000,
-            id,
-          }
-        );
+        const response = await userRequest.post("/payments", {
+          amount: 1000,
+          id,
+        });
 
         if (response.data.success) {
           console.log("Successful payment");
           setSuccess(true);
+
+         
         }
       } catch (error) {
         console.log("Error", error);
       }
     } else {
       console.log(error.message);
+      setError(error);
     }
   };
 
@@ -126,33 +139,17 @@ export default function PaymentForm() {
               <CardElement options={CARD_OPTIONS} />
             </FormRow>
           </FormGroup>
-          <FormGroup>
-            <FormRow>
-                <Label for='code'/>your country code:<Label/>
-              <CountryCode id='code'type="text" value="+1" name="country code" onChange={(e)=>setCode(e.target.value)} />
-            </FormRow>
-            <FormRow>
-            <Label for='number'/>your phone number:<Label/>
-              <PhoneNumber
-                id='number'
-                type="number"
-                max="20"
-                name="phone number"
-                placeholder="your phone number"
-                onChange={(e)=>setNumber(e.target.value)}
-              />
-            </FormRow>
-            <Label for='address'/>your address:<Label/>
-            <Address id='address' rows={5} type="text" placeholder="your address" onChange={(e)=>setAdress(e.target.value)}></Address>
-          </FormGroup>
+
+          {error && (
+            <div>
+              <h2>{error.message}</h2>
+            </div>
+          )}
           <Button>Pay</Button>
         </Form>
       ) : (
         <div>
-          <h2>
-            You just bought a sweet spatula congrats this is the best decision
-            of you're life
-          </h2>
+          <h2>you 've paid with success</h2>
         </div>
       )}
     </Container>

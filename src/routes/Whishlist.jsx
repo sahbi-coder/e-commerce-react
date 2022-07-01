@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { removeFromDbList } from "../apiCalls";
-import { deleteById } from "../redux/wishlistSlice";
+import { deleteById,start,success,failure } from "../redux/wishlistSlice";
 
 const Container = styled.div`
   display: flex;
@@ -67,10 +67,14 @@ function Whishlist() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const removeFromList = async (id, user) => {
+    dispatch(start())
     const res = await removeFromDbList(id, user);
     if (res.request.status === 200) {
       dispatch(deleteById(id));
+      dispatch(success())
+      return
     }
+    dispatch(failure())
   };
   return (
     <>
@@ -103,6 +107,7 @@ function Whishlist() {
                         onClick={() => {
                           removeFromList(prod._id, user);
                         }}
+                        disabled={whishlist.isFetching}
                       >
                         delete
                       </Button>

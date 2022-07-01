@@ -3,9 +3,18 @@ import { mobile } from "../responsive";
 import { useReducer, useEffect } from "react";
 import { createAcount } from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
-import { init } from "../redux/userSlice";
+import { addProducts } from "../redux/cartSlice";
+import { addList } from "../redux/wishlistSlice";
 import { useNavigate } from "react-router-dom";
-import { loginSucess, loginStart, loginFailure } from "../redux/userSlice";
+import {
+  loginSucess,
+  loginStart,
+  loginFailure,
+  init,
+} from "../redux/userSlice";
+import { createCart, createWishlist } from "../apiCalls";
+
+
 
 const Container = styled.div`
   width: 100vw;
@@ -110,7 +119,8 @@ const Register = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const reduxDispatch = useDispatch();
   const navigate = useNavigate();
-  const { isFetshing, error, currentUser } = useSelector((state) => state.user);
+  const { isFetshing, currentUser } = useSelector((state) => state.user);
+
   useEffect(() => {
     dispatch(init());
   }, []);
@@ -123,15 +133,22 @@ const Register = () => {
   const reduxCreateAcount = async (state) => {
     reduxDispatch(loginStart());
     const res = await createAcount(state);
-    
-    if (!res) {
+
+    if (res && res.request.status !== 200) {
       return reduxDispatch(loginFailure());
     }
-    if (res.request.status === 200) {
+    if (res && res.request.status === 200) {
+      
+      await initAcount(res.data._id)
       return reduxDispatch(loginSucess(res.data));
     }
     reduxDispatch(loginFailure());
+  };
+  const initAcount = async (id) => {
     
+     await createCart(id);
+     await createWishlist(id);
+  
   };
 
   return (

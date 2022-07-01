@@ -118,7 +118,9 @@ const Cart = () => {
                 >
                   CLEAR ALL
                 </TopButton>
-                <TopButton type="filled">CHECKOUT NOW</TopButton>
+                <TopButton type="filled"   onClick={() => {
+                cart.total && user.currentUser && navigate("/payment/form");
+              }}>CHECKOUT NOW</TopButton>
               </ButtonWrap>
             </>
           )}

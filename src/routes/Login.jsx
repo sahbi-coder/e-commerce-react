@@ -4,15 +4,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { init } from "../redux/userSlice";
 import { useState, useEffect } from "react";
 import { Link as L, useNavigate } from "react-router-dom";
-import { addList } from "../redux/wishlistSlice";
-import {
-  loginSucess,
-  loginStart,
-  loginFailure
- 
-} from "../redux/userSlice";
 import { addProducts } from "../redux/cartSlice";
-import { login } from "../apiCalls";
+import { addList } from "../redux/wishlistSlice";
+
+import { loginSucess, loginStart, loginFailure } from "../redux/userSlice";
+
+import { login, getWishlist, getCardDb } from "../apiCalls";
 
 const Container = styled.div`
   width: 100vw;
@@ -88,23 +85,40 @@ const Login = () => {
   useEffect(() => {
     if (currentUser) {
       navigate("/");
+      
+      
     }
   }, [currentUser]);
-
-  const reduxLogin = async (email,password)=>{
-
-    dispatch(loginStart());
-    const res = await login( email, password);
-    if(res){
+  const initAcount = async (id) => {
+    const res = [];
+    try {
       
-      dispatch(loginSucess(res[0]));
-      dispatch(addProducts(res[1].products));
-      dispatch(addList(res[2].products));
-      navigate("/");
-      return
+      const res1 = await getCardDb(id);
+      const res2 = await getWishlist(id);
+      
+      res.push(res1.data.products);
+      res.push(res2.data.products);
+     
+    } catch {}
+    if (res.length === 2) {
+      
+      dispatch(addProducts(res[0]));
+      dispatch(addList(res[1]));
     }
-    dispatch(loginFailure())
-  }
+  };
+
+  const reduxLogin = async (email, password) => {
+    dispatch(loginStart());
+    const res = await login(email, password);
+    
+    if (res.request.status === 200) {
+      dispatch(loginSucess(res.data));
+      await initAcount(res.data._id);
+
+      return;
+    }
+    dispatch(loginFailure());
+  };
 
   return (
     <Container>
@@ -119,13 +133,13 @@ const Login = () => {
           />
           <Input
             placeholder="password"
-            type='password'
+            type="password"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
           <Button
-            onClick={() => reduxLogin(email,password)}
+            onClick={() => reduxLogin(email, password)}
             disabled={isFetshing}
           >
             LOGIN
