@@ -8,9 +8,13 @@ import { useEffect, useState } from "react";
 
 
 
+
 function Home({products}) {
- 
+
   const [newest, setNewest] = useState([]);
+
+
+ 
  
  
   useEffect(() => {
@@ -26,8 +30,7 @@ function Home({products}) {
       <Navbar />
       <Slider />
       <Categories />
-      <ProductsSlider title="latest products" products={newest} />
-      
+      <ProductsSlider title="latest products" products={newest} />  
       <Footer />
     </>
   );

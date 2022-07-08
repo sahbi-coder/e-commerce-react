@@ -86,8 +86,8 @@ const Product = ({ item }) => {
       return navigate('/login')
     }
    
-    const responseStatus = await addToWhishlistDb(user, item);
-    if (responseStatus === 200) {
+    const res = await addToWhishlistDb(user, item);
+    if (res&&res.request.status === 200) {
       dispatch(addToList(item));
     }
   };

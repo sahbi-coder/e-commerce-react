@@ -108,8 +108,6 @@ function OrderForm() {
       };
       const res2 = await getOrders(user.currentUser._id);
 
-     
-
       if (res2.request.status === 200) {
         setError(false);
         setSucess(true);
@@ -157,16 +155,18 @@ function OrderForm() {
               onChange={(e) => setNumber(e.target.value)}
             />
           </FormRow>
-          <Label htmlFor="address" />
-          your address:
-          <Label />
-          <Address
-            id="address"
-            rows={5}
-            type="text"
-            placeholder="your address"
-            onChange={(e) => setAdress(e.target.value)}
-          ></Address>
+          <FormRow>
+            <Label htmlFor="address" />
+            your address:
+            <Label />
+            <Address
+              id="address"
+              rows={5}
+              type="text"
+              placeholder="your address"
+              onChange={(e) => setAdress(e.target.value)}
+            ></Address>
+          </FormRow>
         </FormGroup>
         <Button disabled={success}>NEXT</Button>
         {error && <Message>oops! something went wrong</Message>}

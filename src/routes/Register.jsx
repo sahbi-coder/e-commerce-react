@@ -3,18 +3,17 @@ import { mobile } from "../responsive";
 import { useReducer, useEffect } from "react";
 import { createAcount } from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
-import { addProducts } from "../redux/cartSlice";
-import { addList } from "../redux/wishlistSlice";
 import { useNavigate } from "react-router-dom";
 import {
   loginSucess,
   loginStart,
   loginFailure,
-  init,
+  logOut,
 } from "../redux/userSlice";
-import { createCart, createWishlist } from "../apiCalls";
-
-
+import { addProducts, clearCart } from "../redux/cartSlice";
+import { addList, deleteAll } from "../redux/wishlistSlice";
+import { setOrders, clearOrders } from "../redux/orderSlice";
+import { login, getCardDb, getWishlist, getOrders } from "../apiCalls";
 
 const Container = styled.div`
   width: 100vw;
@@ -121,34 +120,54 @@ const Register = () => {
   const navigate = useNavigate();
   const { isFetshing, currentUser } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    dispatch(init());
-  }, []);
-  useEffect(() => {
-    if (currentUser) {
-      navigate("/");
-    }
-  }, [currentUser]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     const init = async () => {
+  //       const id = currentUser._id;
+  //       console.log(currentUser)
 
-  const reduxCreateAcount = async (state) => {
+  //       try {
+  //         const res1 = await getCardDb(id);
+  //         const res2 = await getWishlist(id);
+  //         const res3 = await getOrders(id);
+
+  //         reduxDispatch(addProducts(res1.data.products));
+  //         reduxDispatch(addList(res2.data.products));
+  //         reduxDispatch(setOrders(res3.data.orders));
+
+  //         navigate("/");
+  //       } catch {
+  //         reduxDispatch(logOut());
+  //         reduxDispatch(clearCart());
+  //         reduxDispatch(deleteAll());
+  //         reduxDispatch(clearOrders());
+  //         reduxDispatch(loginFailure());
+  //         navigate("/login");
+  //       }
+  //     };
+  //     init();
+  //   }
+  // }, [currentUser]);
+
+  const reduxCreateAcount = async (e, state) => {
+    e.preventDefault();
     reduxDispatch(loginStart());
     const res = await createAcount(state);
 
-    if (res && res.request.status !== 200) {
+    if (res.request.status !== 201) {
       return reduxDispatch(loginFailure());
     }
-    if (res && res.request.status === 200) {
-      
-      await initAcount(res.data._id)
-      return reduxDispatch(loginSucess(res.data));
+    if (res.request.status === 201) {
+      const res = await login(state.email, state.password);
+
+      if (res.request.status === 200) {
+        reduxDispatch(loginSucess(res.data));
+        return navigate('/')
+      }
+      navigate("/login");
+      return reduxDispatch(loginFailure());
     }
-    reduxDispatch(loginFailure());
-  };
-  const initAcount = async (id) => {
-    
-     await createCart(id);
-     await createWishlist(id);
-  
+
   };
 
   return (
@@ -204,8 +223,8 @@ const Register = () => {
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
           <Button
-            onClick={() => {
-              reduxCreateAcount(state);
+            onClick={(e) => {
+              reduxCreateAcount(e, state);
             }}
             disabled={isFetshing}
           >

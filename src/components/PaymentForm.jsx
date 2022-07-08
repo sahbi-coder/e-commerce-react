@@ -1,10 +1,12 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { getCardDb, postOrder } from "../apiCalls";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { userRequest } from "../requestMethods";
-import{useNavigate} from 'react-router-dom'
+import { useNavigate, useLocation } from "react-router-dom";
+import { addOrder } from "../redux/orderSlice";
+import ReactLoading from "react-loading";
+import { postOrder } from "../apiCalls";
 
 const Container = styled.div`
   height: 100vh;
@@ -15,52 +17,48 @@ const Container = styled.div`
   flex-direction: column;
 `;
 const Form = styled.form`
-  height: 50vh;
   width: 50vw;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   flex-direction: column;
   align-items: stretch;
   max-width: 550px;
 `;
-const Address = styled.textarea`
-  width: 100%;
-  resize: vertical;
-  margin: 10px 0;
-`;
-const CountryCode = styled.input`
-  width: 100%;
-  margin: 10px 0;
-`;
 
-const PhoneNumber = styled.input`
-  &::-webkit-outer-spin-button,
-  &::-webkit-inner-spin-button {
-    display: none;
-  }
-  width: 100%;
-  margin: 10px 0;
-`;
-const Label = styled.label`
-  width: 100%;
-  text-align: start;
-  font-size: 9px;
-`;
 const Button = styled.button`
   width: 100%;
   border: none;
-  color: white;
-  background-color: black;
+
   padding: 5px;
   border-radius: 5px;
   margin: 10px 0;
-  cursor: pointer;
+  color: white;
+  background-color: ${({ isFetching }) =>
+    isFetching ? "rgb(53, 126, 221)" : "black"};
+  cursor: ${({ isFetching }) => (isFetching ? "not-allowed" : "pointer")};
+`;
+const OuterButton = styled.button`
+  width: 40vw;
+  border: none;
+  color: white;
+
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px 0;
+  background-color: ${({ isFetching }) =>
+    isFetching ? "rgb(53, 126, 221)" : "black"};
+  cursor: ${({ isFetching }) => (isFetching ? "not-allowed" : "pointer")};
 `;
 const FormGroup = styled.fieldset`
-  width:100%;
+  width: 100%;
   padding: 10px;
+  margin: 20px 0;
 `;
 const FormRow = styled.div`
+  width: 100%;
+`;
+const Message = styled.div`
+  text-align: center;
   width: 100%;
 `;
 const CARD_OPTIONS = {
@@ -84,10 +82,11 @@ const CARD_OPTIONS = {
 };
 
 export default function PaymentForm() {
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const navigate = useNavigate()
-  const {user ,order}= useSelector((state) => state);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { order } = useSelector((state) => state);
   const stripe = useStripe();
   const elements = useElements();
   const location = useLocation();
@@ -115,18 +114,10 @@ export default function PaymentForm() {
     })(success,navigate,location)
   },[success])
 
-
-  useEffect(()=>{
-    if(!order.orderToAdd){
-      navigate('/payment/form')
-    }
-
-  },[])
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsFeching(true);
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardElement),
@@ -136,15 +127,19 @@ export default function PaymentForm() {
       try {
         const { id } = paymentMethod;
         const response = await userRequest.post("/payments", {
-          amount: 1000,
+          amountArray: location.state.amountArray,
           id,
         });
 
         if (response.data.success) {
           console.log("Successful payment");
-          setSuccess(true);
-
          
+         
+            setSuccess(response.data);           
+            dispatch(addOrder());
+            setError(null);
+            setIsFeching(false);
+          
         }
       } catch (error) {
         console.log("Error", error);
@@ -154,6 +149,7 @@ export default function PaymentForm() {
     } else {
       console.log(error.message);
       setError(error);
+      setIsFeching(false);
     }
   };
 
@@ -176,17 +172,19 @@ export default function PaymentForm() {
           </FormGroup>
 
           {error && (
-            <div>
-              <h2>{error.message}</h2>
-            </div>
+            <FormGroup>
+              <FormRow>
+                <Message style={{ color: "red" }}>
+                  <h2>{error.message}</h2>
+                </Message>
+              </FormRow>
+            </FormGroup>
           )}
-          <Button>Pay</Button>
+
+          <Button disabled={isFetching} isFetching={isFetching}>
+            Pay
+          </Button>
         </Form>
-      ) }
-      { success &&(
-        <div>
-          <h2>you 've paid with success</h2>
-        </div>
       )}
       <OuterButton
         onClick={() => {

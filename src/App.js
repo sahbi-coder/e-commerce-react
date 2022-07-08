@@ -42,7 +42,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route
         path="/login"
-        element={!currentUser ? <Login /> : <Navigate to="/" />}
+        element={ <Login /> }
       />
     
       <Route path="/payment" element={<Payment />}>

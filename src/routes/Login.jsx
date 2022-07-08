@@ -5,10 +5,18 @@ import { useState, useEffect } from "react";
 import { Link as L, useNavigate } from "react-router-dom";
 import { addProducts } from "../redux/cartSlice";
 import { addList } from "../redux/wishlistSlice";
-
-import { loginSucess, loginStart, loginFailure } from "../redux/userSlice";
-
-import { login, getWishlist, getCardDb } from "../apiCalls";
+import { setOrders } from "../redux/orderSlice";
+import {
+  getCardDbAfterLogin,
+  getWishlistAfterLogin,
+  getOrdersAfterLogin,
+} from "../apiCalls";
+import { clearCart } from "../redux/cartSlice";
+import { deleteAll } from "../redux/wishlistSlice";
+import { clearOrders } from "../redux/orderSlice";
+import { logOut, loginFailure } from "../redux/userSlice";
+import { loginSucess, loginStart, init } from "../redux/userSlice";
+import { login } from "../apiCalls";
 
 const Container = styled.div`
   width: 100vw;
@@ -86,36 +94,37 @@ const Login = () => {
       
       
     }
-  }, [currentUser]);
-  const initAcount = async (id) => {
-    const res = [];
-    try {
-      
-      const res1 = await getCardDb(id);
-      const res2 = await getWishlist(id);
-      
-      res.push(res1.data.products);
-      res.push(res2.data.products);
-     
-    } catch {}
-    if (res.length === 2) {
-      
-      dispatch(addProducts(res[0]));
-      dispatch(addList(res[1]));
-    }
-  };
+  }, []);
 
-  const reduxLogin = async (email, password) => {
+  const reduxLogin = async (e, email, password) => {
+    e.preventDefault();
     dispatch(loginStart());
-    const res = await login(email, password);
-    
-    if (res.request.status === 200) {
-      dispatch(loginSucess(res.data));
-      await initAcount(res.data._id);
+    try {
+      const res = await login(email, password);
 
-      return;
+      if (res.request.status === 200) {
+        dispatch(loginSucess(res.data));
+        const id = res.data._id
+        const token = res.data.token
+
+        const res1 = await getCardDbAfterLogin(id,token);
+        const res2 = await getWishlistAfterLogin(id,token);
+        const res3 = await getOrdersAfterLogin(id,token);
+
+        dispatch(addProducts(res1.data.products));
+        dispatch(addList(res2.data.products));
+        dispatch(setOrders(res3.data[0].orders));
+        navigate("/");
+      }
+      dispatch(loginFailure());
+    } catch {
+      dispatch(loginFailure());
+      dispatch(logOut());
+      dispatch(clearCart());
+      dispatch(deleteAll());
+      dispatch(clearOrders());
+      dispatch(loginFailure());
     }
-    dispatch(loginFailure());
   };
 
   return (
@@ -137,7 +146,11 @@ const Login = () => {
             }}
           />
           <Button
+<<<<<<< HEAD
             onClick={() => reduxLogin(email, password)}
+=======
+            onClick={(e) => reduxLogin(e, email, password)}
+>>>>>>> test
             disabled={isFetshing}
           >
             LOGIN

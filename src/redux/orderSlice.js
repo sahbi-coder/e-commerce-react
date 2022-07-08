@@ -14,10 +14,13 @@ const orderSlice = createSlice({
   reducers: {
     setOrders:(state,action)=>{
         state.orders = action.payload
+       
 
     },
-    addOrder:(state,action)=>{
-        state.orders  =[...state.orders,{...action.payload}]
+    addOrder:(state)=>{
+      
+        state.orders.push(state.orderToAdd)      
+        state.orderToAdd = null
 
     },
     removeOrder:(state,action)=>{
@@ -72,7 +75,16 @@ const orderSlice = createSlice({
     },
     removeOrderToAdd:(state,action)=>{
         state.orderToAdd = null
+<<<<<<< HEAD
     },
+=======
+        
+    },
+    clearOrders:(state,action)=>{
+        state.orders =[]
+    },
+    
+>>>>>>> test
 
     
   
@@ -88,7 +100,12 @@ export const {
     orderSuccess,
     orderFailure,
     setOrderToAdd,
+<<<<<<< HEAD
     removeOrderToAdd
+=======
+    removeOrderToAdd,
+    clearOrders
+>>>>>>> test
 
 } = orderSlice.actions;
 

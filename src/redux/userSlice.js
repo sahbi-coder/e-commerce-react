@@ -9,8 +9,8 @@ const userSlice = createSlice({
     },
     reducers:{
         init:(state)=>{
-            state.isFetshing = false;
-            state.error = false
+          state.isFetshing= false
+          state.error = false
         },
         loginStart:(state)=>{
             
@@ -43,7 +43,9 @@ const userSlice = createSlice({
             state.error=true;
         },
         logOut:(state)=>{
-            state.currentUser = null
+            state.currentUser = null;
+            state.isFetshing = false;
+            state.error = false
         }
     }
 })
