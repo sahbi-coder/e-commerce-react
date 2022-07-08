@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useSelector, useDispatch } from "react-redux";
-import { init } from "../redux/userSlice";
 import { useState, useEffect } from "react";
 import { Link as L, useNavigate } from "react-router-dom";
 import { addProducts } from "../redux/cartSlice";
@@ -79,10 +78,9 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(init());
-  }, []);
-  useEffect(() => {
     if (currentUser) {
       navigate("/");
       

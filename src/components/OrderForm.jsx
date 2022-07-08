@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { setOrderToAdd } from "../redux/orderSlice";
 import { getCardDb, postOrder } from "../apiCalls";
-import { useSelector } from "react-redux";
-import {useNavigate} from 'react-router-dom'
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getOrders } from "../apiCalls";
 
 const Container = styled.div`
   height: 100vh;
@@ -61,11 +62,11 @@ const FormGroup = styled.fieldset`
 const FormRow = styled.div`
   width: 100%;
 `;
-const Message =styled.div`
-    width:100%;
-    text-align: center;
-    color: hsla(0, 100%, 50%, 0.651);
-`
+const Message = styled.div`
+  width: 100%;
+  text-align: center;
+  color: hsla(0, 100%, 50%, 0.651);
+`;
 
 function OrderForm() {
   const [success, setSucess] = useState(false);
@@ -73,37 +74,59 @@ function OrderForm() {
   const [address, setAdress] = useState("");
   const [countryCode, setCode] = useState(1);
   const [number, setNumber] = useState(0);
-  const {user} = useSelector((state) => state);
-  const navigate = useNavigate()
+  const { user, order } = useSelector((state) => state);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (order.orderToAdd) navigate("/payment/stripe");
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await getCardDb(user.currentUser._id);
 
-      const newProducts = res.data.products.reduce((pre, cur) => {
+      const newProducts = [...res.data.products].reduce((pre, cur) => {
         const { _id, ...others } = cur;
         pre.push(others);
         return pre;
       }, []);
 
+      const amountArray = [...res.data.products].reduce((pre, acc) => {
+        pre.push({ productId: acc.productId, amount: acc.amount });
+        return pre;
+      }, []);
+
       const newOrder = {
-        userId: user.currentUser._id,
         products: newProducts,
         address,
         phone: {
           countryCode,
           number,
         },
-        amount:100
       };
-      const res1 = await postOrder(newOrder);
-      if (res1.request.status === 200) {
-        setError(false)
-        return setSucess(true);
+      const res2 = await getOrders(user.currentUser._id);
+
+     
+
+      if (res2.request.status === 200) {
+        setError(false);
+        setSucess(true);
+        dispatch(setOrderToAdd(newOrder));
+        navigate("/payment/stripe", {
+          state: {
+            amountArray,
+            postParams: {
+              body: { orders: [...res2.data[0].orders, newOrder] },
+              id: res2.data[0]._id,
+            },
+          },
+        });
       }
-    } catch {
+    } catch (e) {
       setError(true);
+      console.log(e);
     }
   };
   return (
@@ -145,8 +168,8 @@ function OrderForm() {
             onChange={(e) => setAdress(e.target.value)}
           ></Address>
         </FormGroup>
-        <Button disabled={success} onClick={()=>{navigate("/payment/stripe")}}>NEXT</Button>
-        {error&& <Message>oops! something went wrong</Message>}
+        <Button disabled={success}>NEXT</Button>
+        {error && <Message>oops! something went wrong</Message>}
       </Form>
     </Container>
   );

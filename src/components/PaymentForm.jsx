@@ -12,6 +12,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `;
 const Form = styled.form`
   height: 50vh;
@@ -56,7 +57,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 const FormGroup = styled.fieldset`
-  width: 100%;
+  width:100%;
   padding: 10px;
 `;
 const FormRow = styled.div`
@@ -89,6 +90,30 @@ export default function PaymentForm() {
   const {user ,order}= useSelector((state) => state);
   const stripe = useStripe();
   const elements = useElements();
+  const location = useLocation();
+  const [isFetching, setIsFeching] = useState(false);
+
+  useEffect(() => {
+    if (!order.orderToAdd) {
+      navigate("/payment/form");
+    }
+  }, []);
+  useEffect(()=>{
+    (async()=>{
+
+      try{
+        if(success&&success.success){
+        const res = await postOrder(location.state.postParams.body,location.state.postParams.id)
+      }
+      }
+      catch{
+        navigate('/backup',{state:{
+          body:location.state.postParams.body,
+          id:location.state.postParams.id
+        }})
+      }
+    })(success,navigate,location)
+  },[success])
 
 
   useEffect(()=>{
@@ -123,6 +148,8 @@ export default function PaymentForm() {
         }
       } catch (error) {
         console.log("Error", error);
+        console.log(location.state)
+        setIsFeching(false);
       }
     } else {
       console.log(error.message);
@@ -132,7 +159,15 @@ export default function PaymentForm() {
 
   return (
     <Container>
-      {!success ? (
+      {isFetching && <ReactLoading type={"spin"} color="rgb(53, 126, 221)" />}
+      {success && (
+        <FormGroup style={{ border: "none" }}>
+          <FormRow style={{ color: "green" }}>
+            <Message>{success.message}</Message>
+          </FormRow>
+        </FormGroup>
+      )}
+      {!success && (
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <FormRow>
@@ -147,11 +182,21 @@ export default function PaymentForm() {
           )}
           <Button>Pay</Button>
         </Form>
-      ) : (
+      ) }
+      { success &&(
         <div>
           <h2>you 've paid with success</h2>
         </div>
       )}
+      <OuterButton
+        onClick={() => {
+          navigate("/");
+        }}
+        disabled={isFetching}
+        isFetching={isFetching}
+      >
+        continue shopping
+      </OuterButton>
     </Container>
   );
 }

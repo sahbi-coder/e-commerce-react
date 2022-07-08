@@ -188,7 +188,7 @@ const addToWhishlistDb = async (user, item) => {
         "/wishlists/find/" + user.currentUser._id
       );
       const products = res.data.products;
-      const isInList = res.data.products.reduce((pre, acc) => {
+      const isInList = products.reduce((pre, acc) => {
         if (acc._id === item._id) {
           return true;
         }
@@ -198,9 +198,12 @@ const addToWhishlistDb = async (user, item) => {
         const r = await userRequest.put("/wishlists/" + res.data._id, {
           products: [...products, item],
         });
-        return r.request.status;
+
+        return r;
       }
-    } catch {}
+    } catch (e) {
+      console.log(e);
+    }
   }
 };
 const getCardDb = async (userId) => {

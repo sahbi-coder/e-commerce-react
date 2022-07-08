@@ -76,7 +76,8 @@ const Price = styled.div`
 `;
 
 const Product = ({ item }) => {
-  const { user } = useSelector((state) => state);
+  const { user} = useSelector((state) => state);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -102,7 +103,7 @@ const Product = ({ item }) => {
         </Icon>
         <Icon
           onClick={() => {
-            addToWhishlist(user, item);
+            addToWhishlist(user,item);
           }}
         >
           <FavoriteBorderOutlined />
