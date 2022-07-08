@@ -75,16 +75,12 @@ const orderSlice = createSlice({
     },
     removeOrderToAdd:(state,action)=>{
         state.orderToAdd = null
-<<<<<<< HEAD
-    },
-=======
         
     },
     clearOrders:(state,action)=>{
         state.orders =[]
     },
     
->>>>>>> test
 
     
   
@@ -100,12 +96,8 @@ export const {
     orderSuccess,
     orderFailure,
     setOrderToAdd,
-<<<<<<< HEAD
-    removeOrderToAdd
-=======
     removeOrderToAdd,
     clearOrders
->>>>>>> test
 
 } = orderSlice.actions;
 

@@ -146,11 +146,7 @@ const Login = () => {
             }}
           />
           <Button
-<<<<<<< HEAD
-            onClick={() => reduxLogin(email, password)}
-=======
             onClick={(e) => reduxLogin(e, email, password)}
->>>>>>> test
             disabled={isFetshing}
           >
             LOGIN
