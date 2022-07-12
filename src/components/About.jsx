@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import Images from "../images";
 const Container = styled.div`
   width: 100%;
   ${mobile({ width: "100vw" })};
@@ -50,19 +51,19 @@ function About() {
       <Gallery>
         <GridItem>
           <img
-            src="https://source.unsplash.com/FpPcoOAk5PI/640x960"
+            src={Images.about1}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
           />
         </GridItem>
         <GridItem>
           <img
-            src="https://source.unsplash.com/mwa_nzFpnJw/640x960"
+            src={Images.about2}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
           />
         </GridItem>
         <GridItem>
           <img
-            src="https://source.unsplash.com/W-7k72ThEr0/640x1137"
+            src={Images.about3}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
           />
         </GridItem>

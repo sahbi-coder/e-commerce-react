@@ -222,6 +222,9 @@ const getOrdersAfterLogin = async (userId, token) => {
 const postOrder = async (order, id) => {
   return await userRequest.put("/orders/" + id, order);
 };
+const postContact = async(contact)=>{
+ return publicRequest.post('/contact',contact)
+}
 
 export {
   getProductsApiCall,
@@ -241,5 +244,6 @@ export {
   getOrders,
   getOrdersAfterLogin,
   getWishlistAfterLogin,
-  getCardDbAfterLogin
+  getCardDbAfterLogin,
+  postContact
 };

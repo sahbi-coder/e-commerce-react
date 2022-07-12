@@ -97,7 +97,7 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      <Products ctg={ctg} sort={sort} filters={filters} itemsPerPage={20}/>
+      <Products ctg={ctg} sort={sort} filters={filters} itemsPerPage={1}/>
  
       <Footer />
     </Container>

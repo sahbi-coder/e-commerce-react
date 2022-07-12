@@ -1,7 +1,7 @@
 import React from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import Slider from "../components/Slider";
+import Video from "../components/Video";
 import Categories from "../components/Categories";
 import ProductsSlider from "../components/ProcuctsSlider";
 import { useEffect, useState } from "react";
@@ -16,7 +16,6 @@ function Home({products}) {
 
  
  
- 
   useEffect(() => {
     setNewest(
       products.sort(
@@ -28,7 +27,7 @@ function Home({products}) {
   return (
     <>
       <Navbar />
-      <Slider />
+      <Video />
       <Categories />
       <ProductsSlider title="latest products" products={newest} />  
       <Footer />

@@ -1,6 +1,6 @@
 import Product from "./routes/Product";
 import Home from "./routes/Home";
-import ProductList from "./routes/ProductList";
+import ProductList from "./routes/Products";
 import Cart from "./routes/Cart";
 import Whishlist from "./routes/Whishlist";
 import CartAndWhisshlist from "./routes/CartAndWhisshlist";
@@ -17,6 +17,9 @@ import { getProductsApiCall } from "./apiCalls";
 import Payment from "./routes/Payment";
 import OrderForm from "./components/OrderForm";
 import StripeContainer from "./components/StripeContainer";
+import ForgotPassword from "./routes/ForgotPassword";
+import ConfirmPassword from "./routes/ConfirmPassword";
+
 import "./App.css";
 function App() {
   const currentUser = useSelector((store) => store.user.currentUser);
@@ -56,6 +59,8 @@ function App() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/categories" element={<Categories products={products} />} />
       <Route path="/user" element={<Dashboard />} />
+      <Route path="/forgot-password/" element={<ForgotPassword />} />
+      <Route path="/forgot-password/:id/:token" element={<ConfirmPassword />} />
     </Routes>
   );
 }

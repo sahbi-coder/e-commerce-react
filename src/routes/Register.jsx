@@ -120,34 +120,6 @@ const Register = () => {
   const navigate = useNavigate();
   const { isFetshing, currentUser } = useSelector((state) => state.user);
 
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     const init = async () => {
-  //       const id = currentUser._id;
-  //       console.log(currentUser)
-
-  //       try {
-  //         const res1 = await getCardDb(id);
-  //         const res2 = await getWishlist(id);
-  //         const res3 = await getOrders(id);
-
-  //         reduxDispatch(addProducts(res1.data.products));
-  //         reduxDispatch(addList(res2.data.products));
-  //         reduxDispatch(setOrders(res3.data.orders));
-
-  //         navigate("/");
-  //       } catch {
-  //         reduxDispatch(logOut());
-  //         reduxDispatch(clearCart());
-  //         reduxDispatch(deleteAll());
-  //         reduxDispatch(clearOrders());
-  //         reduxDispatch(loginFailure());
-  //         navigate("/login");
-  //       }
-  //     };
-  //     init();
-  //   }
-  // }, [currentUser]);
 
   const reduxCreateAcount = async (e, state) => {
     e.preventDefault();

@@ -91,8 +91,6 @@ const Login = () => {
     dispatch(init());
     if (currentUser) {
       navigate("/");
-      
-      
     }
   }, []);
 
@@ -152,7 +150,7 @@ const Login = () => {
             LOGIN
           </Button>
           {error ? <Error>something went wrong ....</Error> : null}
-          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
+          <Link as={L}to='/forgot-password'>DO NOT YOU REMEMBER THE PASSWORD?</Link>
           <Link as={L} to="/register">
             CREATE A NEW ACCOUNT
           </Link>

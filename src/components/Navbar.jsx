@@ -11,6 +11,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import useMobile from "../hooks/useMobile";
 import { mobile } from "../responsive";
 import { divisions, changeDiv } from "../redux/divisionSlice";
+import Images from "../images";
 
 const Container = styled.section`
   position: fixed;
@@ -309,7 +310,7 @@ function Navbar() {
             </SubItem>
           </SubList>
           <SubMenuCard as={Link} to="/about">
-            <SubMenuCardImage src="https://source.unsplash.com/r5xHI_H44aM/640x853" />
+            <SubMenuCardImage src={Images.aboutContact} />
             <SubMenuCardDesc>
               <i>know more about us</i>
             </SubMenuCardDesc>
