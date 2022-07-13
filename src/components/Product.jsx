@@ -1,16 +1,11 @@
-import {
-  FavoriteBorderOutlined,
-  SearchOutlined,
-  
-} from "@material-ui/icons";
+import { FavoriteBorderOutlined, SearchOutlined } from "@material-ui/icons";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWhishlistDb } from "../apiCalls";
 import { addToList } from "../redux/wishlistSlice";
-import {useNavigate} from 'react-router-dom'
-
-
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Info = styled.div`
   opacity: 0;
@@ -76,19 +71,46 @@ const Price = styled.div`
 `;
 
 const Product = ({ item }) => {
-  const { user} = useSelector((state) => state);
+  const { user } = useSelector((state) => state);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const addToWhishlist = async (user, item) => {
-    if(!user.currentUser){
-      return navigate('/login')
+  useEffect(() => {
+    if (success || error) {
+      setTimeout(() => {
+        setError((pre) => false);
+        setSuccess((pre) => false);
+      }, 1000);
     }
-   
-    const res = await addToWhishlistDb(user, item);
-    if (res&&res.request.status === 200) {
-      dispatch(addToList(item));
+  }, [success, error]);
+
+  const addToWhishlist = async (user, item) => {
+    if (!user.currentUser) {
+      return navigate("/login");
+    }
+
+    try {
+      setIsFetching(true);
+      const res = await addToWhishlistDb(user, item);
+      if (!res) {
+        setIsFetching(false);
+        setError(true);
+        return setSuccess(false);
+      }
+      if (res.request.status === 200) {
+        setIsFetching(false);
+        setSuccess(true);
+        setError(false);
+        return dispatch(addToList(item));
+      }
+    } catch {
+      setIsFetching(false);
+      setError(true);
+      return setSuccess(false);
     }
   };
 
@@ -102,6 +124,12 @@ const Product = ({ item }) => {
           </Link>
         </Icon>
         <Icon
+          style={{
+            backgroundColor: `${
+              success ? "#A5D6A7" : error ? "#EF9A9A" : "#e9f5f5"
+            }`,
+            cursor: `${isFetching ? "not-allowed" : "pointer"}`,
+          }}
           onClick={() => {
             addToWhishlist(user,item);
           }}

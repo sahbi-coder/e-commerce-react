@@ -48,8 +48,9 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minMax(270px, 1fr));
   grid-gap: 20px;
-  grid-template-rows: minMax(250px, auto);
+  grid-template-rows: minMax(250px, 250px);
   padding: 5px;
+  
 `;
 
 function Dashboard() {

@@ -5,6 +5,7 @@ import { getProductsApiCall } from "../apiCalls";
 import { mobile } from "../responsive";
 import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
+import useMobile from "../hooks/useMobile";
 
 const Container = styled.div`
   padding: 20px;
@@ -31,10 +32,10 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const division = useSelector((state) => state.division.division);
-
   const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
+  const isMobile = useMobile();
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
@@ -43,12 +44,15 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
   };
 
   const getProducts = async () => {
-    const p = await getProductsApiCall(ctg, division);
-    setProducts(p);
+    const res = await getProductsApiCall(ctg, division);
+    if (res.request.status === 200) {
+      setProducts(res.data.products);
+    }
   };
 
   useEffect(() => {
     getProducts();
+    console.log(products);
   }, [ctg, division]);
   useEffect(() => {
     if (filters && filters.size === "all" && filters.color === "all") {
@@ -119,14 +123,16 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
       </Container>
       <ReactPaginate
         breakLabel="..."
-        nextLabel="next"
+        nextLabel={isMobile ? ">" : "next"}
         onPageChange={handlePageClick}
         pageCount={pageCount}
-        previousLabel="previous"
+        previousLabel={isMobile ? "<" : "previous"}
         containerClassName={"paginationBttns"}
         disabledClassName={"paginationDisabled"}
         activeClassName={"paginationActive"}
         renderOnZeroPageCount={null}
+        marginPagesDisplayed={isMobile ? 1 : 3}
+        pageRangeDisplayed={isMobile ? 1 : 3}
       />
     </OuterContainer>
   );

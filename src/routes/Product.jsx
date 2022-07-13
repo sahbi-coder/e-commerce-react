@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleCart, getProduct } from "../apiCalls";
-import { addProduct,start,success,failure } from "../redux/cartSlice";
+import { addProduct, start, success, failure } from "../redux/cartSlice";
 
 
 const Container = styled.div``;
@@ -128,7 +128,7 @@ const Product = () => {
   const [color, setColor] = useState("");
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
-  const { user,cart } = useSelector((state) => state);
+  const { user, cart } = useSelector((state) => state);
   const navigate = useNavigate();
 
   const handleAmount = (type) => {
@@ -140,34 +140,32 @@ const Product = () => {
   };
 
   useEffect(() => {
-   
-    const reactGetProduct = async(id) => {
-
+    const reactGetProduct = async (id) => {
       const res = await getProduct(id);
-      if(res.request.status===200) {
-
-      setProduct(res.data);
-      setColor(res.data.color[0]);
-      setSize(res.data.size[0]);
+      if (res.request.status === 200) {
+        setProduct(res.data);
+        setColor(res.data.color[0]);
+        setSize(res.data.size[0]);
       }
-      }
-    reactGetProduct(id)  
+    };
+    reactGetProduct(id);
   }, []);
 
   const reduxHandleCart = async (product, user, amount, size, color) => {
-    if(!user.currentUser){
-      return navigate('/login')
+    if (!user.currentUser) {
+      return navigate("/login");
     }
-
-    dispatch(start())
-    const cardProduct = await handleCart(product, user, amount, size, color);
-    if(cardProduct){
-
-      dispatch(success())
-      return dispatch(addProduct(cardProduct))
+    dispatch(start());
+    try {
+      const res = await handleCart(product, user, amount, size, color);
+      if (res.request.status === 200) {
+        dispatch(success());
+        return dispatch(addProduct(res.data.products[res.data.products.length-1]));
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
     }
-    dispatch(failure())
-
   };
   return (
     <Container>

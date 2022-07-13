@@ -1,6 +1,6 @@
 import Product from "./routes/Product";
 import Home from "./routes/Home";
-import ProductList from "./routes/Products";
+import Products from "./routes/Products";
 import Cart from "./routes/Cart";
 import Whishlist from "./routes/Whishlist";
 import CartAndWhisshlist from "./routes/CartAndWhisshlist";
@@ -24,9 +24,16 @@ import "./App.css";
 function App() {
   const currentUser = useSelector((store) => store.user.currentUser);
   const [products, setProducts] = useState([]);
+  const [colors, setColors] = useState([]);
   const getProducts = async () => {
-    const p = await getProductsApiCall(null, null);
-    setProducts(p);
+
+    const res = await getProductsApiCall(null, null);
+    if(res.request.status===200){
+
+      setProducts(res.data.products);
+      setColors(res.data.colors)
+     
+    }
   };
   useEffect(() => {
     getProducts();
@@ -36,7 +43,7 @@ function App() {
     <Routes>
       <Route exact path="/" element={<Home products={products} />} />
       <Route path="/product/:id" element={<Product />} />
-      <Route path="/products/:category" element={<ProductList />} />
+      <Route path="/products/:category" element={<Products colors={colors}/>} />
 
       <Route path="/" element={<CartAndWhisshlist />}>
         <Route path="cart" element={<Cart />} />

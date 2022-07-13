@@ -181,10 +181,10 @@ function Footer() {
               <LocationOn /> 622 Dixie Path , South Tobinchester 98336
             </GroupItem>
             <GroupItem>
-              <Phone /> +1 234 56 78
+              <Phone /> +216 53 054 213
             </GroupItem>
             <GroupItem>
-              <Mail /> contact@lama.dev
+              <Mail /> sahbikardipl@gmail.com
             </GroupItem>
           </GroupContent>
         </Group>

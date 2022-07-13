@@ -142,38 +142,47 @@ const Cart = () => {
   const navigate = useNavigate();
   const add = async (id, user) => {
     dispatch(start());
-
-    const statusCode = await addToAmountDb(id, user);
-    if (statusCode === 200) {
-      dispatch(success());
-      dispatch(addAmount(id));
-      return;
+    try {
+      const res = await addToAmountDb(id, user);
+      if (res.request.status === 200) {
+        dispatch(success());
+        dispatch(addAmount(id));
+        return;
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
     }
-    dispatch(failure());
   };
 
   const remove = async (id, user) => {
     dispatch(start());
-
-    const statusCode = await removeAmounfromDb(id, user);
-    if (statusCode === 200) {
-      dispatch(success());
-      dispatch(removeAmount(id));
-      return;
+    try {
+      const res = await removeAmounfromDb(id, user);
+      if (res.request.status === 200) {
+        dispatch(success());
+        dispatch(removeAmount(id));
+        return;
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
     }
-    dispatch(failure());
   };
 
   const deleteOne = async (id, user) => {
     dispatch(start());
-
-    const statusCode = await removeFromDbCart(id, user);
-    if (statusCode === 200) {
-      dispatch(success());
-      dispatch(removeOrder(id));
-      return;
+    try {
+      const res = await removeFromDbCart(id, user);
+      if (res.request.status === 200) {
+        dispatch(success());
+        dispatch(removeOrder(id));
+        return;
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
     }
-    dispatch(failure());
   };
 
   return (

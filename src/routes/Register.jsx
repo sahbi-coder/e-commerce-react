@@ -11,7 +11,7 @@ import {
   logOut,
 } from "../redux/userSlice";
 import { addProducts, clearCart } from "../redux/cartSlice";
-import { addList, deleteAll } from "../redux/wishlistSlice";
+import { addList, deleteAll, start } from "../redux/wishlistSlice";
 import { setOrders, clearOrders } from "../redux/orderSlice";
 import { login, getCardDb, getWishlist, getOrders } from "../apiCalls";
 
@@ -119,27 +119,38 @@ const Register = () => {
   const reduxDispatch = useDispatch();
   const navigate = useNavigate();
   const { isFetshing, currentUser } = useSelector((state) => state.user);
-
-
   const reduxCreateAcount = async (e, state) => {
     e.preventDefault();
     reduxDispatch(loginStart());
-    const res = await createAcount(state);
-
-    if (res.request.status !== 201) {
-      return reduxDispatch(loginFailure());
+    Object.values(state).forEach((input) => {
+      return !input && alert("you must fill all inputs");
+    });
+    if (state.password !== state.confPassword) {
+      return alert("passwords do not confirm");
     }
-    if (res.request.status === 201) {
+    try {
+      reduxDispatch(start());
+      const res = await createAcount(state);
+      if (res.request.status !== 201) {
+        reduxDispatch(loginFailure());
+        return  alert("could not register please try again or later");
+      }
+    } catch {
+      reduxDispatch(loginFailure());
+      return alert("could not register please try again or later");
+    }
+    try {
       const res = await login(state.email, state.password);
-
       if (res.request.status === 200) {
         reduxDispatch(loginSucess(res.data));
-        return navigate('/')
+        return navigate("/");
       }
+       reduxDispatch(loginFailure());
+       return navigate("/login");
+    } catch {
       navigate("/login");
-      return reduxDispatch(loginFailure());
+      reduxDispatch(loginFailure());
     }
-
   };
 
   return (

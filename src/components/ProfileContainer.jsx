@@ -4,10 +4,12 @@ import styled from "styled-components";
 const GridItem = styled.div`
   border: 2px #514f4d solid;
   padding: 10px;
+  overflow-y: auto;
 `;
 const Title = styled.h4`
   text-align: start;
   font-size: 28px;
+  
 `;
 
 const ProfileRow = styled.div`
@@ -18,7 +20,8 @@ const ProfileRow = styled.div`
 const ProfileRowTitle = styled.div`
   font-weight: bold;
 `;
-const ProfileRowInfo = styled.div``;
+const ProfileRowInfo = styled.div`
+ overflow-wrap:break-word;`;
 const ProfileRows = styled.div``;
 
 function ProfileContainer({ user }) {

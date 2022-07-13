@@ -12,6 +12,7 @@ const WishlistRow = styled.div`
   const GridItem = styled.div`
     border: 2px #514f4d solid;
     padding: 10px;
+    overflow-y: auto;
   `;
   const Title = styled.h4`
     text-align: start;

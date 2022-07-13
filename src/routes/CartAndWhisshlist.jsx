@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { clearDbCart } from "../apiCalls";
-import { clearCart,start,success,failure } from "../redux/cartSlice";
+import { clearCart, start, success, failure } from "../redux/cartSlice";
 const Container = styled.div`
   margin-top: 100px;
   width: 100%;
@@ -64,16 +64,20 @@ const Cart = () => {
   const { cart, user, whishlist } = useSelector((state) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const clear = async(user)=>{
-         dispatch(start())
-         const statusCode = await clearDbCart(user)
-         if(statusCode===200){
-          dispatch(success())
-          dispatch(clearCart())
-          return
-         }
-         dispatch(failure())
-  }
+  const clear = async (user) => {
+    dispatch(start());
+    try {
+      const res = await clearDbCart(user);
+      if (res.request.status === 200) {
+        dispatch(success());
+        dispatch(clearCart());
+        return;
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
+    }
+  };
 
   return (
     <Container>
@@ -84,7 +88,6 @@ const Cart = () => {
         <Top>
           <TopButton
             onClick={() => {
-              
               navigate("/");
             }}
           >
@@ -112,15 +115,19 @@ const Cart = () => {
                 <TopButton
                   type="filled"
                   onClick={() => {
-                    
                     clear(user);
                   }}
                 >
                   CLEAR ALL
                 </TopButton>
-                <TopButton type="filled"   onClick={() => {
-                cart.total && user.currentUser && navigate("/payment/form");
-              }}>CHECKOUT NOW</TopButton>
+                <TopButton
+                  type="filled"
+                  onClick={() => {
+                    cart.total && user.currentUser && navigate("/payment/form");
+                  }}
+                >
+                  CHECKOUT NOW
+                </TopButton>
               </ButtonWrap>
             </>
           )}

@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 const GridItem = styled.div`
   border: 2px #514f4d solid;
   padding: 10px;
+  overflow-y: auto;
 `;
 const Title = styled.h4`
   text-align: start;
@@ -62,28 +63,36 @@ const Total = styled.div`
 `;
 function CartContainer({cart,user}) {
   const dispatch = useDispatch();
+
   const add = async (id, user) => {
     dispatch(start());
-
-    const statusCode = await addToAmountDb(id, user);
-    if (statusCode === 200) {
-      dispatch(success());
-      dispatch(addAmount(id));
-      return;
+    try {
+      const res = await addToAmountDb(id, user);
+      if (res.request.status === 200) {
+        dispatch(success());
+        dispatch(addAmount(id));
+        return;
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
     }
-    dispatch(failure());
   };
+
 
   const remove = async (id, user) => {
     dispatch(start());
-
-    const statusCode = await removeAmounfromDb(id, user);
-    if (statusCode === 200) {
-      dispatch(success());
-      dispatch(removeAmount(id));
-      return;
+    try {
+      const res = await removeAmounfromDb(id, user);
+      if (res.request.status === 200) {
+        dispatch(success());
+        dispatch(removeAmount(id));
+        return;
+      }
+      dispatch(failure());
+    } catch {
+      dispatch(failure());
     }
-    dispatch(failure());
   };
   return (
     <GridItem>

@@ -35,7 +35,7 @@ const Select = styled.select`
 `;
 const Option = styled.option``;
 
-const ProductList = () => {
+const ProductList = ({colors}) => {
   const [filters,setFilters]=useState({})
   const [sort,setSort]=useState('')
   const location = useLocation()
@@ -64,17 +64,10 @@ const ProductList = () => {
               Color
             </Option>
             <Option>all</Option>
-            <Option>white</Option>
-            <Option>black</Option>
-            <Option>brown</Option>
-            <Option>red</Option>
-            <Option>blue</Option>
-            <Option>yellow</Option>
-            <Option>green</Option>
-            <Option>pink</Option>
-            <Option>orange</Option>
-            <Option>grey</Option>
-            <Option>silver</Option>
+        
+            {colors&&colors.map((color,index)=>{
+              return <Option>{color}</Option>
+            })}
           </Select>
           <Select onChange={handleChange} name='size' >
             <Option   disabled>
@@ -97,7 +90,7 @@ const ProductList = () => {
           </Select>
         </Filter>
       </FilterContainer>
-      <Products ctg={ctg} sort={sort} filters={filters} itemsPerPage={1}/>
+      <Products ctg={ctg} sort={sort} filters={filters} itemsPerPage={4}/>
  
       <Footer />
     </Container>

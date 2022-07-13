@@ -8,6 +8,8 @@ import Btn from "@material-ui/core/Button";
 const GridItem = styled.div`
   border: 2px #514f4d solid;
   padding: 10px;
+  overflow-y: scroll;
+  max-height: 250px;
 `;
 const Title = styled.h4`
   text-align: start;
@@ -34,6 +36,7 @@ const SubItem = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
+ 
 `;
 
 const Button = styled.button`
@@ -137,7 +140,7 @@ function OrderContainer() {
                 </SubItem>
                 <SubItem>
                   <TransitionsModal index={index} />
-                  {/* <Btn variant="text">drop</Btn> */}
+                 
                 </SubItem>
               </OrderRaws>
             </div>
