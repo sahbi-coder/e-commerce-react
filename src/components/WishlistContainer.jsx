@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
 
 
 const WishlistRows = styled.div``;
@@ -21,6 +22,7 @@ const WishlistRow = styled.div`
 const WishlistImage = styled.img`
   width: 80px;
   height: 100px;
+  cursor: pointer;
 `;
 const WishlistDesc = styled.div`
   display: flex;
@@ -31,6 +33,7 @@ const WishlistTitle = styled.div``;
 const WishlistPrice = styled.div``;
 
 function WishlistContainer({wishlist,user}) {
+  const navigate = useNavigate()
   return (
     
     <GridItem>
@@ -42,7 +45,7 @@ function WishlistContainer({wishlist,user}) {
         wishlist.products.map((item, index) => {
           return (
             <WishlistRow key={item._id}>
-              <WishlistImage src={item.img} />
+              <WishlistImage src={item.img} onClick={(e)=>{navigate('/product/'+item._id)}}/>
               <WishlistDesc>
                 <WishlistTitle>{item.title}</WishlistTitle>
                 <WishlistPrice>${item.price}</WishlistPrice>

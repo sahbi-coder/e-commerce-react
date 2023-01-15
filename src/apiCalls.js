@@ -110,23 +110,19 @@ const createAcount = async (state) => {
   });
 };
 const removeFromDbList = async (id, user) => {
- 
-      let res = await userRequest.get(
-        "/wishlists/find/" + user.currentUser._id
-      );
+  let res = await userRequest.get("/wishlists/find/" + user.currentUser._id);
 
-      const temp = res.data.products.reduce((pre, acc) => {
-        if (acc._id === id) {
-          return pre;
-        }
-        pre.push(acc);
-        return pre;
-      }, []);
-      return await userRequest.put("/wishlists/" + res.data._id, {
-        ...res.data,
-        products: temp,
-      });
- 
+  const temp = res.data.products.reduce((pre, acc) => {
+    if (acc._id === id) {
+      return pre;
+    }
+    pre.push(acc);
+    return pre;
+  }, []);
+  return await userRequest.put("/wishlists/" + res.data._id, {
+    ...res.data,
+    products: temp,
+  });
 };
 const addToWhishlistDb = async (user, item) => {
   const res = await userRequest.get("/wishlists/find/" + user.currentUser._id);
@@ -173,6 +169,16 @@ const postOrder = async (order, id) => {
 const postContact = async (contact) => {
   return publicRequest.post("/contact", contact);
 };
+const createLink = async (email) => {
+  return await publicRequest.post("/auth/forgot-password", { email });
+};
+const resetPassword = async (id,token,password) => {
+  return await publicRequest.post(`/auth/forgot-password/${id}/${token}`, {
+    id,
+    token,
+    password,
+  });
+};
 
 export {
   getProductsApiCall,
@@ -194,4 +200,6 @@ export {
   getWishlistAfterLogin,
   getCardDbAfterLogin,
   postContact,
+  createLink,
+  resetPassword
 };

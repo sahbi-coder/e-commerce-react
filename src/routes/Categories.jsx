@@ -3,8 +3,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import styled from "styled-components";
 import AllCategories from "../components/AllCategories";
-import { useEffect, useState } from "react";
-import ProductsSlider from "../components/ProcuctsSlider";
+
+import ProductsSlider from "../components/ProductsSlider";
 
 const Title = styled.h4`
   font-size: 32px;
@@ -14,24 +14,15 @@ const Container = styled.div`
   margin-top: 105px;
 `;
 
-function Categories({products}) {
-  const [newest, setNewest] = useState([]);
- 
-  useEffect(() => {
-    setNewest(
-      products.sort(
-        (a, b) =>
-          -new Date(a.createdAt).getTime() + new Date(b.createdAt).getTime()
-      ).slice(0,8)
-    );
-  }, [products]);
+function Categories() {
+
   return (
     <>
       <Navbar />
       <Container>
         <Title>Shop By Category</Title>
         <AllCategories />
-      <ProductsSlider title="latest products" products={newest} />
+      <ProductsSlider title="LATEST PRODUCTS" />
       </Container>
 
       <Footer />

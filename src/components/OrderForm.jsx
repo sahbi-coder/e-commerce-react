@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { setOrderToAdd } from "../redux/orderSlice";
-import { getCardDb, postOrder } from "../apiCalls";
+import { getCardDb} from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getOrders } from "../apiCalls";
@@ -72,15 +72,13 @@ function OrderForm() {
   const [success, setSucess] = useState(false);
   const [error, setError] = useState(false);
   const [address, setAdress] = useState("");
-  const [countryCode, setCode] = useState(1);
+  const [countryCode, setCode] = useState(0);
   const [number, setNumber] = useState(0);
-  const { user, order } = useSelector((state) => state);
+  const { user } = useSelector((state) => state);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (order.orderToAdd) navigate("/payment/stripe");
-  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -137,7 +135,7 @@ function OrderForm() {
             <Label />
             <CountryCode
               id="code"
-              type="text"
+              type="number"
               placeholder="your country code"
               name="country code"
               onChange={(e) => setCode(e.target.value)}

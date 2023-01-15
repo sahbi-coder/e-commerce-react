@@ -3,33 +3,21 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Video from "../components/Video";
 import Categories from "../components/Categories";
-import ProductsSlider from "../components/ProcuctsSlider";
-import { useEffect, useState } from "react";
+import ProductsSlider from "../components/ProductsSlider";
 
 
 
 
-function Home({products}) {
 
-  const [newest, setNewest] = useState([]);
+function Home() {
 
 
- 
- 
-  useEffect(() => {
-    setNewest(
-      products.sort(
-        (a, b) =>
-          -new Date(a.createdAt).getTime() + new Date(b.createdAt).getTime()
-      ).slice(0,8)
-    );
-  }, [products]);
   return (
     <>
       <Navbar />
       <Video />
       <Categories />
-      <ProductsSlider title="latest products" products={newest} />  
+      <ProductsSlider title="LATEST PRODUCTS"  />  
       <Footer />
     </>
   );

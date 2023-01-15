@@ -170,7 +170,7 @@ function Footer() {
               Login
             </GroupItem>
             <GroupItem as={Link} to="/cart">
-              Chart
+              Cart
             </GroupItem>
           </GroupContent>
         </Group>

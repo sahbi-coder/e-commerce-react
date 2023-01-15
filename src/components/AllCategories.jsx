@@ -36,6 +36,7 @@ function AllCategories() {
   return (
     <Gallery>
       {allCategories.map((category) => {
+       
         return (
           <GridItem
             onClick={() => {

@@ -1,5 +1,5 @@
 import { mobile } from "../responsive";
-import { publicRequest } from "../requestMethods";
+import { resetPassword } from "../apiCalls";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -90,10 +90,8 @@ function ConfirmPassword() {
 
     if (reg.test(password) && password === confPassword) {
       try {
-        const res = await publicRequest.post(
-          `/auth/forgot-password/${id}/${token}`,
-          { id, token, password }
-        );
+     
+        const res  = await resetPassword(id,token,password)
         if (res.request.status === 200) {
           setSuccess(true);
           setError(false);

@@ -9,11 +9,9 @@ import Register from "./routes/Register";
 import About from "./routes/About";
 import Contact from "./routes/Contact";
 import Categories from "./routes/Categories";
-import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Dashboard from "./routes/Dashboard";
-import { getProductsApiCall } from "./apiCalls";
 import Payment from "./routes/Payment";
 import OrderForm from "./components/OrderForm";
 import StripeContainer from "./components/StripeContainer";
@@ -23,48 +21,33 @@ import ConfirmPassword from "./routes/ConfirmPassword";
 import "./App.css";
 function App() {
   const currentUser = useSelector((store) => store.user.currentUser);
-  const [products, setProducts] = useState([]);
-  const [colors, setColors] = useState([]);
-  const getProducts = async () => {
-
-    const res = await getProductsApiCall(null, null);
-    if(res.request.status===200){
-
-      setProducts(res.data.products);
-      setColors(res.data.colors)
-     
-    }
-  };
-  useEffect(() => {
-    getProducts();
-  }, []);
 
   return (
     <Routes>
-      <Route exact path="/" element={<Home products={products} />} />
+      <Route exact path="/" element={<Home />} />
       <Route path="/product/:id" element={<Product />} />
-      <Route path="/products/:category" element={<Products colors={colors}/>} />
+      <Route path="/products/:category" element={<Products />} />
 
       <Route path="/" element={<CartAndWhisshlist />}>
         <Route path="cart" element={<Cart />} />
         <Route path="whishlist" element={<Whishlist />} />
       </Route>
       <Route path="/register" element={<Register />} />
-      <Route
-        path="/login"
-        element={ <Login /> }
-      />
-    
+      <Route path="/login" element={<Login />} />
+
       <Route path="/payment" element={<Payment />}>
         <Route
           path="stripe"
-          element={currentUser?<StripeContainer />:<Navigate to='/login'/>}
+          element={currentUser ? <StripeContainer /> : <Navigate to="/login" />}
         />
-        <Route path="form" element={currentUser?<OrderForm />:<Navigate to='/login'/>} />
+        <Route
+          path="form"
+          element={currentUser ? <OrderForm /> : <Navigate to="/login" />}
+        />
       </Route>
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/categories" element={<Categories products={products} />} />
+      <Route path="/categories" element={<Categories />} />
       <Route path="/user" element={<Dashboard />} />
       <Route path="/forgot-password/" element={<ForgotPassword />} />
       <Route path="/forgot-password/:id/:token" element={<ConfirmPassword />} />

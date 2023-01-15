@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
 import TransitionsModal from "../components/TransitionsModal";
-import Btn from "@material-ui/core/Button";
+
 const GridItem = styled.div`
   border: 2px #514f4d solid;
   padding: 10px;
@@ -36,7 +36,6 @@ const SubItem = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
- 
 `;
 
 const Button = styled.button`
@@ -98,7 +97,7 @@ function OrderContainer() {
       {order.orders.length > 0 &&
         order.orders.map((item, index) => {
           return (
-            <div>
+            <div key={crypto.randomUUID()}>
               <MainItem>
                 <OrderNumber>{`order ${index + 1}`}</OrderNumber>
                 <Button
@@ -140,7 +139,6 @@ function OrderContainer() {
                 </SubItem>
                 <SubItem>
                   <TransitionsModal index={index} />
-                 
                 </SubItem>
               </OrderRaws>
             </div>

@@ -9,7 +9,6 @@ const GridItem = styled.div`
 const Title = styled.h4`
   text-align: start;
   font-size: 28px;
-  
 `;
 
 const ProfileRow = styled.div`
@@ -21,7 +20,8 @@ const ProfileRowTitle = styled.div`
   font-weight: bold;
 `;
 const ProfileRowInfo = styled.div`
- overflow-wrap:break-word;`;
+  overflow-wrap: break-word;
+`;
 const ProfileRows = styled.div``;
 
 function ProfileContainer({ user }) {

@@ -1,5 +1,5 @@
 import { FavoriteBorderOutlined, SearchOutlined } from "@material-ui/icons";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWhishlistDb } from "../apiCalls";
@@ -14,7 +14,7 @@ const Info = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.2);
+
   z-index: 3;
   display: flex;
   align-items: center;
@@ -26,7 +26,8 @@ const Info = styled.div`
 const Container = styled.div`
   flex: 1;
   margin: 5px;
-  background-color: #f5fbfd;
+  background-color: rgb(247, 238, 227);
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -37,10 +38,41 @@ const Container = styled.div`
     opacity: 1;
   }
 `;
+const animation = keyframes`
 
+0% {   background-color: hsl(33.00000000000003, 55.555555555555614%, 87.94117647058823%);} 
+100% {   background-color: hsl(33.00000000000003, 55.555555555555614%, 92.94117647058823%);}`;
+
+const PlaceHolder = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  animation-name: ${animation};
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+`;
+const TextPlaceHolder = styled.div`
+  height: 10px;
+  width: 200px;
+  margin: 10px;
+  background-color: hsl(33.00000000000003, 55.555555555555614%, 85.94117647058823%);
+
+`;
+const InnerContainer = styled.div`
+  height: 300px;
+  position: relative;
+  width: 100%;
+`;
 const Image = styled.img`
-  object-fit: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: fill;
   z-index: 2;
+  height: 100%;
+  width: 100%;
 `;
 
 const Icon = styled.div`
@@ -59,8 +91,8 @@ const Icon = styled.div`
   }
 `;
 const Footer = styled.div`
-  background-color: white;
   flex: 9;
+  font-size: 12px;
 `;
 const Title = styled.div`
   padding: 5px;
@@ -116,31 +148,46 @@ const Product = ({ item }) => {
 
   return (
     <Container>
-      <Image src={item.img} />
-      <Info>
-        <Icon>
-          <Link to={`/product/${item._id}`}>
-            <SearchOutlined />
-          </Link>
-        </Icon>
-        <Icon
-          style={{
-            backgroundColor: `${
-              success ? "#A5D6A7" : error ? "#EF9A9A" : "#e9f5f5"
-            }`,
-            cursor: `${isFetching ? "not-allowed" : "pointer"}`,
-          }}
-          onClick={() => {
-            addToWhishlist(user,item);
-          }}
-        >
-          <FavoriteBorderOutlined />
-        </Icon>
-      </Info>
+      <InnerContainer>
+        {!item.img && <PlaceHolder />}
+        {item.img && <Image src={item.img} />}
+      </InnerContainer>
+      {item.img && (
+        <Info>
+          <Icon>
+            <Link to={`/product/${item._id}`}>
+              <SearchOutlined />
+            </Link>
+          </Icon>
+          <Icon
+            style={{
+              backgroundColor: `${
+                success ? "#A5D6A7" : error ? "#EF9A9A" : "#e9f5f5"
+              }`,
+              cursor: `${isFetching ? "not-allowed" : "pointer"}`,
+            }}
+            onClick={() => {
+              addToWhishlist(user, item);
+            }}
+          >
+            <FavoriteBorderOutlined />
+          </Icon>
+        </Info>
+      )}
       <Footer>
-        <Title>{item.title}</Title>
+        {item.price !== 0 && (
+          <>
+            <Title>{item.title}</Title>
 
-        <Price>${item.price}</Price>
+            <Price>${item.price}</Price>
+          </>
+        )}
+        {item.price === 0 && (
+          <>
+            <TextPlaceHolder />
+            <TextPlaceHolder style={{ width: 50 }} />
+          </>
+        )}
       </Footer>
     </Container>
   );

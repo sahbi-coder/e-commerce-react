@@ -192,8 +192,8 @@ const Cart = () => {
           <Info>
             {cart.products.map((prod) => {
               return (
-                <>
-                  <Product key={prod._id}>
+                <div key={crypto.randomUUID()}>
+                  <Product>
                     <ProductDetail>
                       <Image src={prod.img} />
                       <Details>
@@ -243,7 +243,7 @@ const Cart = () => {
                     </Details>
                   </Product>
                   <Hr />
-                </>
+                </div>
               );
             })}
           </Info>

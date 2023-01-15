@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import Product from "./Product";
 import { useEffect, useState } from "react";
-import { getProductsApiCall } from "../apiCalls";
 import { mobile } from "../responsive";
-import { useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 import useMobile from "../hooks/useMobile";
 
@@ -19,6 +17,7 @@ const OuterContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
 function Items({ currentItems }) {
   return (
     <>
@@ -28,10 +27,8 @@ function Items({ currentItems }) {
   );
 }
 
-const Products = ({ ctg, sort, filters, itemsPerPage }) => {
-  const [products, setProducts] = useState([]);
+const Products = ({ products, ctg, sort, filters, itemsPerPage }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const division = useSelector((state) => state.division.division);
   const [currentItems, setCurrentItems] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -39,27 +36,15 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
 
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
-
     setItemOffset(newOffset);
   };
 
-  const getProducts = async () => {
-    const res = await getProductsApiCall(ctg, division);
-    if (res.request.status === 200) {
-      setProducts(res.data.products);
-    }
-  };
-
   useEffect(() => {
-    getProducts();
-    console.log(products);
-  }, [ctg, division]);
-  useEffect(() => {
-    if (filters && filters.size === "all" && filters.color === "all") {
+    if (filters && filters.size === "All" && filters.color === "All") {
       ctg && setFilteredProducts(products);
       return;
     }
-    if (filters && filters.size === "all") {
+    if (filters && filters.size === "All") {
       ctg &&
         setFilteredProducts(
           products.filter((prod) => {
@@ -68,7 +53,7 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
         );
       return;
     }
-    if (filters && filters.color === "all") {
+    if (filters && filters.color === "All") {
       ctg &&
         setFilteredProducts(
           products.filter((prod) => {
@@ -88,6 +73,7 @@ const Products = ({ ctg, sort, filters, itemsPerPage }) => {
         })
       );
   }, [ctg, filters, products]);
+
   useEffect(() => {
     if (sort === "Newest") {
       setFilteredProducts((prev) =>

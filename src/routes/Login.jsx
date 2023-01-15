@@ -101,7 +101,7 @@ const Login = () => {
       const res = await login(email, password);
 
       if (res.request.status === 200) {
-        dispatch(loginSucess(res.data));
+        dispatch(loginSucess({...res.data,expiresIn:res.data.expiresInConstatnt+new Date().getTime()}));
         const id = res.data._id
         const token = res.data.token
 

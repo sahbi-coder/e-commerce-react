@@ -5,7 +5,7 @@ import Cart from "@material-ui/icons/ShoppingCart";
 import Person from "@material-ui/icons/PersonOutline";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import useMobile from "../hooks/useMobile";
@@ -163,6 +163,32 @@ function Navbar() {
   const isMobile = useMobile();
   const dispatch = useDispatch();
   const location = useLocation();
+  const [isFemaleCategory, setIsFemaleCategory] = useState(true);
+
+  useEffect(() => {
+    const isProductsPage = location.pathname.split("/")[1] === "products";
+    const isdressesOrBlousesPage =
+      location.pathname.split("/")[2] === "dresses" ||
+      location.pathname.split("/")[2] === "blouses";
+    if (isProductsPage) {
+      if (isdressesOrBlousesPage) {
+        setIsFemaleCategory(true);
+        dispatch(changeDiv(divisions.Female));
+      } else {
+        setIsFemaleCategory(false);
+      }
+    }
+  }, [location]);
+
+  useEffect(() => {
+    const listner = (e) => {
+      if (e.target.id !== "categories-button") setShowSubMenu(false);
+    };
+    document.body.addEventListener("click", listner);
+    return () => {
+      document.body.removeEventListener("click", listner);
+    };
+  }, []);
 
   return (
     <Container>
@@ -170,13 +196,15 @@ function Navbar() {
       {location.pathname.split("/")[1] === "products" && (
         <DivisonSelector>
           <DivSelect
+            style={{color:division===divisions.Male?'black':'#f7eee3'}}
             onClick={() => {
-              dispatch(changeDiv(divisions.Male));
+              !isFemaleCategory && dispatch(changeDiv(divisions.Male));
             }}
           >
             Men
           </DivSelect>
           <DivSelect
+            style={{color:division===divisions.Female?'black':'#f7eee3'}}
             onClick={() => {
               dispatch(changeDiv(divisions.Female));
             }}
@@ -184,8 +212,9 @@ function Navbar() {
             Women
           </DivSelect>
           <DivSelect
+            style={{color:division===divisions.Both?'black':'#f7eee3'}}
             onClick={() => {
-              dispatch(changeDiv(divisions.Both));
+              !isFemaleCategory && dispatch(changeDiv(divisions.Both));
             }}
           >
             Both
@@ -231,6 +260,7 @@ function Navbar() {
                 onClick={() => {
                   setShowSubMenu((showSubMenu) => !showSubMenu);
                 }}
+                id="categories-button"
               >
                 CATEGORIES
               </MenuItem>

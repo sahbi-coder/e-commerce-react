@@ -97,8 +97,8 @@ export default function TransitionsModal({ index }) {
           orderCopy.address = address;
           orders.splice(index, 1, orderCopy);
         }
-        if(orderCopy.status!=='pending'){
-          setPendingError(true)
+        if (orderCopy.status !== "pending") {
+          setPendingError(true);
         }
 
         const res1 = await postOrder({ orders }, res2.data[0]._id);
@@ -121,8 +121,8 @@ export default function TransitionsModal({ index }) {
         open={open}
         onClose={() => {
           setOpen(false);
-          setError(false)
-          setPendingError(false)
+          setError(false);
+          setPendingError(false);
         }}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -172,7 +172,9 @@ export default function TransitionsModal({ index }) {
             </FormGroup>
             <Button onClick={handleSubmit}>SUBMIT CHANGES</Button>
             {error && <Message>oops! something went wrong</Message>}
-            {pendingError&& <Message>sorry! you can't modify shipped orders</Message>}
+            {pendingError && (
+              <Message>sorry! you can't modify shipped orders</Message>
+            )}
           </Box>
         </Fade>
       </Modal>

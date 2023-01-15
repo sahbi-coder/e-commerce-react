@@ -58,16 +58,21 @@ html {
   padding-top: 5px !important;
   padding-bottom: 5px !important;
 }
-.rec-arrow-right,.rec-arrow-left{
-  background-color: #f7eee3 !important;
+.rec-arrow-right,
+.rec-arrow-left {
   color: black !important;
- 
+  background-color: white !important;
 }
-.rec-arrow-right:hover,.rec-arrow-left:hover{
+.rec-arrow-right:hover,
+.rec-arrow-left:hover {
   color: white !important;
   background-color: grey !important;
 }
-.rec-dot_active{
+.rec-dot {
+  background-color: white !important;
+ 
+}
+.rec-dot_active {
   background-color: rgba(247, 210, 173, 0.5) !important;
-  box-shadow: 0 0 1px 3px hsl(247, 210, 173) !important;
+  box-shadow: 0 0 1px 2px #514f4d !important;
 }

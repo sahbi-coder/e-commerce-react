@@ -9,13 +9,21 @@ const Container = styled.section`
   width: 100%;
   ${mobile({ flexDirection: "column", width: "100vw" })}
 `;
+const Title = styled.div`
+  font-size: 20px;
+  text-align: center;
+  padding: 20px;
+`;
 function Categories() {
   return (
-    <Container>
-      {categories.map((category) => {
-        return <Category category={category} key={category.id}/>;
-      })}
-    </Container>
+    <>
+      <Title>CATEGORIES</Title>
+      <Container>
+        {categories.map((category) => {
+          return <Category category={category} key={category.id} />;
+        })}
+      </Container>
+    </>
   );
 }
 

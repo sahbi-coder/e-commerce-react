@@ -102,8 +102,9 @@ function CartContainer({cart,user}) {
       <CartRows>
         {user.currentUser &&
           cart.products.map((item, index) => {
+           
             return (
-              <CartRow key={item._id}>
+              <CartRow key={crypto.randomUUID()}>
                 <CartImage src={item.img} />
                 <CartDesc>
                   <CartTitle>{item.title}</CartTitle>

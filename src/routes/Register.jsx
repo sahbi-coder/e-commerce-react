@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { useReducer, useEffect } from "react";
+import { useReducer} from "react";
 import { createAcount } from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -118,7 +118,7 @@ const Register = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const reduxDispatch = useDispatch();
   const navigate = useNavigate();
-  const { isFetshing, currentUser } = useSelector((state) => state.user);
+  const { isFetshing} = useSelector((state) => state.user);
   const reduxCreateAcount = async (e, state) => {
     e.preventDefault();
     reduxDispatch(loginStart());
@@ -142,7 +142,7 @@ const Register = () => {
     try {
       const res = await login(state.email, state.password);
       if (res.request.status === 200) {
-        reduxDispatch(loginSucess(res.data));
+        reduxDispatch(loginSucess({...res.data,expiresIn:res.data.expiresInConstatnt+new Date().getTime()}));
         return navigate("/");
       }
        reduxDispatch(loginFailure());

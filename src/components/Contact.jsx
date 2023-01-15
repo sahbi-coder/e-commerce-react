@@ -94,6 +94,8 @@ const reducer = (state, action) => {
 
     case "message":
       return { ...state, message: action.payload };
+     default:
+      return state 
   }
 };
 function Contact() {
@@ -196,7 +198,7 @@ function Contact() {
             <Success>thanks, we will respond as soon as possible.</Success>
           )}
           {error && <Error>oops! something went wrong.</Error>}
-          <Button type="submit" id="submit" onClick={handleSubmit}>
+          <Button type="submit" id="submit" onClick={handleSubmit} disabled={isFetching}>
             submit
           </Button>
         </Form>

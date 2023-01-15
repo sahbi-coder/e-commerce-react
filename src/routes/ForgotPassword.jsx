@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link as L, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { mobile } from "../responsive";
-import { publicRequest } from "../requestMethods";
+import {createLink} from '../apiCalls'
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -84,14 +84,15 @@ function ForgotPassword() {
     e.preventDefault();
     try {
       setIsFetching(true)
-      const res = await publicRequest.post("/auth/forgot-password", { email });
-      
+    
+      const res = await createLink(email)
       if (res.request.status === 200) {
         setError(false)
         setIsFetching(false)
         return setSuccess(true);
       }
-    } catch {
+    } catch (e){
+      console.log(e)
       setIsFetching(false)
       setError(true);
       setSuccess(false)

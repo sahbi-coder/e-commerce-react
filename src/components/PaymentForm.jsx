@@ -93,63 +93,56 @@ export default function PaymentForm() {
   const [isFetching, setIsFeching] = useState(false);
 
   useEffect(() => {
-    if (!order.orderToAdd) {
-      navigate("/payment/form");
+    if (
+      !order.orders.length &&
+      (!order.orderToAdd.phone.countryCode ||
+        !order.orderToAdd.phone.number ||
+        !order.orderToAdd.address)
+    ) {
+      setError({
+        message:
+          "you should fill the order form correctly before payment, go back and inter your info.",
+      });
+      return;
     }
+    setError(null);
   }, []);
-  useEffect(()=>{
-    (async()=>{
-
-      try{
-        if(success&&success.success){
-        const res = await postOrder(location.state.postParams.body,location.state.postParams.id)
-      }
-      }
-      catch{
-        navigate('/backup',{state:{
-          body:location.state.postParams.body,
-          id:location.state.postParams.id
-        }})
-      }
-    })(success,navigate,location)
-  },[success])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setIsFeching(true);
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
+    const stripeRess = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardElement),
     });
 
-    if (!error) {
+    if (!stripeRess.error || error) {
       try {
-        const { id } = paymentMethod;
+        const { id } = !stripeRess.paymentMethod;
+        await postOrder(
+          location.state.postParams.body,
+          location.state.postParams.id
+        );
         const response = await userRequest.post("/payments", {
           amountArray: location.state.amountArray,
           id,
         });
 
         if (response.data.success) {
-          console.log("Successful payment");
-         
-         
-            setSuccess(response.data);           
-            dispatch(addOrder());
-            setError(null);
-            setIsFeching(false);
-          
+          setSuccess(response.data);
+          dispatch(addOrder());
+          setError(null);
+          setIsFeching(false);
         }
-      } catch (error) {
-        console.log("Error", error);
-        console.log(location.state)
+      } catch {
+        setSuccess(null);
         setIsFeching(false);
+        setError({ message: "Payment problem." });
       }
     } else {
-      console.log(error.message);
-      setError(error);
+      setError({ message: "Payment api problem." });
       setIsFeching(false);
+      setSuccess(null);
     }
   };
 

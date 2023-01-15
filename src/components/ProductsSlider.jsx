@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import MediaCard from "./MediaCard";
-
+import { useEffect, useState } from "react";
 import Carousel from "react-elastic-carousel";
+import { getProductsApiCall } from "../apiCalls";
 
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
@@ -22,8 +23,11 @@ const Container = styled.div`
   align-items: center;
 `;
 const CarouselContainer = styled.div`
-  width:100%;
-  padding:20px;
+  width: 95%;
+  padding: 10px;
+  background-color: #f7eee3;
+  margin-bottom: 50px;
+  border-radius: 5px;
 `;
 
 const Title = styled.div`
@@ -32,12 +36,23 @@ const Title = styled.div`
   padding: 20px;
 `;
 
-function ProductsSlider({ title, products }) {
+function ProductsSlider({ title }) {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = async () => {
+    const res = await getProductsApiCall(null, null);
+    if (res.request.status === 200) {
+      setProducts(res.data.products);
+    }
+  };
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <Container>
       <Title>{title}</Title>
       <CarouselContainer>
-        <Carousel breakPoints={breakPoints} style={{height:'90vh'}}>
+        <Carousel breakPoints={breakPoints}>
           {products &&
             products.map((item, index) => {
               return <MediaCard product={item} key={item._id} />;

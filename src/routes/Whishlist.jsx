@@ -79,7 +79,7 @@ function Whishlist() {
     } catch {
       return dispatch(failure());
     }
-    dispatch(failure())
+   
   };
   return (
     <>
@@ -87,7 +87,7 @@ function Whishlist() {
         <Container>
           {whishlist.products.map((prod) => {
             return (
-              <>
+            
                 <Product key={prod._id}>
                   <Left>
                     <Image src={prod.img} />
@@ -118,9 +118,9 @@ function Whishlist() {
                       </Button>
                     </Buttons>
                   </Right>
+                  <Hr />
                 </Product>
-                <Hr />
-              </>
+         
             );
           })}
         </Container>
