@@ -62,13 +62,13 @@ const Link = styled.div`
   text-decoration: underline;
   cursor: pointer;
 `;
-const Error = styled.span`
-  color: red;
-`;
 const Row = styled.div`
   display: flex;
   justify-content: start;
   align-items: center;
+`;
+const Error = styled.span`
+  color: red;
 `;
 const Success = styled.div`
   color: green;

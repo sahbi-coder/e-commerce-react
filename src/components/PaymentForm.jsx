@@ -110,40 +110,46 @@ export default function PaymentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsFeching(true);
-    const stripeRess = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement),
-    });
+    // const stripeRess = await stripe.createPaymentMethod({
+    //   type: "card",
+    //   card: elements.getElement(CardElement),
+    // });
 
-    if (!stripeRess.error || error) {
-      try {
-        const { id } = !stripeRess.paymentMethod;
-        await postOrder(
-          location.state.postParams.body,
-          location.state.postParams.id
-        );
-        const response = await userRequest.post("/payments", {
-          amountArray: location.state.amountArray,
-          id,
-        });
+    // if (!stripeRess.error || error) {
+    try {
+      // setIsFeching(true);
+      // const { id } = stripeRess.paymentMethod;
+      await postOrder(
+        location.state.postParams.body,
+        location.state.postParams.id
+      );
+      // const response = await userRequest.post("/payments", {
+      //   amountArray: location.state.amountArray,
+      //   id,
+      // });
 
-        if (response.data.success) {
-          setSuccess(response.data);
-          dispatch(addOrder());
-          setError(null);
-          setIsFeching(false);
-        }
-      } catch {
-        setSuccess(null);
-        setIsFeching(false);
-        setError({ message: "Payment problem." });
-      }
-    } else {
-      setError({ message: "Payment api problem." });
+      // if (response.data.success) {
+      // setSuccess(response.data);
+      setSuccess({ message: "payement done with success" });
+      dispatch(addOrder());
+      setError(null);
       setIsFeching(false);
+      // }
+      // else{
+      //   setError({message:'payment error'});
+      //   setIsFeching(false);
+      //   setSuccess(null)
+      // }
+    } catch (e) {
       setSuccess(null);
+      setIsFeching(false);
+      setError({ message: "Payment problem." });
     }
+    // } else {
+    //   setError({ message: "Payment api problem." });
+    //   setIsFeching(false);
+    //   setSuccess(null);
+    // }
   };
 
   return (
@@ -174,9 +180,7 @@ export default function PaymentForm() {
             </FormGroup>
           )}
 
-          <Button disabled={isFetching} isFetching={isFetching}>
-            Pay
-          </Button>
+          <Button isFetching={isFetching}>Pay</Button>
         </Form>
       )}
       <OuterButton

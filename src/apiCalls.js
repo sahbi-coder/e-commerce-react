@@ -89,6 +89,8 @@ const handleCart = async (product, user, amount, size, color) => {
     color,
     price: product.price,
     img: product.img,
+
+    
   };
 
   const res = await userRequest.get("/carts/find/" + user.currentUser._id);
@@ -166,6 +168,9 @@ const getOrdersAfterLogin = async (userId, token) => {
 const postOrder = async (order, id) => {
   return await userRequest.put("/orders/" + id, order);
 };
+const deleteOrder = async (id)=>{
+  return await userRequest.delete('/orders/'+id)
+}
 const postContact = async (contact) => {
   return publicRequest.post("/contact", contact);
 };
@@ -201,5 +206,6 @@ export {
   getCardDbAfterLogin,
   postContact,
   createLink,
-  resetPassword
+  resetPassword,
+  deleteOrder
 };

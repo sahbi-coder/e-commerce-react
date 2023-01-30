@@ -340,7 +340,7 @@ function Navbar() {
             </SubItem>
           </SubList>
           <SubMenuCard as={Link} to="/about">
-            <SubMenuCardImage src={Images.aboutContact} />
+            <SubMenuCardImage src={Images.aboutContact}  loading='eager'/>
             <SubMenuCardDesc>
               <i>know more about us</i>
             </SubMenuCardDesc>

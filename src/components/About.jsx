@@ -53,18 +53,24 @@ function About() {
           <img
             src={Images.about1}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
+            loading="eager"
+            alt='clothes'
           />
         </GridItem>
         <GridItem>
           <img
             src={Images.about2}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
+            loading="eager"
+            alt='clothes'
           />
         </GridItem>
         <GridItem>
           <img
             src={Images.about3}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
+            loading="eager"
+            alt='clothes'
           />
         </GridItem>
       </Gallery>

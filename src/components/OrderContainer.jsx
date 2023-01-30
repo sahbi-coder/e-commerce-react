@@ -111,8 +111,8 @@ function OrderContainer() {
               <OrderRaws ref={(el) => setRefs(el)}>
                 {item.products.map((i) => {
                   return (
-                    <>
-                      <SubItem>
+               
+                      <SubItem key={crypto.randomUUID()}>
                         <OrderRaw key={i._id}>
                           <OrderImage src={i.img} />
                           <OrderDesc>
@@ -122,7 +122,7 @@ function OrderContainer() {
                           </OrderDesc>
                         </OrderRaw>
                       </SubItem>
-                    </>
+              
                   );
                 })}
                 <SubItem>

@@ -87,19 +87,19 @@ export default function TransitionsModal({ index }) {
         const orderCopy = JSON.parse(
           JSON.stringify(res2.data[0].orders[index])
         );
-        if (orderCopy.status === "pending") {
-          const phone = {
-            number,
-            countryCode,
-          };
-
-          orderCopy.phone = phone;
-          orderCopy.address = address;
-          orders.splice(index, 1, orderCopy);
-        }
         if (orderCopy.status !== "pending") {
           setPendingError(true);
+          return 
         }
+
+        const phone = {
+          number,
+          countryCode,
+        };
+
+        orderCopy.phone = phone;
+        orderCopy.address = address;
+        orders.splice(index, 1, orderCopy);
 
         const res1 = await postOrder({ orders }, res2.data[0]._id);
         if (res1.request.status === 200) {

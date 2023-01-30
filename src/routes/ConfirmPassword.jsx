@@ -4,6 +4,10 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { Link as L, useNavigate } from "react-router-dom";
+
+
+
 
 const Container = styled.div`
   width: 100vw;
@@ -76,9 +80,9 @@ const Success = styled.div`
 `;
 
 function ConfirmPassword() {
-  const [isFetching, setIsFetching] = useState();
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   const { id, token } = useParams();
@@ -90,20 +94,25 @@ function ConfirmPassword() {
 
     if (reg.test(password) && password === confPassword) {
       try {
-     
-        const res  = await resetPassword(id,token,password)
+        setIsFetching(true);
+        const res = await resetPassword(id, token, password);
         if (res.request.status === 200) {
-          setSuccess(true);
-          setError(false);
-          return false;
+          setSuccess({ message: "password changed with success." });
+          setError(null);
+          setIsFetching(false)
+          return;
         }
-        setSuccess(false);
-        setError(true);
+        setSuccess(null);
+        setError({ message: "something went wron try again." });
+        setIsFetching(false);
       } catch {
-        setSuccess(false);
-        setError(true);
-        return;
+        setSuccess(null);
+        setError({ message: "something went wron try again." });
+        setIsFetching(false);
       }
+    } else {
+      setError({ message: "short password or passwords don't confirm." });
+      setSuccess(null);
     }
   };
 
@@ -130,10 +139,14 @@ function ConfirmPassword() {
           <Button disabled={isFetching} onClick={submitEmail}>
             SUBMIT
           </Button>
-          {error ? <Error>something went wrong ....</Error> : null}
-          {success && (
-            <Success>we've sent a transaction email, check your email. </Success>
-          )}
+          {error && <Error>{error.message}</Error>}
+          {success && <Success>{success.message} </Success>}
+          <Row>
+            <Link as={L} to="/login">
+              LOGIN
+            </Link>
+      
+          </Row>
         </Form>
       </Wrapper>
     </Container>

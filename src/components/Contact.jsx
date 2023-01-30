@@ -14,17 +14,17 @@ const Container = styled.div`
   ${mobile({ width: "100vw" })}
 `;
 const Img = styled.img`
-position: absolute;
+  position: absolute;
   height: 100%;
   width: 100%;
-  left:0;
-  top:0;
+  left: 0;
+  top: 0;
   object-fit: cover;
-`
+`;
 const Left = styled.div`
   flex: 1;
   position: relative;
- 
+
   ${mobile({ display: "none" })}
 `;
 const Right = styled.div`
@@ -94,46 +94,62 @@ const reducer = (state, action) => {
 
     case "message":
       return { ...state, message: action.payload };
-     default:
-      return state 
+    default:
+      return state;
   }
 };
+function validator(state, reg, minLength) {
+  if (!reg.test(state.email)) return false;
+  if (state.name.length < minLength) return false;
+  if (state.lastName.length < minLength) return false;
+
+  return true;
+}
 function Contact() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isFetching, setIsFetching] = useState(false);
-  const [error, setError] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const reg = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setIsFetching(true);
-      const contactInfo = {
-        name: `${state.name} ${state.lastName}`,
-        email: state.email,
-        message: state.message,
-      };
-   
-      const res = await postContact(contactInfo);
-     
-      if (res.request.status === 200) {
+    const isValid = validator(state, reg, 5);
+    if (isValid) {
+      try {
+        setIsFetching(true);
+        const contactInfo = {
+          name: `${state.name} ${state.lastName}`,
+          email: state.email,
+          message: state.message,
+        };
+
+        const res = await postContact(contactInfo);
+
+        if (res.request.status === 200) {
+          setIsFetching(false);
+          setSuccess({message:"Thanks, we will respond as soon as possible."});
+          return setError(null);
+        }
+        setError({message:'oops! something went wrong.'});
         setIsFetching(false);
-        setSuccess(true);
-        return setError(false);
+        setSuccess(null);
+      } catch {
+        setError({message:'oops! something went wrong.'});
+        setIsFetching(false);
+        setSuccess(null);
       }
-      setError(true);
-      setIsFetching(false);
-      setSuccess(false);
-    } catch {
-      setError(true);
-      setIsFetching(false);
-      setSuccess(false);
+    } else {
+      setError({ message: "invalid input(s)" });
+      setSuccess(null)
+      
     }
   };
 
   return (
     <Container>
       <Left>
-        <Img src={Images.contact}></Img>
+        <Img src={Images.contact} loading="eager"/>
       </Left>
       <Right>
         <Form id="survey-form">
@@ -175,7 +191,7 @@ function Contact() {
               id="email"
               type="email"
               placeholder="Your email"
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              pattern={reg}
               required
               onChange={(e) => {
                 dispatch({ type: "email", payload: e.target.value });
@@ -195,14 +211,19 @@ function Contact() {
             ></Textarea>
           </FormItem>
           {success && (
-            <Success>thanks, we will respond as soon as possible.</Success>
+            <Success>{success.message}</Success>
           )}
-          {error && <Error>oops! something went wrong.</Error>}
-          <Button type="submit" id="submit" onClick={handleSubmit} disabled={isFetching}>
+          {error && <Error>{error.message}</Error>}
+          <Button
+            type="submit"
+            id="submit"
+            onClick={handleSubmit}
+            disabled={isFetching}
+          >
             submit
           </Button>
         </Form>
-        `;
+        
       </Right>
     </Container>
   );

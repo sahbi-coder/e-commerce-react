@@ -122,7 +122,7 @@ function OrderForm() {
       }
     } catch (e) {
       setError(true);
-      console.log(e);
+    
     }
   };
   return (
