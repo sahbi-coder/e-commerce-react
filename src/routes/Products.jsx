@@ -7,6 +7,7 @@ import { useState,useEffect} from "react";
 import { useLocation } from "react-router-dom";
 import { getProductsApiCall } from "../apiCalls";
 import { useSelector } from "react-redux";
+import SearchBar from "../components/SearchBar";
 
 const Container = styled.div``;
 
@@ -59,6 +60,26 @@ const placeHolderArray = [
   { _id: 16, title: "", price: 0, img: "", desc: "" },
 ];
 
+const filterData = (query, data) => {
+  if (!query) {
+    return data;
+  } else {
+    return data.filter((d) => d.toLowerCase().includes(query));
+  }
+};
+const data = [
+  "Paris",
+  "London",
+  "New York",
+  "Tokyo",
+  "Berlin",
+  "Buenos Aires",
+  "Cairo",
+  "Canberra",
+  "Rio de Janeiro",
+  "Dublin"
+];
+
 const ProductList = () => {
   const [products, setProducts] = useState(placeHolderArray);
   const [filters, setFilters] = useState({size:'All',color:'All'});
@@ -67,6 +88,9 @@ const ProductList = () => {
   const ctg = location.pathname.split("/")[2];
   const division = useSelector((state) => state.division.division);
   const [colors,setColors] = useState([])
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const dataFiltered = filterData(searchQuery, data);
 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -121,6 +145,29 @@ const ProductList = () => {
             <Option>xl</Option>
             
           </Select>
+        </Filter>
+        <Filter>
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <div style={{ padding: 3 }}>
+        {dataFiltered.map((d) => (
+          <div
+            className="text"
+            style={{
+              padding: 5,
+              justifyContent: "normal",
+              fontSize: 20,
+              color: "blue",
+              margin: 1,
+              width: "250px",
+              BorderColor: "green",
+              borderWidth: "10px"
+            }}
+            key={d.id}
+          >
+            {d}
+          </div>
+        ))}
+      </div>
         </Filter>
         <Filter>
           <FilterText>Sort Products:</FilterText>

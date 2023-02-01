@@ -23,6 +23,8 @@ const Container = styled.div`
   ${mobile({ flexDirection: "column", width: "100vw" })}
   width:100%;
   flex-wrap: wrap;
+  min-height: 30vh;
+
 `;
 
 const Info = styled.div`
@@ -187,94 +189,98 @@ const Cart = () => {
 
   return (
     <>
-      {user.currentUser && (
-        <Container>
-          <Info>
-            {cart.products.map((prod) => {
-              return (
-                <div key={crypto.randomUUID()}>
-                  <Product>
-                    <ProductDetail>
-                      <Image src={prod.img} />
+      <Container>
+        {user.currentUser && (
+          <>
+            <Info>
+              {cart.products.map((prod) => {
+                return (
+                  <div key={crypto.randomUUID()}>
+                    <Product>
+                      <ProductDetail>
+                        <Image src={prod.img} />
+                        <Details>
+                          <ProductName>
+                            <b>Product:</b> {prod.title}
+                          </ProductName>
+                          <ProductId>
+                            <b>ID:</b> {prod.productId}
+                          </ProductId>
+                          <ProductColor color={prod.color} />
+                          <ProductSize>
+                            <b>Size:</b> {prod.size}
+                          </ProductSize>
+                        </Details>
+                      </ProductDetail>
+                      <PriceDetail>
+                        <ProductAmountContainer>
+                          <SmallButtom
+                            onClick={() => {
+                              add(prod._id, user);
+                            }}
+                            disabled={cart.isFetching}
+                          >
+                            <Add />
+                          </SmallButtom>
+                          <ProductAmount>{prod.amount}</ProductAmount>
+                          <SmallButtom
+                            onClick={() => {
+                              remove(prod._id, user);
+                            }}
+                            disabled={cart.isFetching}
+                          >
+                            <Remove />
+                          </SmallButtom>
+                        </ProductAmountContainer>
+                        <ProductPrice>
+                          $ {prod.price * prod.amount}
+                        </ProductPrice>
+                      </PriceDetail>
                       <Details>
-                        <ProductName>
-                          <b>Product:</b> {prod.title}
-                        </ProductName>
-                        <ProductId>
-                          <b>ID:</b> {prod.productId}
-                        </ProductId>
-                        <ProductColor color={prod.color} />
-                        <ProductSize>
-                          <b>Size:</b> {prod.size}
-                        </ProductSize>
+                        <Button
+                          onClick={() => {
+                            deleteOne(prod._id, user);
+                          }}
+                          disabled={cart.isFetching}
+                        >
+                          delete
+                        </Button>
                       </Details>
-                    </ProductDetail>
-                    <PriceDetail>
-                      <ProductAmountContainer>
-                        <SmallButtom
-                          onClick={() => {
-                            add(prod._id, user);
-                          }}
-                          disabled={cart.isFetching}
-                        >
-                          <Add />
-                        </SmallButtom>
-                        <ProductAmount>{prod.amount}</ProductAmount>
-                        <SmallButtom
-                          onClick={() => {
-                            remove(prod._id, user);
-                          }}
-                          disabled={cart.isFetching}
-                        >
-                          <Remove />
-                        </SmallButtom>
-                      </ProductAmountContainer>
-                      <ProductPrice>$ {prod.price * prod.amount}</ProductPrice>
-                    </PriceDetail>
-                    <Details>
-                      <Button
-                        onClick={() => {
-                          deleteOne(prod._id, user);
-                        }}
-                        disabled={cart.isFetching}
-                      >
-                        delete
-                      </Button>
-                    </Details>
-                  </Product>
-                  <Hr />
-                </div>
-              );
-            })}
-          </Info>
-          <Summary>
-            <SummaryTitle>ORDER SUMMARY</SummaryTitle>
-            <SummaryItem>
-              <SummaryItemText>Subtotal</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Estimated Shipping</SummaryItemText>
-              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem>
-              <SummaryItemText>Shipping Discount</SummaryItemText>
-              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
-            </SummaryItem>
-            <SummaryItem type="total">
-              <SummaryItemText>Total</SummaryItemText>
-              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
-            </SummaryItem>
-            <Button
-              onClick={() => {
-                cart.total && user.currentUser && navigate("/payment/form");
-              }}
-            >
-              CHECKOUT NOW
-            </Button>
-          </Summary>
-        </Container>
-      )}
+                    </Product>
+                    <Hr />
+                  </div>
+                );
+              })}
+            </Info>
+            <Summary>
+              <SummaryTitle>ORDER SUMMARY</SummaryTitle>
+              <SummaryItem>
+                <SummaryItemText>Subtotal</SummaryItemText>
+                <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              </SummaryItem>
+              <SummaryItem>
+                <SummaryItemText>Estimated Shipping</SummaryItemText>
+                <SummaryItemPrice>$ 5.90</SummaryItemPrice>
+              </SummaryItem>
+              <SummaryItem>
+                <SummaryItemText>Shipping Discount</SummaryItemText>
+                <SummaryItemPrice>$ -5.90</SummaryItemPrice>
+              </SummaryItem>
+              <SummaryItem type="total">
+                <SummaryItemText>Total</SummaryItemText>
+                <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+              </SummaryItem>
+              <Button
+                onClick={() => {
+                  cart.total && user.currentUser && navigate("/payment/form");
+                }}
+              >
+                CHECKOUT NOW
+              </Button>
+            </Summary>
+          </>
+        )}
+      </Container>
     </>
   );
 };

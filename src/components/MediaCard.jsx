@@ -14,14 +14,17 @@ export default function MediaCard({ product }) {
     const navigate = useNavigate()
   
   return (
-    <Card sx={{ width:'280px' }} >
+    <Card sx={{ height:'60vh',minHeight:'60vh',width:'280px',margin:1 }}  >
       <CardMedia
         component="img"
        
         image={product.img}
         alt="image"
-        style={{ objectFit: "contain" }}
+        style={{ objectFit: "fit"}}
         width='100%'
+        height={'80%'}
+
+        
       />
       <CardContent sx={{padding:2,fontSize:11}}>
         <Typography gutterBottom variant="p" component="div" >

@@ -28,6 +28,8 @@ const CarouselContainer = styled.div`
   background-color: #f7eee3;
   margin-bottom: 50px;
   border-radius: 5px;
+  
+ 
 `;
 
 const Title = styled.div`
@@ -52,7 +54,7 @@ function ProductsSlider({ title }) {
     <Container>
       <Title>{title}</Title>
       <CarouselContainer>
-        <Carousel breakPoints={breakPoints}>
+        <Carousel breakPoints={breakPoints} >
           {products &&
             products.map((item, index) => {
               return <MediaCard product={item} key={item._id} />;

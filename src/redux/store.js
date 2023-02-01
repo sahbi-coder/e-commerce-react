@@ -5,7 +5,8 @@ import wishlistReducer from "./wishlistSlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import divisionReducer from "./divisionSlice";
-import orderReducer from './orderSlice'
+import orderReducer from "./orderSlice";
+import visitSlice from "./visitSlice";
 const persistConfig = {
   key: "root",
   storage,
@@ -15,13 +16,15 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   whishlist: wishlistReducer,
   division: divisionReducer,
-  order:orderReducer
+  order: orderReducer,
+  visits:visitSlice
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false}),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 export default store;
 export const persistor = persistStore(store);
