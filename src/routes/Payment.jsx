@@ -1,10 +1,11 @@
-
-import {Outlet} from 'react-router-dom'
-
+import { Outlet } from "react-router-dom";
+import Loading from "../components/Loading";
 function Payment() {
   return (
-   <Outlet/>
-  )
+    <Loading>
+      <Outlet />
+    </Loading>
+  );
 }
 
-export default Payment
+export default Payment;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useLayoutEffect } from "react";
 import styled from "styled-components";
 import Twitter from "@material-ui/icons/Twitter";
 import Youtube from "@material-ui/icons/YouTube";
@@ -9,6 +9,10 @@ import Phone from "@material-ui/icons/Phone";
 import { mobile } from "../responsive";
 import { extraSmall } from "../responsive";
 import { Link } from "react-router-dom";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Foot = styled.section`
   font-size: 12px;
@@ -16,6 +20,7 @@ const Foot = styled.section`
   color: #f7eee3;
   width: 100%;
   ${mobile({ width: "100vw" })}
+ 
 `;
 const ContainerOne = styled.div`
   display: flex;
@@ -75,7 +80,7 @@ const Group = styled.div`
   background-color: color;
   display: flex;
   flex-direction: column;
-  ${mobile({margin:'20px 0'})}
+  ${mobile({ margin: "20px 0" })}
 `;
 const GroupTitle = styled.div`
   text-align: start;
@@ -97,7 +102,7 @@ const GroupItem = styled.li`
 const ContainerThree = styled.div`
   display: flex;
   padding: 35px;
-  ${mobile({padding:10,paddingRight:35})}
+  ${mobile({ padding: 10, paddingRight: 35 })}
 `;
 const LeftTwo = styled.div`
   flex: 1;
@@ -107,11 +112,28 @@ const RightTwo = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-end;
-  ${mobile({justifyContent:'flex-start',paddingLeft:40})}
+  ${mobile({ justifyContent: "flex-start", paddingLeft: 40 })}
 `;
 function Footer() {
+  const footerRef = useRef(null);
+
+  useLayoutEffect(() => {
+    gsap.to(footerRef.current, { opacity: 0, y: 150, duration: 0 });
+  }, []);
+
+  useEffect(() => {
+    const t = gsap.timeline({
+      scrollTrigger: {
+        trigger: footerRef.current,
+        start: "top center",
+      
+      },
+    });
+
+    t.to(footerRef.current, { opacity: 1, y: 0,duration:2 });
+  }, []);
   return (
-    <Foot>
+    <Foot ref={footerRef}>
       <ContainerOne>
         <Left>
           <FieldWrap>

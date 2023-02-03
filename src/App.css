@@ -9,7 +9,7 @@
 body,
 html {
   width: 100%;
-  overflow-x: hidden;
+  
 }
 @media only screen and (max-width: 760) {
   #root,
@@ -75,4 +75,24 @@ html {
 .rec-dot_active {
   background-color: rgba(247, 210, 173, 0.5) !important;
   box-shadow: 0 0 1px 2px #514f4d !important;
+}
+.search::-webkit-scrollbar {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+.search::-webkit-scrollbar-thumb {
+  background-color: #514f4d;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+.searchItem:hover{
+  color:grey;
+}
+.link{
+  text-decoration: none;
+  color: inherit;
 }

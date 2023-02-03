@@ -61,7 +61,7 @@ const Total = styled.div`
   color: white;
   background-color: black;
 `;
-function CartContainer({cart,user}) {
+function CartContainer({ cart, user }) {
   const dispatch = useDispatch();
 
   const add = async (id, user) => {
@@ -78,7 +78,6 @@ function CartContainer({cart,user}) {
       dispatch(failure());
     }
   };
-
 
   const remove = async (id, user) => {
     dispatch(start());
@@ -102,7 +101,6 @@ function CartContainer({cart,user}) {
       <CartRows>
         {user.currentUser &&
           cart.products.map((item, index) => {
-           
             return (
               <CartRow key={crypto.randomUUID()}>
                 <CartImage src={item.img} />

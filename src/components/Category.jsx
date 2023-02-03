@@ -38,9 +38,13 @@ const Info = styled.div`
   flex-direction: column;
 `;
 
-function Category({ category }) {
+function Category({ category, setRefs }) {
   return (
-    <Container>
+    <Container
+      ref={(el) => {
+        setRefs(el);
+      }}
+    >
       <Link to={`products/${category.category}`}>
         <Image src={category.img} />
         <Info>

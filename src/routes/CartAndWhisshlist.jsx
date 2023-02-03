@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { clearDbCart } from "../apiCalls";
 import { clearCart, start, success, failure } from "../redux/cartSlice";
+import Loading from "../components/Loading";
 const Container = styled.div`
   margin-top: 100px;
   width: 100%;
@@ -80,73 +81,77 @@ const Cart = () => {
   };
 
   return (
-    <Container>
-      <Navbar />
+    <Loading>
+      <Container>
+        <Navbar />
 
-      <Wrapper>
-        <Title>YOUR BAG</Title>
-        <Top>
-          <TopButton
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            CONTINUE SHOPPING
-          </TopButton>
-          {user.currentUser && (
-            <>
-              <TopTexts>
-                <TopText
-                  onClick={() => {
-                    navigate("/cart");
-                  }}
-                >
-                  Shopping Bag({cart.products.length})
-                </TopText>
-                <TopText
-                  onClick={() => {
-                    navigate("/whishlist");
-                  }}
-                >
-                  Your Wishlist ({whishlist.products.length})
-                </TopText>
-              </TopTexts>
-              <ButtonWrap>
-                <TopButton
-                  type="filled"
-                  onClick={() => {
-                    clear(user);
-                  }}
-                >
-                  CLEAR ALL
-                </TopButton>
-                <TopButton
-                  type="filled"
-                  onClick={() => {
-                    cart.total && user.currentUser && navigate("/payment/form");
-                  }}
-                >
-                  CHECKOUT NOW
-                </TopButton>
-              </ButtonWrap>
-            </>
-          )}
-          {!user.currentUser && (
+        <Wrapper>
+          <Title>YOUR BAG</Title>
+          <Top>
             <TopButton
-              type="filled"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/login");
+              onClick={() => {
+                navigate("/");
               }}
             >
-              Login
+              CONTINUE SHOPPING
             </TopButton>
-          )}
-        </Top>
-        <Outlet />
-      </Wrapper>
-      <Footer />
-    </Container>
+            {user.currentUser && (
+              <>
+                <TopTexts>
+                  <TopText
+                    onClick={() => {
+                      navigate("/cart");
+                    }}
+                  >
+                    Shopping Bag({cart.products.length})
+                  </TopText>
+                  <TopText
+                    onClick={() => {
+                      navigate("/whishlist");
+                    }}
+                  >
+                    Your Wishlist ({whishlist.products.length})
+                  </TopText>
+                </TopTexts>
+                <ButtonWrap>
+                  <TopButton
+                    type="filled"
+                    onClick={() => {
+                      clear(user);
+                    }}
+                  >
+                    CLEAR ALL
+                  </TopButton>
+                  <TopButton
+                    type="filled"
+                    onClick={() => {
+                      cart.total &&
+                        user.currentUser &&
+                        navigate("/payment/form");
+                    }}
+                  >
+                    CHECKOUT NOW
+                  </TopButton>
+                </ButtonWrap>
+              </>
+            )}
+            {!user.currentUser && (
+              <TopButton
+                type="filled"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/login");
+                }}
+              >
+                Login
+              </TopButton>
+            )}
+          </Top>
+          <Outlet />
+        </Wrapper>
+        <Footer />
+      </Container>
+    </Loading>
   );
 };
 

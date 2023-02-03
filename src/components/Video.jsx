@@ -4,12 +4,12 @@ import video from "../videos/mixkit-hand-selecting-through-clothes-23327-medium.
 
 const Container = styled.div`
   width: 100%;
-  height: auto;
+  /* height: auto; */
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   ${mobile({ width: "100vw" })}
   margin-top:81px;
   padding: 0;
@@ -20,7 +20,7 @@ const Slider = () => {
     <Container>
       <video
         id="myVideo"
-        width={{ height: "100vh", width: "100vw" }}
+        style={{width:'100%'}}
         autoPlay
         muted
         loop

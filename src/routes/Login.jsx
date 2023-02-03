@@ -17,6 +17,7 @@ import { clearOrders } from "../redux/orderSlice";
 import { logOut, loginFailure } from "../redux/userSlice";
 import { loginSucess, loginStart, init } from "../redux/userSlice";
 import { login } from "../apiCalls";
+import Loading from "../components/Loading";
 
 const Container = styled.div`
   width: 100vw;
@@ -101,13 +102,18 @@ const Login = () => {
       const res = await login(email, password);
 
       if (res.request.status === 200) {
-        dispatch(loginSucess({...res.data,expiresIn:res.data.expiresInConstatnt+new Date().getTime()}));
-        const id = res.data._id
-        const token = res.data.token
+        dispatch(
+          loginSucess({
+            ...res.data,
+            expiresIn: res.data.expiresInConstatnt + new Date().getTime(),
+          })
+        );
+        const id = res.data._id;
+        const token = res.data.token;
 
-        const res1 = await getCardDbAfterLogin(id,token);
-        const res2 = await getWishlistAfterLogin(id,token);
-        const res3 = await getOrdersAfterLogin(id,token);
+        const res1 = await getCardDbAfterLogin(id, token);
+        const res2 = await getWishlistAfterLogin(id, token);
+        const res3 = await getOrdersAfterLogin(id, token);
 
         dispatch(addProducts(res1.data.products));
         dispatch(addList(res2.data.products));
@@ -126,37 +132,41 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <Title>SIGN IN</Title>
-        <Form>
-          <Input
-            placeholder="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <Input
-            placeholder="password"
-            type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          <Button
-            onClick={(e) => reduxLogin(e, email, password)}
-            disabled={isFetshing}
-          >
-            LOGIN
-          </Button>
-          {error ? <Error>something went wrong ....</Error> : null}
-          <Link as={L}to='/forgot-password'>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link as={L} to="/register">
-            CREATE A NEW ACCOUNT
-          </Link>
-        </Form>
-      </Wrapper>
-    </Container>
+    <Loading>
+      <Container>
+        <Wrapper>
+          <Title>SIGN IN</Title>
+          <Form>
+            <Input
+              placeholder="email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+            <Input
+              placeholder="password"
+              type="password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+            <Button
+              onClick={(e) => reduxLogin(e, email, password)}
+              disabled={isFetshing}
+            >
+              LOGIN
+            </Button>
+            {error ? <Error>something went wrong ....</Error> : null}
+            <Link as={L} to="/forgot-password">
+              DO NOT YOU REMEMBER THE PASSWORD?
+            </Link>
+            <Link as={L} to="/register">
+              CREATE A NEW ACCOUNT
+            </Link>
+          </Form>
+        </Wrapper>
+      </Container>
+    </Loading>
   );
 };
 

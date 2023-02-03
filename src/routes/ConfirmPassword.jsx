@@ -5,9 +5,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Link as L, useNavigate } from "react-router-dom";
-
-
-
+import Loading from "../components/Loading";
 
 const Container = styled.div`
   width: 100vw;
@@ -99,7 +97,7 @@ function ConfirmPassword() {
         if (res.request.status === 200) {
           setSuccess({ message: "password changed with success." });
           setError(null);
-          setIsFetching(false)
+          setIsFetching(false);
           return;
         }
         setSuccess(null);
@@ -117,39 +115,40 @@ function ConfirmPassword() {
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <Title>RESET PASSWORD</Title>
-        <Form>
-          <Input
-            placeholder="write password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type="password"
-          />
-          <Input
-            placeholder="confirm password"
-            onChange={(e) => {
-              setConfPassword(e.target.value);
-            }}
-            type="password"
-          />
+    <Loading>
+      <Container>
+        <Wrapper>
+          <Title>RESET PASSWORD</Title>
+          <Form>
+            <Input
+              placeholder="write password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type="password"
+            />
+            <Input
+              placeholder="confirm password"
+              onChange={(e) => {
+                setConfPassword(e.target.value);
+              }}
+              type="password"
+            />
 
-          <Button disabled={isFetching} onClick={submitEmail}>
-            SUBMIT
-          </Button>
-          {error && <Error>{error.message}</Error>}
-          {success && <Success>{success.message} </Success>}
-          <Row>
-            <Link as={L} to="/login">
-              LOGIN
-            </Link>
-      
-          </Row>
-        </Form>
-      </Wrapper>
-    </Container>
+            <Button disabled={isFetching} onClick={submitEmail}>
+              SUBMIT
+            </Button>
+            {error && <Error>{error.message}</Error>}
+            {success && <Success>{success.message} </Success>}
+            <Row>
+              <Link as={L} to="/login">
+                LOGIN
+              </Link>
+            </Row>
+          </Form>
+        </Wrapper>
+      </Container>
+    </Loading>
   );
 }
 

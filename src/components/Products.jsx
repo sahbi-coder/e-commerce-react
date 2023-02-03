@@ -8,7 +8,7 @@ import useMobile from "../hooks/useMobile";
 const Container = styled.div`
   padding: 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minMax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minMax(200px, 1fr));
   width: 100%;
   ${mobile({ width: "100vw", padding: 0 })}
 `;

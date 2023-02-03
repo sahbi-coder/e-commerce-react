@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleCart, getProduct } from "../apiCalls";
 import { addProduct, start, success, failure } from "../redux/cartSlice";
-
+import Loading from "../components/Loading";
 
 const Container = styled.div``;
 
@@ -160,7 +160,9 @@ const Product = () => {
       const res = await handleCart(product, user, amount, size, color);
       if (res.request.status === 200) {
         dispatch(success());
-        return dispatch(addProduct(res.data.products[res.data.products.length-1]));
+        return dispatch(
+          addProduct(res.data.products[res.data.products.length - 1])
+        );
       }
       dispatch(failure());
     } catch {
@@ -168,69 +170,71 @@ const Product = () => {
     }
   };
   return (
-    <Container>
-      <Navbar />
+    <Loading>
+      <Container>
+        <Navbar />
 
-      <Wrapper>
-        <ImgContainer>
-          <Image src={product.img} />
-        </ImgContainer>
-        <InfoContainer>
-          <Title>{product.title}</Title>
-          <Desc>{product.desc}</Desc>
-          <Price>{`$ ${product.price}`}</Price>
-          <FilterContainer>
-            <Filter>
-              <FilterTitle>Color</FilterTitle>
-              {product.color
-                ? product.color.map((c) => {
-                    return (
-                      <FilterColor
-                        key={c}
-                        color={c}
-                        onClick={() => {
-                          setColor(c);
-                        }}
-                      />
-                    );
-                  })
-                : null}
-            </Filter>
-            <Filter>
-              <FilterTitle>Size</FilterTitle>
-              <FilterSize
-                onChange={(e) => {
-                  setSize(e.target.value);
-                }}
-              >
-                {product.size
-                  ? product.size.map((s) => {
-                      return <FilterSizeOption key={s}>{s}</FilterSizeOption>;
+        <Wrapper>
+          <ImgContainer>
+            <Image src={product.img} />
+          </ImgContainer>
+          <InfoContainer>
+            <Title>{product.title}</Title>
+            <Desc>{product.desc}</Desc>
+            <Price>{`$ ${product.price}`}</Price>
+            <FilterContainer>
+              <Filter>
+                <FilterTitle>Color</FilterTitle>
+                {product.color
+                  ? product.color.map((c) => {
+                      return (
+                        <FilterColor
+                          key={c}
+                          color={c}
+                          onClick={() => {
+                            setColor(c);
+                          }}
+                        />
+                      );
                     })
                   : null}
-              </FilterSize>
-            </Filter>
-          </FilterContainer>
-          <AddContainer>
-            <AmountContainer>
-              <Remove onClick={() => handleAmount("remove")} />
-              <Amount>{amount}</Amount>
-              <Add onClick={() => handleAmount("add")} />
-            </AmountContainer>
-            <Button
-              onClick={() => {
-                reduxHandleCart(product, user, amount, size, color);
-              }}
-              disabled={cart.isFetching}
-            >
-              ADD TO CART
-            </Button>
-          </AddContainer>
-        </InfoContainer>
-      </Wrapper>
+              </Filter>
+              <Filter>
+                <FilterTitle>Size</FilterTitle>
+                <FilterSize
+                  onChange={(e) => {
+                    setSize(e.target.value);
+                  }}
+                >
+                  {product.size
+                    ? product.size.map((s) => {
+                        return <FilterSizeOption key={s}>{s}</FilterSizeOption>;
+                      })
+                    : null}
+                </FilterSize>
+              </Filter>
+            </FilterContainer>
+            <AddContainer>
+              <AmountContainer>
+                <Remove onClick={() => handleAmount("remove")} />
+                <Amount>{amount}</Amount>
+                <Add onClick={() => handleAmount("add")} />
+              </AmountContainer>
+              <Button
+                onClick={() => {
+                  reduxHandleCart(product, user, amount, size, color);
+                }}
+                disabled={cart.isFetching}
+              >
+                ADD TO CART
+              </Button>
+            </AddContainer>
+          </InfoContainer>
+        </Wrapper>
 
-      <Footer />
-    </Container>
+        <Footer />
+      </Container>
+    </Loading>
   );
 };
 

@@ -2,12 +2,13 @@ import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Products from "../components/Products";
 import Footer from "../components/Footer";
-import { mobile } from "../responsive";
-import { useState,useEffect} from "react";
+import { mobile, small } from "../responsive";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { getProductsApiCall } from "../apiCalls";
+import { getProductsAll, getProductsApiCall } from "../apiCalls";
 import { useSelector } from "react-redux";
-import SearchBar from "../components/SearchBar";
+import Search from "../components/Search";
+import Loading from "../components/Loading";
 
 const Container = styled.div``;
 
@@ -18,11 +19,26 @@ const Title = styled.h1`
 const FilterContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  ${small({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "start",
+  })}
 `;
 
 const Filter = styled.div`
   margin: 20px;
-  ${mobile({ width: "0px 20px", display: "flex", flexDirection: "column" })}
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+  ${mobile({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "start",
+  })}
 `;
 
 const FilterText = styled.span`
@@ -33,13 +49,11 @@ const FilterText = styled.span`
 `;
 
 const Select = styled.select`
- 
   margin-right: 20px;
+  max-height: 23px;
   ${mobile({ margin: "10px 0px" })};
-  
 `;
 const Option = styled.option``;
-
 
 const placeHolderArray = [
   { _id: 1, title: "", price: 0, img: "", desc: "" },
@@ -60,37 +74,15 @@ const placeHolderArray = [
   { _id: 16, title: "", price: 0, img: "", desc: "" },
 ];
 
-const filterData = (query, data) => {
-  if (!query) {
-    return data;
-  } else {
-    return data.filter((d) => d.toLowerCase().includes(query));
-  }
-};
-const data = [
-  "Paris",
-  "London",
-  "New York",
-  "Tokyo",
-  "Berlin",
-  "Buenos Aires",
-  "Cairo",
-  "Canberra",
-  "Rio de Janeiro",
-  "Dublin"
-];
-
 const ProductList = () => {
   const [products, setProducts] = useState(placeHolderArray);
-  const [filters, setFilters] = useState({size:'All',color:'All'});
+  const [filters, setFilters] = useState({ size: "All", color: "All" });
   const [sort, setSort] = useState("");
   const location = useLocation();
   const ctg = location.pathname.split("/")[2];
   const division = useSelector((state) => state.division.division);
-  const [colors,setColors] = useState([])
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const dataFiltered = filterData(searchQuery, data);
+  const [colors, setColors] = useState([]);
+  const [data, setData] = useState([]);
 
   const handleChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -103,85 +95,78 @@ const ProductList = () => {
       const res = await getProductsApiCall(ctg, division);
       if (res.request.status === 200) {
         setProducts(res.data.products);
-        setColors(res.data.colors)
+        setColors(res.data.colors);
       }
+      const res1 = await getProductsAll();
+      setData(res1.data);
     } catch {
       setProducts(placeHolderArray);
-      setColors([])
+      setColors([]);
     }
   };
   useEffect(() => {
     getProducts();
   }, [ctg, division]);
   return (
-    <Container>
-      <Navbar />
+    <Loading>
+      <Container>
+        <Navbar />
 
-      <Title>{ctg}</Title>
-      <FilterContainer>
-        <Filter>
-          <FilterText>Filter Products:</FilterText>
-          <Select
-            onChange={handleChange}
-            name="color"
-            value={filters.color || "All"}
-          
-          >
-            <Option disabled>Color</Option>
-            <Option>All</Option>
+        <Title>{ctg}</Title>
+        <FilterContainer>
+          <Filter>
+            <FilterText>Filter Products:</FilterText>
+            <Select
+              onChange={handleChange}
+              name="color"
+              value={filters.color || "All"}
+            >
+              <Option disabled>Color</Option>
+              <Option>All</Option>
 
-            {colors &&
-              colors.map((color, index) => {
-                return <Option key={crypto.randomUUID()}>{color}</Option>;
-              })}
-          </Select>
-          <Select onChange={handleChange} name="size" style={{maxWidth:50}} value='All'>
-            <Option disabled>Size</Option>
-            <Option>All</Option>
-            <Option>xs</Option>
-            <Option>s</Option>
-            <Option>m</Option>
-            <Option>l</Option>
-            <Option>xl</Option>
-            
-          </Select>
-        </Filter>
-        <Filter>
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <div style={{ padding: 3 }}>
-        {dataFiltered.map((d) => (
-          <div
-            className="text"
-            style={{
-              padding: 5,
-              justifyContent: "normal",
-              fontSize: 20,
-              color: "blue",
-              margin: 1,
-              width: "250px",
-              BorderColor: "green",
-              borderWidth: "10px"
-            }}
-            key={d.id}
-          >
-            {d}
-          </div>
-        ))}
-      </div>
-        </Filter>
-        <Filter>
-          <FilterText>Sort Products:</FilterText>
-          <Select onChange={handleSort} >
-            <Option value="Newest">Newest</Option>
-            <Option value="ASD"> Price (asc)</Option>
-            <Option value="DSD">Price (desc)</Option>
-          </Select>
-        </Filter>
-      </FilterContainer>
-      <Products ctg={ctg} sort={sort} products={products}filters={filters} itemsPerPage={4} />
+              {colors &&
+                colors.map((color, index) => {
+                  return <Option key={crypto.randomUUID()}>{color}</Option>;
+                })}
+            </Select>
+            <Select
+              onChange={handleChange}
+              name="size"
+              style={{ maxWidth: 50 }}
+              value="All"
+            >
+              <Option disabled>Size</Option>
+              <Option>All</Option>
+              <Option>xs</Option>
+              <Option>s</Option>
+              <Option>m</Option>
+              <Option>l</Option>
+              <Option>xl</Option>
+            </Select>
+            <Search data={data} />
+          </Filter>
 
-      <Footer />
-    </Container>
+          <Filter>
+            <FilterText>Sort Products:</FilterText>
+            <Select onChange={handleSort}>
+              <Option value="Newest">Newest</Option>
+              <Option value="ASD"> Price (asc)</Option>
+              <Option value="DSD">Price (desc)</Option>
+            </Select>
+          </Filter>
+        </FilterContainer>
+
+        <Products
+          ctg={ctg}
+          sort={sort}
+          products={products}
+          filters={filters}
+          itemsPerPage={4}
+        />
+
+        <Footer />
+      </Container>
+    </Loading>
   );
 };
 

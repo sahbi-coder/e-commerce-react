@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { Link as L, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { mobile } from "../responsive";
-import {createLink} from '../apiCalls'
+import { createLink } from "../apiCalls";
+import Loading from "../components/Loading";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -75,61 +76,65 @@ const Success = styled.div`
 `;
 
 function ForgotPassword() {
-  const {  currentUser } = useSelector((state) => state.user);
-  const [isFetching,setIsFetching]= useState(false)
+  const { currentUser } = useSelector((state) => state.user);
+  const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [email, setEmail] = useState("");
   const submitEmail = async (e) => {
     e.preventDefault();
     try {
-      setIsFetching(true)
-    
-      const res = await createLink(email)
+      setIsFetching(true);
+
+      const res = await createLink(email);
       if (res.request.status === 200) {
-        setError(false)
-        setIsFetching(false)
+        setError(false);
+        setIsFetching(false);
         return setSuccess(true);
       }
-    } catch (e){
-      console.log(e)
-      setIsFetching(false)
+    } catch (e) {
+      console.log(e);
+      setIsFetching(false);
       setError(true);
-      setSuccess(false)
+      setSuccess(false);
     }
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <Title>FORGOT PASSWORD?</Title>
-        <Form>
-          <Input
-            placeholder="email"
-            type="password"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
+    <Loading>
+      <Container>
+        <Wrapper>
+          <Title>FORGOT PASSWORD?</Title>
+          <Form>
+            <Input
+              placeholder="email"
+              type="password"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
 
-          <Button disabled={isFetching} onClick={submitEmail}>
-            SUBMIT
-          </Button>
-          {error && <Error>something went wrong ....</Error>}
-          {success && (
-            <Success>we've sent a transaction email, check your email. </Success>
-          )}
-          <Row>
-            <Link as={L} to="/login">
-              LOGIN
-            </Link>
-            <Link as={L} to="/register">
-              REGISTER
-            </Link>
-          </Row>
-        </Form>
-      </Wrapper>
-    </Container>
+            <Button disabled={isFetching} onClick={submitEmail}>
+              SUBMIT
+            </Button>
+            {error && <Error>something went wrong ....</Error>}
+            {success && (
+              <Success>
+                we've sent a transaction email, check your email.{" "}
+              </Success>
+            )}
+            <Row>
+              <Link as={L} to="/login">
+                LOGIN
+              </Link>
+              <Link as={L} to="/register">
+                REGISTER
+              </Link>
+            </Row>
+          </Form>
+        </Wrapper>
+      </Container>
+    </Loading>
   );
 }
 

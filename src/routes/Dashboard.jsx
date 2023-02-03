@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut} from "../redux/userSlice";
-
+import Loading from "../components/Loading"
 import { useNavigate } from "react-router-dom";
 import ProfileContainer from "../components/ProfileContainer";
 import WishlistContainer from "../components/WishlistContainer";
@@ -73,7 +73,7 @@ function Dashboard() {
 
 
   return (
-    <>
+    <Loading>
       <Navbar />
       <Container>
         <PageTitle>My Account</PageTitle>
@@ -106,7 +106,7 @@ function Dashboard() {
         </Grid>
       </Container>
       <Footer />
-    </>
+    </Loading>
   );
 }
 

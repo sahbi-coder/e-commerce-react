@@ -1,8 +1,8 @@
 import Product from "./routes/Product";
 import Home from "./routes/Home";
 import Products from "./routes/Products";
-import Cart from "./routes/Cart";
-import Whishlist from "./routes/Whishlist";
+import Cart from "./components/Cart";
+import Whishlist from "./components/Whishlist";
 import CartAndWhisshlist from "./routes/CartAndWhisshlist";
 import Login from "./routes/Login";
 import Register from "./routes/Register";
@@ -17,8 +17,8 @@ import OrderForm from "./components/OrderForm";
 import StripeContainer from "./components/StripeContainer";
 import ForgotPassword from "./routes/ForgotPassword";
 import ConfirmPassword from "./routes/ConfirmPassword";
-
 import "./App.css";
+
 function App() {
   const currentUser = useSelector((store) => store.user.currentUser);
 

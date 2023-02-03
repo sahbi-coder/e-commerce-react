@@ -1,25 +1,33 @@
 import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import TextField from "@mui/material/TextField";
 
-export default function SearchBar({ setSearchQuery }) {
+export default function SearchBar({ setSearchQuery, children, setIsFocused }) {
+  function handleChange(e) {
+    setSearchQuery(e.target.value);
+    if (e.target.value === "") {
+      return setIsFocused(false);
+    }
+    setIsFocused(true);
+  }
   return (
-    <form>
-      <TextField
+    <form
+      style={{ position: "relative", display: "flex", alignItems: "center" }}
+    >
+      <input
         id="search-bar"
         className="text"
-        onInput={(e) => {
-          setSearchQuery(e.target.value);
-        }}
-        label="Enter a city name"
+        onInput={handleChange}
+        label=""
         variant="outlined"
         placeholder="Search..."
         size="small"
+        style={{ minWidth: "225px", height: 23 }}
       />
       <IconButton type="submit" aria-label="search">
-        <SearchIcon style={{ fill: "blue" }} />
+        <SearchIcon style={{ fill: "black" }} />
       </IconButton>
+      {children}
     </form>
   );
 }

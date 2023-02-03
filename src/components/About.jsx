@@ -1,7 +1,12 @@
-import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import Images from "../images";
+import React, { useEffect, useRef, useLayoutEffect } from "react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
 const Container = styled.div`
   width: 100%;
   ${mobile({ width: "100vw" })};
@@ -27,17 +32,42 @@ const FooterContainer = styled.div`
 `;
 
 const Gallery = styled.div`
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fit, minMax(250px, 1fr));
-  padding: 10px 50px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  justify-items: center;
+
+  width: 100%;
+  flex-wrap: wrap;
   ${mobile({ padding: 0 })}
 `;
 const GridItem = styled.div`
   height: 400px;
+  width: 350px;
+  max-height: 100%;
 `;
 
 function About() {
+  const imagesRefs = useRef([]);
+
+  const setRefs = (el) => {
+    imagesRefs.current.push(el);
+  };
+  useLayoutEffect(() => {
+    imagesRefs.current.forEach((ref) => {
+      gsap.to(ref, { opacity: 0, duration: 0 });
+    });
+  }, []);
+
+  useEffect(() => {
+    const t = gsap.timeline();
+
+    setTimeout(() => {
+      imagesRefs.current.forEach((ref) => {
+        t.to(ref, { opacity: 1 });
+      });
+    }, 500);
+  }, []);
   return (
     <>
       <TitleContainer>
@@ -54,7 +84,10 @@ function About() {
             src={Images.about1}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
             loading="eager"
-            alt='clothes'
+            alt="clothes"
+            ref={(el) => {
+              setRefs(el);
+            }}
           />
         </GridItem>
         <GridItem>
@@ -62,7 +95,10 @@ function About() {
             src={Images.about2}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
             loading="eager"
-            alt='clothes'
+            alt="clothes"
+            ref={(el) => {
+              setRefs(el);
+            }}
           />
         </GridItem>
         <GridItem>
@@ -70,12 +106,44 @@ function About() {
             src={Images.about3}
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
             loading="eager"
-            alt='clothes'
+            alt="clothes"
+            ref={(el) => {
+              setRefs(el);
+            }}
           />
         </GridItem>
       </Gallery>
 
       <MainContainer>
+        Our mission is to provide a trusted and experienced online resource for
+        the retail community. We are committed to providing our members with a
+        wide range of products and services. This allows you to shop with
+        confidence knowing you are shopping with a trusted brand that knows and
+        understands the marketplace. We do this by delivering a wide selection
+        of products and services that are tailored to fit your lifestyle. The
+        company is founded by sahbi kardi, who have a keen interest fashion. his
+        aim is to provide the best possible shopping experience for customers
+        and to support the companies that do. sahbi is passionate about fashion
+        and the role it plays in the lives of people. Our mission is to provide
+        a trusted and experienced online resource for the retail community. We
+        are committed to providing our members with a wide range of products and
+        services. This allows you to shop with confidence knowing you are
+        shopping with a trusted brand that knows and understands the
+        marketplace. We do this by delivering a wide selection of products and
+        services that are tailored to fit your lifestyle. The company is founded
+        by sahbi kardi, who have a keen interest fashion. his aim is to provide
+        the best possible shopping experience for customers and to support the
+        companies that do. sahbi is passionate about fashion and the role it
+        plays in the lives of people. Our mission is to provide a trusted and
+        experienced online resource for the retail community. We are committed
+        to providing our members with a wide range of products and services.
+        This allows you to shop with confidence knowing you are shopping with a
+        trusted brand that knows and understands the marketplace. We do this by
+        delivering a wide selection of products and services that are tailored
+        to fit your lifestyle. The company is founded by sahbi kardi, who have a
+        keen interest fashion. his aim is to provide the best possible shopping
+        experience for customers and to support the companies that do. sahbi is
+        passionate about fashion and the role it plays in the lives of people.
         Our mission is to provide a trusted and experienced online resource for
         the retail community. We are committed to providing our members with a
         wide range of products and services. This allows you to shop with

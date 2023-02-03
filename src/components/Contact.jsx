@@ -1,9 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { useReducer, useState } from "react";
+import {
+  useReducer,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { postContact } from "../apiCalls";
 import Images from "../images";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Container = styled.div`
   display: flex;
@@ -128,31 +138,46 @@ function Contact() {
 
         if (res.request.status === 200) {
           setIsFetching(false);
-          setSuccess({message:"Thanks, we will respond as soon as possible."});
+          setSuccess({
+            message: "Thanks, we will respond as soon as possible.",
+          });
           return setError(null);
         }
-        setError({message:'oops! something went wrong.'});
+        setError({ message: "oops! something went wrong." });
         setIsFetching(false);
         setSuccess(null);
       } catch {
-        setError({message:'oops! something went wrong.'});
+        setError({ message: "oops! something went wrong." });
         setIsFetching(false);
         setSuccess(null);
       }
     } else {
       setError({ message: "invalid input(s)" });
-      setSuccess(null)
-      
+      setSuccess(null);
     }
   };
+  const imageRef = useRef(null);
+  const formRef = useRef(null);
+
+  useLayoutEffect(() => {
+    gsap.to(imageRef.current, { opacity: 0, x: -50, duration: 0 });
+    gsap.to(formRef.current, { opacity: 0, duration: 0 });
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      gsap.to(imageRef.current, { opacity: 1, x: 0 });
+      gsap.to(formRef.current, { opacity: 1,duration:2});
+    }, 500);
+  }, []);
 
   return (
     <Container>
       <Left>
-        <Img src={Images.contact} loading="eager"/>
+        <Img src={Images.contact} loading="eager" ref={imageRef} />
       </Left>
       <Right>
-        <Form id="survey-form">
+        <Form id="survey-form" ref={formRef}>
           <Title>Get in touch</Title>
           <FormItem>
             <Label id="name-label" htmlFor="name">
@@ -210,9 +235,7 @@ function Contact() {
               }}
             ></Textarea>
           </FormItem>
-          {success && (
-            <Success>{success.message}</Success>
-          )}
+          {success && <Success>{success.message}</Success>}
           {error && <Error>{error.message}</Error>}
           <Button
             type="submit"
@@ -223,7 +246,6 @@ function Contact() {
             submit
           </Button>
         </Form>
-        
       </Right>
     </Container>
   );

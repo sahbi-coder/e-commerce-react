@@ -12,6 +12,7 @@ import useMobile from "../hooks/useMobile";
 import { mobile } from "../responsive";
 import { divisions, changeDiv } from "../redux/divisionSlice";
 import Images from "../images";
+import Search from "./Search";
 
 const Container = styled.section`
   position: fixed;
@@ -219,6 +220,7 @@ function Navbar() {
           >
             Both
           </DivSelect>
+          
         </DivisonSelector>
       )}
       <Wrapper>

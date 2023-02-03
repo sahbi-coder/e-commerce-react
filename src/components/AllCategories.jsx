@@ -3,6 +3,7 @@ import { allCategories } from "../data";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { mobile } from "../responsive";
+
 const Gallery = styled.div`
   display: grid;
   grid-gap: 10px;
@@ -36,7 +37,6 @@ function AllCategories() {
   return (
     <Gallery>
       {allCategories.map((category) => {
-       
         return (
           <GridItem
             onClick={() => {

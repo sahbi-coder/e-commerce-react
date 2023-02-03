@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
-import { useReducer} from "react";
+import { useReducer } from "react";
 import { createAcount } from "../apiCalls";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ import { addProducts, clearCart } from "../redux/cartSlice";
 import { addList, deleteAll, start } from "../redux/wishlistSlice";
 import { setOrders, clearOrders } from "../redux/orderSlice";
 import { login, getCardDb, getWishlist, getOrders } from "../apiCalls";
+import Loading from "../components/Loading";
 
 const Container = styled.div`
   width: 100vw;
@@ -118,7 +119,7 @@ const Register = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const reduxDispatch = useDispatch();
   const navigate = useNavigate();
-  const { isFetshing} = useSelector((state) => state.user);
+  const { isFetshing } = useSelector((state) => state.user);
   const reduxCreateAcount = async (e, state) => {
     e.preventDefault();
     reduxDispatch(loginStart());
@@ -133,7 +134,7 @@ const Register = () => {
       const res = await createAcount(state);
       if (res.request.status !== 201) {
         reduxDispatch(loginFailure());
-        return  alert("could not register please try again or later");
+        return alert("could not register please try again or later");
       }
     } catch {
       reduxDispatch(loginFailure());
@@ -142,11 +143,16 @@ const Register = () => {
     try {
       const res = await login(state.email, state.password);
       if (res.request.status === 200) {
-        reduxDispatch(loginSucess({...res.data,expiresIn:res.data.expiresInConstatnt+new Date().getTime()}));
+        reduxDispatch(
+          loginSucess({
+            ...res.data,
+            expiresIn: res.data.expiresInConstatnt + new Date().getTime(),
+          })
+        );
         return navigate("/");
       }
-       reduxDispatch(loginFailure());
-       return navigate("/login");
+      reduxDispatch(loginFailure());
+      return navigate("/login");
     } catch {
       navigate("/login");
       reduxDispatch(loginFailure());
@@ -154,68 +160,76 @@ const Register = () => {
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <Title>CREATE AN ACCOUNT</Title>
-        <Form>
-          <Input
-            placeholder="name"
-            onChange={(e) => {
-              dispatch({ type: ACTIONS.UPDATE_NAME, payload: e.target.value });
-            }}
-          />
-          <Input
-            placeholder="last name"
-            onChange={(e) => {
-              dispatch({
-                type: ACTIONS.UPDATE_LASTNAME,
-                payload: e.target.value,
-              });
-            }}
-          />
+    <Loading>
+      <Container>
+        <Wrapper>
+          <Title>CREATE AN ACCOUNT</Title>
+          <Form>
+            <Input
+              placeholder="name"
+              onChange={(e) => {
+                dispatch({
+                  type: ACTIONS.UPDATE_NAME,
+                  payload: e.target.value,
+                });
+              }}
+            />
+            <Input
+              placeholder="last name"
+              onChange={(e) => {
+                dispatch({
+                  type: ACTIONS.UPDATE_LASTNAME,
+                  payload: e.target.value,
+                });
+              }}
+            />
 
-          <Input
-            placeholder="email"
-            type="email"
-            onChange={(e) => {
-              dispatch({ type: ACTIONS.UPDATE_EMAIL, payload: e.target.value });
-            }}
-          />
-          <Input
-            placeholder="password"
-            type="password"
-            onChange={(e) => {
-              dispatch({
-                type: ACTIONS.UPDATE_PASSWORD,
-                payload: e.target.value,
-              });
-            }}
-          />
-          <Input
-            placeholder="confirm password"
-            type="password"
-            onChange={(e) => {
-              dispatch({
-                type: ACTIONS.UPDATE_CONF_PASSWORD,
-                payload: e.target.value,
-              });
-            }}
-          />
-          <Agreement>
-            By creating an account, I consent to the processing of my personal
-            data in accordance with the <b>PRIVACY POLICY</b>
-          </Agreement>
-          <Button
-            onClick={(e) => {
-              reduxCreateAcount(e, state);
-            }}
-            disabled={isFetshing}
-          >
-            CREATE
-          </Button>
-        </Form>
-      </Wrapper>
-    </Container>
+            <Input
+              placeholder="email"
+              type="email"
+              onChange={(e) => {
+                dispatch({
+                  type: ACTIONS.UPDATE_EMAIL,
+                  payload: e.target.value,
+                });
+              }}
+            />
+            <Input
+              placeholder="password"
+              type="password"
+              onChange={(e) => {
+                dispatch({
+                  type: ACTIONS.UPDATE_PASSWORD,
+                  payload: e.target.value,
+                });
+              }}
+            />
+            <Input
+              placeholder="confirm password"
+              type="password"
+              onChange={(e) => {
+                dispatch({
+                  type: ACTIONS.UPDATE_CONF_PASSWORD,
+                  payload: e.target.value,
+                });
+              }}
+            />
+            <Agreement>
+              By creating an account, I consent to the processing of my personal
+              data in accordance with the <b>PRIVACY POLICY</b>
+            </Agreement>
+            <Button
+              onClick={(e) => {
+                reduxCreateAcount(e, state);
+              }}
+              disabled={isFetshing}
+            >
+              CREATE
+            </Button>
+          </Form>
+        </Wrapper>
+      </Container>
+    </Loading>
   );
 };
 

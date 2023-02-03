@@ -6,6 +6,7 @@ import { addToWhishlistDb } from "../apiCalls";
 import { addToList } from "../redux/wishlistSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import {mobile} from '../responsive'
 
 const Info = styled.div`
   opacity: 0;
@@ -14,13 +15,13 @@ const Info = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.5s ease;
   cursor: pointer;
+  ${mobile({ opacity:1 })}
 `;
 
 const Container = styled.div`
@@ -33,7 +34,7 @@ const Container = styled.div`
   justify-content: start;
   align-items: stretch;
   position: relative;
-
+ 
   &:hover ${Info} {
     opacity: 1;
   }
@@ -150,7 +151,7 @@ const Product = ({ item }) => {
     <Container>
       <InnerContainer>
         {!item.img && <PlaceHolder />}
-        {item.img && <Image src={item.img} />}
+        {item.img && <Image src={item.img} style={{objectFit:'cover'}} />}
       </InnerContainer>
       {item.img && (
         <Info>

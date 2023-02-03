@@ -5,6 +5,9 @@ const getProductsApiCall = async (ctg, division) => {
     ctg ? `/products/?category=${ctg}&division=${division}` : "/products"
   );
 };
+const getProductsAll = async () => {
+  return await publicRequest.get("/products/all");
+};
 const removeFromDbCart = async (id, user) => {
   let res = await userRequest.get("/carts/find/" + user.currentUser._id);
   const temp = res.data.products.reduce((pre, acc) => {
@@ -89,8 +92,6 @@ const handleCart = async (product, user, amount, size, color) => {
     color,
     price: product.price,
     img: product.img,
-
-    
   };
 
   const res = await userRequest.get("/carts/find/" + user.currentUser._id);
@@ -168,16 +169,16 @@ const getOrdersAfterLogin = async (userId, token) => {
 const postOrder = async (order, id) => {
   return await userRequest.put("/orders/" + id, order);
 };
-const deleteOrder = async (id)=>{
-  return await userRequest.delete('/orders/'+id)
-}
+const deleteOrder = async (id) => {
+  return await userRequest.delete("/orders/" + id);
+};
 const postContact = async (contact) => {
   return publicRequest.post("/contact", contact);
 };
 const createLink = async (email) => {
   return await publicRequest.post("/auth/forgot-password", { email });
 };
-const resetPassword = async (id,token,password) => {
+const resetPassword = async (id, token, password) => {
   return await publicRequest.post(`/auth/forgot-password/${id}/${token}`, {
     id,
     token,
@@ -207,5 +208,6 @@ export {
   postContact,
   createLink,
   resetPassword,
-  deleteOrder
+  deleteOrder,
+  getProductsAll
 };

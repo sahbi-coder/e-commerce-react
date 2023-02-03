@@ -24,7 +24,6 @@ const Container = styled.div`
   width:100%;
   flex-wrap: wrap;
   min-height: 30vh;
-
 `;
 
 const Info = styled.div`
